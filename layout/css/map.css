@@ -1,8 +1,6 @@
 @charset "utf-8";
 
 /* KAKAO MAP */
-
-
 .search-result-info {
     margin-top: 15px;
     color: #666666;
@@ -118,4 +116,20 @@
 
 .marker:hover {
     transform: scale(1.2);
+}
+
+
+.place-detail {
+    display: flex;
+}
+
+.detail-link {
+    position: relative;
+    bottom: 1px;
+    color: #666666;
+    margin-left: 7px;
+}
+
+.detail-link:hover {
+    text-decoration: underline;
 }

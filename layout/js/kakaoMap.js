@@ -28,7 +28,7 @@ $(document).ready(function () {
                     map.setCenter(userPosition);
                 }
 
-                console.log(`지도 초기화 또는 이동: 위도 ${lat}, 경도 ${lng}`);
+                console.log(`위도 ${lat}, 경도 ${lng}`);
             }, handleError);
         } else {
             alert("Geolocation을 지원하지 않는 브라우저입니다.");
@@ -41,6 +41,11 @@ $(document).ready(function () {
         console.error("Geolocation Error: ", error);
     }
 
+    // 주소인지 판단
+    function isAddress(keyword) {
+        return /\d/.test(keyword) && /\s/.test(keyword); // 숫자와 공백 포함 여부 확인
+    }
+
     // 장소 검색
     function searchPlaces() {
         const keyword = $('#search-place').val().trim();
@@ -50,17 +55,33 @@ $(document).ready(function () {
             return;
         }
 
+        if (isAddress(keyword)) {
+            searchAddress(keyword); // 주소 검색
+        } else {
+            $.ajax({
+                url: `https://dapi.kakao.com/v2/local/search/keyword.json`,
+                type: 'GET',
+                headers: {Authorization: `KakaoAK ${apiKey}`},
+                data: {
+                    query: keyword,
+                    x: map.getCenter().getLng(),
+                    y: map.getCenter().getLat(),
+                    radius: 20000,
+                    size: 15
+                },
+                success: handleSearchSuccess,
+                error: handleSearchError
+            });
+        }
+    }
+
+    // 주소 검색
+    function searchAddress(query) {
         $.ajax({
-            url: `https://dapi.kakao.com/v2/local/search/keyword.json`,
+            url: `https://dapi.kakao.com/v2/local/search/address.json`,
             type: 'GET',
             headers: {Authorization: `KakaoAK ${apiKey}`},
-            data: {
-                query: keyword,
-                x: map.getCenter().getLng(),
-                y: map.getCenter().getLat(),
-                radius: 5000,
-                size: 15
-            },
+            data: {query: query},
             success: handleSearchSuccess,
             error: handleSearchError
         });
@@ -87,36 +108,25 @@ $(document).ready(function () {
         let listHtml = '';
         const bounds = new kakao.maps.LatLngBounds();
 
-        // 검색 결과 개수 표시
-        const totalResults = places.length;
-        $('.search-result-info').html(`<p>검색 결과 총 ${totalResults}건</p>`);
+        $('.search-result-info').html(`<p>검색 결과 총 ${places.length}건</p>`);
 
-        // 기존 마커 초기화
         clearMarkers();
 
         places.forEach((place, index) => {
             const position = new kakao.maps.LatLng(place.y, place.x);
 
-            // 마커 생성 및 등록
             createMarker(position, index);
 
-            // 랜덤 별점 생성
             const rating = (Math.random() * 4 + 1).toFixed(1);
 
-            // 리스트 항목 생성
             listHtml += createListItem(place, index, rating);
 
-            // 지도 영역 확장
             bounds.extend(position);
         });
 
-        // 검색 결과 리스트 업데이트
         $('.search-result').html(listHtml);
-
-        // 지도 영역 설정
         map.setBounds(bounds);
 
-        // 리스트 클릭 이벤트 바인딩
         bindListClickEvent();
     }
 
@@ -146,10 +156,9 @@ $(document).ready(function () {
 
         markers.push(marker);
 
-        // 마커 클릭 이벤트 등록
         $(document).on('click', `.marker[data-index="${index}"]`, function () {
             map.setCenter(position);
-            map.setLevel(2); // 확대 레벨
+            map.setLevel(2);
         });
     }
 
@@ -157,21 +166,38 @@ $(document).ready(function () {
     function createListItem(place, index, rating) {
         const markerLabel = String.fromCharCode(65 + index);
 
+        // 주소 검색인 경우 데이터 처리
+        const isAddressSearch = place.address || place.road_address;
+        const placeName = isAddressSearch
+            ? (place.road_address?.building_name || '건물명 없음')
+            : place.place_name;
+
+        const roadAddress = isAddressSearch
+            ? (place.road_address?.address_name || '도로명 주소 없음')
+            : place.road_address_name;
+
+        const addressName = isAddressSearch
+            ? (place.address?.address_name || '지번 주소 없음')
+            : place.address_name;
+
         return `
         <li class="search-result-item" data-marker-index="${index}">
             <div class="place-name">
                 <span class="place-idx">${markerLabel}.</span>
-                <span class="place-link">${place.place_name}</span>
+                <span class="place-link">${placeName}</span>
             </div>
             <div class="place-rating">
                 ${generateStars(rating)}
                 <span class="rating-value">${rating}</span>
             </div>
-            <p class="road-address-name">${place.road_address_name || '도로명 주소 없음'}</p>
+            <p class="road-address-name">${roadAddress}</p>
             <p class="address-name">
                 <span class="sticker">지번</span>
-                ${place.address_name}</p>
-            <p class="tel">${place.phone || '전화번호 없음'}</p>
+                ${addressName}</p>
+            <div class="place-detail">
+                <p class="tel">${place.phone || '전화번호 없음'}</p>
+                <a href="${place.place_url}" target="_blank" class="detail-link">상세보기</a>
+            </div>
         </li>
         `;
     }
@@ -184,7 +210,26 @@ $(document).ready(function () {
             const position = marker.getPosition();
 
             map.setCenter(position);
-            map.setLevel(1); // 확대 레벨
+            map.setLevel(1);
+        });
+    }
+
+    // 지도 확대/축소
+    function bindZoomControlEvents() {
+        $('.range-btn.zoomin').on('click', function () {
+            let currentLevel = map.getLevel();
+            if (currentLevel > 1) {
+                map.setLevel(currentLevel - 1);
+                zoomSlider.val(map.getLevel());
+            }
+        });
+
+        $('.range-btn.zoomout').on('click', function () {
+            let currentLevel = map.getLevel();
+            if (currentLevel < 10) {
+                map.setLevel(currentLevel + 1);
+                zoomSlider.val(map.getLevel());
+            }
         });
     }
 
@@ -198,31 +243,6 @@ $(document).ready(function () {
         });
         $('.search-group .btn').on('click', searchPlaces);
     }
-
-    // 지도 확대 축소
-    function bindZoomControlEvents() {
-        // zoomSlider.on('input', function () {
-        //     const zoomLevel = parseInt($(this).val());
-        //     map.setLevel(zoomLevel);
-        // });
-
-        $('.range-btn.zoomin').on('click', function () {
-            let currentLevel = map.getLevel();
-            if (currentLevel > 1) {
-                map.setLevel(currentLevel - 1); // 레벨이 작을수록 확대
-                zoomSlider.val(map.getLevel());
-            }
-        });
-
-        $('.range-btn.zoomout').on('click', function () {
-            let currentLevel = map.getLevel();
-            if (currentLevel < 10) { // 최대 레벨 10으로 설정
-                map.setLevel(currentLevel + 1); // 레벨이 클수록 축소
-                zoomSlider.val(map.getLevel());
-            }
-        });
-    }
-
 
     // 초기화
     initializeMapWithCurrentLocation();
