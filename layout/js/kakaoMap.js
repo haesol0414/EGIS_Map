@@ -66,7 +66,7 @@ $(document).ready(function () {
                     query: keyword,
                     x: map.getCenter().getLng(),
                     y: map.getCenter().getLat(),
-                    radius: 20000,
+                    radius: 5000,
                     size: 15
                 },
                 success: handleSearchSuccess,
@@ -90,7 +90,7 @@ $(document).ready(function () {
     // 검색 성공 처리
     function handleSearchSuccess(response) {
         if (response.documents.length === 0) {
-            $('.search-result-info').html('<p>검색 결과가 없습니다.</p>');
+            $('.search-result-info').html('<p class="no-result">검색 결과가 없습니다.</p>');
             $('.search-result').html('');
         } else {
             displayPlaces(response.documents);
@@ -162,7 +162,7 @@ $(document).ready(function () {
         });
     }
 
-    // 리스트 항목 생성
+// 리스트 항목 생성
     function createListItem(place, index, rating) {
         const markerLabel = String.fromCharCode(65 + index);
 
@@ -180,26 +180,32 @@ $(document).ready(function () {
             ? (place.address?.address_name || '지번 주소 없음')
             : place.address_name;
 
+        // 카테고리 이름 처리
+        const categoryName = place.category_name?.split(' > ').pop() || '';
+
         return `
-        <li class="search-result-item" data-marker-index="${index}">
-            <div class="place-name">
-                <span class="place-idx">${markerLabel}.</span>
-                <span class="place-link">${placeName}</span>
-            </div>
-            <div class="place-rating">
-                ${generateStars(rating)}
-                <span class="rating-value">${rating}</span>
-            </div>
-            <p class="road-address-name">${roadAddress}</p>
-            <p class="address-name">
-                <span class="sticker">지번</span>
-                ${addressName}</p>
-            <div class="place-detail">
-                <p class="tel">${place.phone || '전화번호 없음'}</p>
-                <a href="${place.place_url}" target="_blank" class="detail-link">상세보기</a>
-            </div>
-        </li>
-        `;
+            <li class="search-result-item" data-marker-index="${index}">
+                <div class="place-title">
+                    <span class="place-idx">${markerLabel}.</span>
+                    <div class="place-name">
+                        <span class="place-link">${placeName}</span>
+                        <span class="place-category">${categoryName}</span>
+                    </div>
+                </div>
+                <div class="place-rating">
+                    ${generateStars(rating)}
+                    <span class="rating-value">${rating}</span>
+                </div>
+                <p class="road-address-name">${roadAddress}</p>
+                <p class="address-name">
+                    <span class="sticker">지번</span>
+                    ${addressName}</p>
+                <div class="place-detail">
+                    <p class="tel">${place.phone || '전화번호 없음'}</p>
+                    <a href="${place.place_url}" target="_blank" class="detail-link">상세보기</a>
+                </div>
+            </li>
+            `;
     }
 
     // 리스트 클릭 이벤트 바인딩

@@ -26,11 +26,17 @@
     font-size: 18px;
 }
 
-.place-name {
+.place-title {
     display: flex;
-    align-items: start;
+    /*align-items: center;*/
     gap: 4px;
     margin-bottom: 7px;
+}
+
+.place-name {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .place-link {
@@ -38,7 +44,14 @@
     font-weight: 500;
     font-size: 18px;
     cursor: pointer;
+    margin-right: 5px;
 }
+
+.place-category {
+    color: #666666;
+    font-size: 12px;
+}
+
 
 .road-address-name {
     font-size: 14px;
