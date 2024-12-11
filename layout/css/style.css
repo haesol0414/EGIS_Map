@@ -391,6 +391,7 @@ html, body {
     top: 0;
     right: 30px;
     bottom: 0;
+    z-index: 2;
 }
 
 .map-tool .switch-btn {
@@ -465,6 +466,11 @@ html, body {
 
 .map-tool-btn.earth {
     background-image: url(/layout/images/ico/ico-earth.png);
+}
+
+
+.map-tool-btn.location {
+    background-image: url(/layout/images/ico/ico-marker.png);
 }
 
 .popup-panel {

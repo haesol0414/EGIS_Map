@@ -102,3 +102,11 @@
 .star.half {
     background: linear-gradient(to right, #FFD700 50%, #ddd 50%);
 }
+
+.marker {
+    transition: transform 0.2s ease-in-out;
+}
+
+.marker:hover {
+    transform: scale(1.2);
+}
