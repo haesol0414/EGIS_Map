@@ -1,0 +1,84 @@
+@charset "utf-8";
+
+@import "./common/common.css";
+@import "form.css";
+@import "content.css";
+
+html {width: 100%; height: 100%;}
+
+body {
+	width: 100%;
+	height: 100%;
+	padding: 50px 10px;
+	background-color: #ccc;
+}
+
+#guide {
+	width: 100%;
+	max-width: 1200px;
+	min-height: 100%;
+	margin: 0 auto;
+	background-color: #fff;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.guide-cont {
+	margin-bottom: 30px;
+}
+
+.guide-cont:last-child {margin-bottom: 0;}
+
+.guide-cont .tit {
+	padding: 15px;
+	font-size: 26px;
+	font-weight: bold;
+	color: #fff;
+	background-color: #000;
+}
+
+.guide-cont .cont {
+	padding: 30px 15px;
+}
+.guide-tbl {
+	width: 100%;
+	border-top: 1px solid #ccc;
+}
+
+.guide-tbl + .guide-tbl {
+	margin-top: 10px;
+}
+
+.guide-tbl > table {
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: collapse;
+}
+
+.guide-tbl > table > thead > tr > th {
+	padding: 8px;
+	background-color: #f3f4f5;
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+
+.guide-tbl > table > thead > tr > th:last-child {
+	border-right: 0;
+}
+
+.guide-tbl > table > tbody > tr > th {
+	padding: 8px;
+	text-align: center;
+	font-weight: normal;
+	background-color: #f3f4f5;
+	border-bottom: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+
+.guide-tbl > table > tbody > tr > td {
+	padding: 8px;
+	border-bottom: 1px solid #ccc;
+}
+
+.guide-tbl > table > tbody > tr > td + td {
+	border-left: 1px solid #ccc;
+}

@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>지도 레이아웃</title>
+	<script src="/layout/js/common/jquery/jquery-3.4.1.min.js"></script>
+	<!--jquery ui-->
+	<link rel="stylesheet" href="/layout/js/common/jquery-ui/jquery-ui.css">
+	<script src="/layout/js/common/jquery-ui/jquery-ui.js"></script>
+	<!--scrollbar-->
+	<link rel="stylesheet" href="/layout/js/plugin/mCustomScrollbar/jquery.mCustomScrollbar.min.css">
+	<script src="/layout/js/plugin/mCustomScrollbar/jquery.mCustomScrollbar.js"></script>
+	<!--style-->
+	<link rel="stylesheet" href="./layout/css/guide.css">
+	<script src="./layout/js/script.js"></script>
+</head>
+<body>
+	<div id="guide">
+		<div class="guide-cont">
+			<div class="tit">button style</div>
+			<div class="cont">
+				<div class="guide-tbl">
+					<table>
+						<colgroup>
+							<col style="width: 15%;">
+							<col style="width: 15%;">
+							<col style="width: 35%;">
+							<col style="width: 35%;">
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col" colspan="2"></th>
+								<th scope="col">활성</th>
+								<th scope="col">비활성</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row" rowspan="3">switch</th>
+								<th scope="row" rowspan="2">checkbox</th>
+								<td>
+									<span class="switch-btn">
+										<input type="checkbox" id="swchTest1">
+										<label for="swchTest1"></label>
+									</span>
+								</td>
+								<td>
+									<span class="switch-btn">
+										<input type="checkbox" id="swchTest1d" disabled>
+										<label for="swchTest1d"></label>
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="map-type">
+										<span class="switch-btn">
+											<input type="checkbox" id="swchTest2">
+											<label for="swchTest2">
+												<span class="switch-txt">
+													<span class="btn2D">2D</span>
+													<span class="btn3D">3D</span>
+												</span>
+											</label>
+										</span>
+									</div>
+								</td>
+								<td>
+									<div class="map-type">
+										<span class="switch-btn">
+											<input type="checkbox" id="swchTest2d" disabled>
+											<label for="swchTest2d">
+												<span class="switch-txt">
+													<span class="btn2D">2D</span>
+													<span class="btn3D">3D</span>
+												</span>
+											</label>
+										</span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">radio</th>
+								<td>
+									<div class="map-type">
+										<span class="switch-btn">
+											<input type="radio" id="swchTest3-1" name="swchRadio">
+											<label for="swchTest3-1">2D</label>
+										</span>
+										<span class="switch-btn">
+											<input type="radio" id="swchTest3-2" name="swchRadio">
+											<label for="swchTest3-2">3D</label>
+										</span>
+									</div>
+								</td>
+								<td>
+									<div class="map-type">
+										<span class="switch-btn">
+											<input type="radio" id="swchTest3-1" name="swchRadio" disabled>
+											<label for="swchTest3-1">2D</label>
+										</span>
+										<span class="switch-btn">
+											<input type="radio" id="swchTest3-2" name="swchRadio" disabled>
+											<label for="swchTest3-2">3D</label>
+										</span>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="guide-tbl">
+					<table>
+						<colgroup>
+							<col style="width: 15%;">
+							<col style="width: 15%;">
+							<col style="width: 35%;">
+							<col style="width: 35%;">
+						</colgroup>
+						<tbody>
+							<tr>
+								<th scope="row" rowspan="3">button</th>
+								<th>type X</th>
+								<td><button type="button" class="btn">non type</button></td>
+								<td><button type="button" class="btn" disabled>non type</button></td>
+							</tr>
+							<tr>
+								<th>type01</th>
+								<td><button type="button" class="btn type01">type01</button></td>
+								<td><button type="button" class="btn type01" disabled>type01</button></td>
+							</tr>
+							<tr>
+								<th>type02</th>
+								<td><button type="button" class="btn type02">type02</button></td>
+								<td><button type="button" class="btn type02" disabled>type02</button></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="tit">form style</div>
+			<div class="cont">
+				<div class="guide-tbl">
+					<table>
+						<colgroup>
+							<col style="width: 15%;">
+							<col style="width: 15%;">
+							<col style="width: 35%;">
+							<col style="width: 35%;">
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col" colspan="2"></th>
+								<th scope="col">활성</th>
+								<th scope="col">비활성</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row">input</th>
+								<th scope="row">text</th>
+								<td><input type="text" class="form-control"></td>
+								<td><input type="text" class="form-control" disabled></td>
+							</tr>
+							<tr>
+								<th scope="row" rowspan="2">datepicker</th>
+								<th scope="row">only</th>
+								<td><input type="text" class="datepicker"></td>
+								<td><input type="text" class="datepicker" disabled></td>
+							</tr>
+							<tr>
+								<th scope="row">from ~ to</th>
+								<td>
+									<div class="datepicker-range">
+										<input type="text" class="datepicker from">
+										<span>-</span>
+										<input type="text" class="datepicker to">
+									</div>
+								</td>
+								<td>
+									<div class="datepicker-range">
+										<input type="text" class="datepicker from" disabled>
+										<span>-</span>
+										<input type="text" class="datepicker to" disabled>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row" rowspan="2" colspan="2">checkbox</th>
+								<td>
+									<span>
+										<input type="checkbox" id="chk1">
+										<label for="chk1">checkbox</label>
+									</span>
+								</td>
+								<td>
+									<span>
+										<input type="checkbox" id="chk1-1" disabled>
+										<label for="chk1-1">checkbox</label>
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="form-group">
+										<span>
+											<input type="checkbox" id="chk2-1">
+											<label for="chk2-1">checkbox</label>
+										</span>
+										<span>
+											<input type="checkbox" id="chk2-2">
+											<label for="chk2-2">checkbox</label>
+										</span>
+									</div>
+								</td>
+								<td>
+									<div class="form-group">
+										<span>
+											<input type="checkbox" id="chk2-3" disabled>
+											<label for="chk2-3">checkbox</label>
+										</span>
+										<span>
+											<input type="checkbox" id="chk2-4" disabled>
+											<label for="chk2-4">checkbox</label>
+										</span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row" rowspan="2" colspan="2">radio</th>
+								<td>
+									<span>
+										<input type="radio" id="rad1" name="rad11">
+										<label for="rad1">radio</label>
+									</span>
+								</td>
+								<td>
+									<span>
+										<input type="radio" id="rad1-1" name="rad11-1" disabled>
+										<label for="rad1-1">radio</label>
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="form-group">
+										<span>
+											<input type="radio" id="rad2-1" name="rad22">
+											<label for="rad2-1">radio</label>
+										</span>
+										<span>
+											<input type="radio" id="rad2-2" name="rad22">
+											<label for="rad2-2">radio</label>
+										</span>
+									</div>
+								</td>
+								<td>
+									<div class="form-group">
+										<span>
+											<input type="radio" id="rad2-3" name="rad2DA" disabled>
+											<label for="rad2DA">radio</label>
+										</span>
+										<span>
+											<input type="radio" id="rad2-4" name="rad2DA" disabled>
+											<label for="rad2DA">radio</label>
+										</span>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row" colspan="2">select</th>
+								<td>
+									<select name="" id="" class="form-select">
+										<option value="">test</option>
+										<option value="">test</option>
+										<option value="">test</option>
+									</select>
+								</td>
+								<td>
+									<select name="" id="" class="form-select" disabled>
+										<option value="">test</option>
+										<option value="">test</option>
+										<option value="">test</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row" colspan="2">file</th>
+								<td colspan="2">
+									<div class="filebox">
+										<!-- <input class="upload-name" placeholder="첨부파일" disabled> -->
+										<div class="upload-box">
+											<span class="upload-name">첨부파일</span>
+											<button type="button" class="delete-btn"></button>
+										</div>
+										<input type="file" id="file">
+										<label for="file">파일찾기</label> 
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="tit">flex style</div>
+			<div class="cont">
+				<div class="guide-tbl">
+					<table>
+						<colgroup>
+							<col style="width: 30%;">
+							<col style="width: 70%;">
+						</colgroup>
+						<tbody>
+							<tr>
+								<th scope="row">100%</th>
+								<td>
+									<div class="row">
+										<div class="col">
+											<input type="text" class="form-control">
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">1: 1</th>
+								<td>
+									<div class="row">
+										<div class="col-6">
+											<input type="text" class="form-control">
+										</div>
+										<div class="col-6">
+											<input type="text" class="form-control">
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">auto</th>
+								<td>
+									<div class="row">
+										<div class="col-auto" style="width: 150px;">
+											<input type="text" class="form-control">
+										</div>
+										<div class="col">
+											<input type="text" class="form-control">
+										</div>
+										<div class="col-auto">
+											<button type="button" class="btn">test</button>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">1: 11</th>
+								<td>
+									<div class="row">
+										<div class="col-1">
+											<input type="text" class="form-control">
+										</div>
+										<div class="col-11">
+											<input type="text" class="form-control">
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">1: 1: 10</th>
+								<td>
+									<div class="row">
+										<div class="col-1">
+											<input type="text" class="form-control">
+										</div>
+										<div class="col-1">
+											<input type="text" class="form-control">
+										</div>
+										<div class="col-10">
+											<input type="text" class="form-control">
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="tit">content style</div>
+			<div class="cont">
+				<div class="guide-tbl">
+					<table>
+						<colgroup>
+							<col style="width: 30%;">
+							<col style="width: 70%;">
+						</colgroup>
+						<tbody>
+							<tr>
+								<th>search</th>
+								<td>
+									<div class="search-group">
+										<select name="" id="" class="form-select">
+											<option value="">제목</option>
+											<option value="">이름</option>
+										</select>
+										<input type="text" class="form-control auto" placeholder="내용 입력">
+										<button type="button" class="btn">검색</button>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>table</th>
+								<td>
+									<div class="tbl-wrap">
+										<table>
+											<colgroup>
+												<col style="width: 20%;">
+												<col style="width: 40%;">
+												<col style="width: 40%;">
+											</colgroup>
+											<thead>
+												<tr>
+													<th scope="col">test1</th>
+													<th scope="col">test2</th>
+													<th scope="col">test2</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<th scope="row">1</th>
+													<td><input type="text" class="form-control"></td>
+													<td><input type="text" class="form-control"></td>
+												</tr>
+												<tr>
+													<th scope="row">2</th>
+													<td colspan="2"><input type="text" class="form-control"></td>
+												</tr>
+												<tr>
+													<th scope="row">3</th>
+													<td colspan="2">
+														<div class="row">
+															<div class="col-auto"><input type="text" class="form-control"></div>
+															<div class="col"><input type="text" class="form-control"></div>
+															<div class="col-auto"><button type="button" class="btn">test button</button></div>
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th>scroll table</th>
+								<td>
+									<div class="tbl-wrap" style="height: 200px;"> <!-- style="height: 필요한 높이값 입력;"-->
+										<div class="tbl-head">
+											<table>
+												<colgroup>
+													<col style="width: 20%;">
+													<col style="width: 40%;">
+													<col style="width: 40%;">
+												</colgroup>
+												<thead>
+													<tr>
+														<th scope="col">test1</th>
+														<th scope="col">test2</th>
+														<th scope="col">test3</th>
+													</tr>
+												</thead>
+											</table>
+										</div>
+										<div class="mCustomScrollbar-y">
+											<table>
+												<colgroup>
+													<col style="width: 20%;">
+													<col style="width: 40%;">
+													<col style="width: 40%;">
+												</colgroup>
+												<tbody>
+													<tr>
+														<td class="align-center">test1</td>
+														<td class="align-center">test2</td>
+														<td class="align-center">test3</td>
+													</tr>
+													<tr>
+														<td><input type="text" class="form-control"></td>
+														<td><input type="text" class="form-control"></td>
+														<td><input type="text" class="form-control"></td>
+													</tr>
+													<tr>
+														<td><input type="text" class="form-control"></td>
+														<td><input type="text" class="form-control"></td>
+														<td><input type="text" class="form-control"></td>
+													</tr>
+													<tr>
+														<td><input type="text" class="form-control"></td>
+														<td><input type="text" class="form-control"></td>
+														<td><input type="text" class="form-control"></td>
+													</tr>
+													<tr>
+														<td><input type="text" class="form-control"></td>
+														<td><input type="text" class="form-control"></td>
+														<td><input type="text" class="form-control"></td>
+													</tr>
+													<tr>
+														<td><input type="text" class="form-control"></td>
+														<td><input type="text" class="form-control"></td>
+														<td><input type="text" class="form-control"></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">flex</th>
+								<td>
+									<div class="row">
+										<div class="col">
+											<div class="tbl-wrap">
+												<table>
+													<colgroup>
+														<col style="width: 20%;">
+														<col style="width: 40%;">
+														<col style="width: 40%;">
+													</colgroup>
+													<thead>
+														<tr>
+															<th scope="col">test1</th>
+															<th scope="col">test2</th>
+															<th scope="col">test3</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td class="align-center">test1</td>
+															<td class="align-center">test2</td>
+															<td class="align-center">test3</td>
+														</tr>
+														<tr>
+															<td><input type="text" class="form-control"></td>
+															<td><input type="text" class="form-control"></td>
+															<td><input type="text" class="form-control"></td>
+														</tr>
+														<tr>
+															<td><input type="text" class="form-control"></td>
+															<td><input type="text" class="form-control"></td>
+															<td><input type="text" class="form-control"></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+										<div class="col">
+											<div class="tbl-wrap">
+												<table>
+													<colgroup>
+														<col style="width: 20%;">
+														<col style="width: 40%;">
+														<col style="width: 40%;">
+													</colgroup>
+													<thead>
+														<tr>
+															<th scope="col">test1</th>
+															<th scope="col">test2</th>
+															<th scope="col">test3</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td class="align-center">test1</td>
+															<td class="align-center">test2</td>
+															<td class="align-center">test3</td>
+														</tr>
+														<tr>
+															<td><input type="text" class="form-control"></td>
+															<td><input type="text" class="form-control"></td>
+															<td><input type="text" class="form-control"></td>
+														</tr>
+														<tr>
+															<td><input type="text" class="form-control"></td>
+															<td><input type="text" class="form-control"></td>
+															<td><input type="text" class="form-control"></td>
+														</tr>
+														<tr>
+															<td rowspan="3" class="align-center">test1</td>
+															<td class="align-center">test2</td>
+															<td class="align-center">test3</td>
+														</tr>
+														<tr>
+															<td><input type="text" class="form-control"></td>
+															<td><input type="text" class="form-control"></td>
+														</tr>
+														<tr>
+															<td><input type="text" class="form-control"></td>
+															<td><input type="text" class="form-control"></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">button align</th>
+								<td>
+									<div class="btn-wrap">
+										<button type="button" class="btn">test1</button>
+										<button type="button" class="btn type01">test1</button>
+										<button type="button" class="btn type02">testtest</button>
+										<button type="button" class="btn type02">testtest</button>
+									</div>
+
+									<div class="btn-wrap justify-content-center">
+										<div class="position-left">
+											<button type="button" class="btn">test1</button>
+										</div>
+										<button type="button" class="btn type01">test1</button>
+										<button type="button" class="btn type02">testtest</button>
+										<button type="button" class="btn type02">testtest</button>
+									</div>
+
+									<div class="btn-wrap justify-content-center">
+										<div class="position-left">
+											<button type="button" class="btn type02">testtest</button>
+										</div>
+										<button type="button" class="btn">test1</button>
+										<button type="button" class="btn type01">test1</button>
+										<button type="button" class="btn">test1</button>
+										<button type="button" class="btn type01">test1</button>
+										<button type="button" class="btn">test1</button>
+										<button type="button" class="btn type01">test1</button>
+										<div class="position-right">
+											<button type="button" class="btn type02">testtest</button>
+										</div>
+									</div>
+
+									<div class="btn-wrap">
+										<button type="button" class="btn type01">test1</button>
+										<button type="button" class="btn type02">testtest</button>
+										<div class="position-right">
+											<button type="button" class="btn type02">testtest</button>
+											<button type="button" class="btn">test1</button>
+										</div>
+									</div>
+
+									<div class="btn-wrap justify-content-between">
+										<button type="button" class="btn">test1</button>
+										<button type="button" class="btn type01">test1</button>
+										<button type="button" class="btn type02">testtest</button>
+									</div>
+
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

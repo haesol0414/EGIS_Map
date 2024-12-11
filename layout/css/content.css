@@ -1,0 +1,166 @@
+@charset "utf-8";
+
+.mCSB_outside+.mCSB_scrollTools {right: -9px;}
+.mCSB_scrollTools {width: 4px;}
+.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar,
+.mCSB_scrollTools .mCSB_dragger:hover .mCSB_dragger_bar {width: 4px; border: 1px solid rgba(0, 52, 114, 0.35);}
+.mCSB_scrollTools .mCSB_draggerRail {background-color: transparent;}
+
+.mCustomScrollbar-y {
+	height: 100%;
+}
+
+/* login */
+.popup-panel.login {
+	height: 265px;
+	margin-top: -133px;
+}
+
+.login .login-cont {
+	margin-bottom: 30px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+}
+
+.login .login-cont .col {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.login .login-cont .cat {
+	display: block;
+	width: 100px;
+	font-size: 14px;
+}
+
+.login .login-cont .form-control {
+	height: 36px;
+	line-height: 36px;
+}
+
+.login .submit-btn {
+	display: block;
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	background-color: #003472;
+	color: #fff;
+}
+
+/* content */
+.search-group {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	margin-left: -2px;
+	margin-right: -2px;
+}
+
+.search-group > * {
+	flex-grow: 0;
+	flex-shrink: 0;
+	flex-basis: auto;
+	margin: 0 2px;
+	width: 20%;
+}
+
+.search-group > .auto {
+	flex-grow: 1;
+	flex-shrink: 1;
+	flex-basis: 0;
+}
+
+.search-group .form-control {
+	color: #fff;
+	background-color: #333;
+	border: 1px solid #000;
+}
+
+.search-group .form-control::placeholder {
+	color: #bbb;
+}
+
+.search-group .form-control:-ms-input-placeholder {
+	color: #bbb;
+}
+
+.search-group .btn {
+	width: auto;
+}
+
+/* table */
+.tbl-wrap {
+	width: 100%;
+	border-top: 2px solid #000;
+}
+
+.tbl-wrap table {
+	table-layout: fixed;
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.tbl-wrap table thead th {
+	padding: 8px;
+	color: #fff;
+	background-color: #555;
+	border-right: 1px solid #000;
+	border-bottom: 1px solid #000;
+}
+
+.tbl-wrap table thead th:last-child,
+.tbl-wrap table tbody td:last-child {border-right: 0;}
+
+.tbl-wrap table tbody th,
+.tbl-wrap table tbody td {
+	height: 36px;
+	padding: 8px;
+	color: #000;
+	background-color: #fff;
+	border-right: 1px solid #000;
+	border-bottom: 1px solid #000;
+}
+
+.tbl-wrap .mCustomScrollbar-y {
+	height: calc(100% - 36px);
+}
+
+.tbl-wrap .mCustomScrollbar-y .mCustomScrollBox {padding-bottom: 1px;}
+.tbl-wrap .mCustomScrollbar-y .mCSB_scrollTools {right: 0; width: 2px;}
+.tbl-wrap .mCustomScrollbar-y .mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar, 
+.tbl-wrap .mCustomScrollbar-y .mCSB_scrollTools .mCSB_dragger:hover .mCSB_dragger_bar {width: 2px;}
+
+/* button */
+.btn-wrap {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: center;
+	margin: 20px -2px 0;
+}
+
+.btn-wrap * {
+	margin: 0 2px;
+}
+
+.btn-wrap *[class^="position-"]{
+	position: absolute;
+	margin: 0;
+	display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.btn-wrap .position-left {
+	top: 0;
+	left: 0;
+}
+
+.btn-wrap .position-right {
+	top: 0;
+	right: 0;
+}
