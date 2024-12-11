@@ -1,8 +1,17 @@
 @charset "utf-8";
 
 /* KAKAO MAP */
+
+
+.search-result-info {
+    margin-top: 15px;
+    color: #666666;
+    text-align: end;
+    margin-right: 2px;
+}
+
 .search-result {
-    margin: 30px 0;
+    margin: 10px 0;
 }
 
 .search-result-item {

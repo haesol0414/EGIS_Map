@@ -78,6 +78,7 @@
                                 <input type="text" id="search-place" class="form-control auto" placeholder="장소 검색">
                                 <button type="button" class="btn">검색</button>
                             </div>
+                            <p class="search-result-info"></p>
                             <ul class="search-result">
                             </ul>
                         </div>
@@ -90,12 +91,16 @@
                 <div class="map-tool-group">
                     <div class="btn-group">
                         <button type="button" class="map-tool-btn location"></button>
+<!--                        <button type="button" id="kakao-roadview" class="map-tool-btn earth"></button>-->
                     </div>
+                </div>
+                <div class="map-range">
+<!--                    <input type="range" id="zoom-slider" min="1" max="10" value="3">-->
+                    <button type="button" class="range-btn zoomin">+</button>
+                    <button type="button" class="range-btn zoomout">-</button>
                 </div>
             </div>
             <div id="map" style="width:100%; height:100%;"></div>
-
-
         </div>
 
 
