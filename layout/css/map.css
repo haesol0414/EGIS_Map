@@ -2,7 +2,6 @@
 
 /* KAKAO MAP */
 .search-result-info {
-    margin-top: 15px;
     color: #666666;
     text-align: end;
     margin-right: 2px;
@@ -235,3 +234,50 @@
     box-shadow: rgba(0, 0, 0, 0.04) 0px 3px 5px;
 }
 
+
+/* 카테고리 */
+
+.category-group {
+    display: flex;
+    gap: 5px;
+    margin: 10px 0 10px 0;
+}
+
+.category {
+    display: inline-block;
+    border-radius: 12px;
+    border: 1px solid #e5e5e5;
+    padding: 2px 6px;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.6px 1.6px 2.2px;
+    /*transition;*/
+}
+
+
+.category {
+    display: inline-block;
+    border-radius: 12px;
+    border: 1px solid #e5e5e5;
+    padding: 2px 6px;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.6px 1.6px 2.2px;
+    /*transition;*/
+}
+
+/*.category.food {*/
+/*    color: red; !* 음식점 버튼 글자색 *!*/
+/*}*/
+
+/*.category.cafe {*/
+/*    color: brown; !* 카페 버튼 글자색 *!*/
+/*}*/
+
+/*.category.conv {*/
+/*    color: green; !* 편의점 버튼 글자색 *!*/
+/*}*/
+
+/*.category.bank {*/
+/*    color: blue; !* 은행 버튼 글자색 *!*/
+/*}*/
+
+/*.category.public {*/
+/*    color: purple; !* 공공기관 버튼 글자색 *!*/
+/*}*/

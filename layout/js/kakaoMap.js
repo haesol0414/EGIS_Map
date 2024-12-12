@@ -5,8 +5,8 @@ $(document).ready(function () {
     let map, markers = [];
     const mapContainer = $('#map')[0];
     const zoomSlider = $('#zoom-slider');
-    let activeOverlay = null; // 현재 활성화된 오버레이
-    let activeBadge = null; // 현재 활성화된 뱃지
+    let activeOverlay = null;
+    let activeBadge = null;
 
     function initializeMapWithCurrentLocation() {
         if (navigator.geolocation) {
@@ -40,6 +40,33 @@ $(document).ready(function () {
         }
     }
 
+
+    // 카테고리별 검색
+    function searchPlacesByCategory(categoryCode) {
+        $.ajax({
+            url: `https://dapi.kakao.com/v2/local/search/category.json`,
+            type: 'GET',
+            headers: {Authorization: `KakaoAK ${apiKey}`},
+            data: {
+                category_group_code: categoryCode,
+                x: map.getCenter().getLng(),
+                y: map.getCenter().getLat(),
+                radius: 3000,
+                size: 15,
+                sort: "distance"
+            },
+            success: handleSearchSuccess,
+            error: handleSearchError
+        });
+    }
+
+    $('.category-group .category').on('click', function () {
+        const categoryCode = $(this).data('category');
+        searchPlacesByCategory(categoryCode);
+    });
+
+
+    // 장소 검색
     function searchPlaces() {
         const keyword = $('#search-place').val().trim();
 
@@ -60,7 +87,8 @@ $(document).ready(function () {
                     x: map.getCenter().getLng(),
                     y: map.getCenter().getLat(),
                     radius: 3000,
-                    size: 15
+                    size: 15,
+                    sort: "distance"
                 },
                 success: handleSearchSuccess,
                 error: handleSearchError
@@ -73,7 +101,14 @@ $(document).ready(function () {
             url: `https://dapi.kakao.com/v2/local/search/address.json`,
             type: 'GET',
             headers: {Authorization: `KakaoAK ${apiKey}`},
-            data: {query: query},
+            data: {
+                query: query,
+                x: map.getCenter().getLng(),
+                y: map.getCenter().getLat(),
+                radius: 3000,
+                size: 15,
+                sort: "distance"
+            },
             success: handleSearchSuccess,
             error: handleSearchError
         });
@@ -303,9 +338,34 @@ $(document).ready(function () {
         }
     });
 
+
+    $('.map-tool-btn.location').on('click', function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                const userPosition = new kakao.maps.LatLng(lat, lng);
+
+                if (map) {
+                    map.setCenter(userPosition); // 현재 위치로 지도 중심 이동
+                    map.setLevel(3); // 줌 레벨 조정
+                } else {
+                    alert("지도가 초기화되지 않았습니다.");
+                }
+            }, error => {
+                alert("현재 위치를 가져올 수 없습니다. 위치 서비스 사용을 허용해주세요.");
+                console.error("Geolocation Error: ", error);
+            });
+        } else {
+            alert("Geolocation을 지원하지 않는 브라우저입니다.");
+        }
+    });
+
+
     function isAddress(keyword) {
         return /\d/.test(keyword) && /\s/.test(keyword);
     }
+
 
     initializeMapWithCurrentLocation();
     bindZoomControlEvents();
