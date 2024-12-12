@@ -366,7 +366,6 @@ $(document).ready(function () {
         return /\d/.test(keyword) && /\s/.test(keyword);
     }
 
-
     initializeMapWithCurrentLocation();
     bindZoomControlEvents();
     bindSearchEvents();
