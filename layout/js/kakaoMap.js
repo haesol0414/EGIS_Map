@@ -1,6 +1,8 @@
 import KakaoAPI from './api/kakaoApi.js'
 import {createMarkerHTML, createOverlayHTML, createBadgeHTML, createListItemHTML} from './utils/kakaoUi.js'
 import {isAddress} from './utils/kakaoUtils.js';
+import {initializeRoadview, toggleRoadviewOverlay, openRoadviewOnClick, closeRoadview} from './kakaoRoadView.js';
+
 
 $(document).ready(function () {
     let map, markers = [];
@@ -8,6 +10,10 @@ $(document).ready(function () {
     const zoomSlider = $('#zoom-slider');
     let activeOverlay = null;
     let activeBadge = null;
+
+    const rvContainer = $('#roadview-container')[0];
+    const rvToggle = $('#roadview');
+    const closeRv = $('#close-roadview');
 
     // 맵 초기화
     function initializeMap() {
@@ -28,20 +34,18 @@ $(document).ready(function () {
                     kakao.maps.event.addListener(map, 'zoom_changed', () => {
                         zoomSlider.val(map.getLevel());
                     });
+
+                    // 로드뷰 초기화 및 이벤트 바인딩
+                    initializeRoadview(rvContainer);
+                    openRoadviewOnClick(map);
                 } else {
                     map.setCenter(userPosition);
                 }
-
-                console.log(`위도 ${lat}, 경도 ${lng}`);
-            }, error => {
-                alert("현재 위치를 가져올 수 없습니다. 위치 서비스 사용을 허용해주세요.");
-                console.error("Geolocation Error: ", error);
             });
         } else {
             alert("Geolocation을 지원하지 않는 브라우저입니다.");
         }
     }
-
 
     // 카테고리별 검색
     function searchPlacesByCategory(categoryCode) {
@@ -53,8 +57,7 @@ $(document).ready(function () {
         KakaoAPI.searchCategory(categoryCode, position, handleSearchSuccess, handleSearchError);
     }
 
-
-    // 장소 검색
+    // 주소 또는 키워드로 검색
     function searchPlaces() {
         const keyword = $('#search-place').val().trim();
 
@@ -75,7 +78,6 @@ $(document).ready(function () {
         }
     }
 
-
     // 마커 및 오버레이 생성
     function createMarker(position, index, place, rating) {
         const markerContent = createMarkerHTML(index);
@@ -90,6 +92,7 @@ $(document).ready(function () {
         });
 
         const overlay = new kakao.maps.CustomOverlay({
+            map: null,
             position: position,
             content: overlayContent,
             yAnchor: 1.4,
@@ -126,6 +129,9 @@ $(document).ready(function () {
                     badge.setMap(null);
                     activeBadge = null;
                 },
+                mousedown: function (e) {
+                    e.preventDefault();
+                },
                 click: function () {
                     map.setCenter(marker.getPosition());
                     if (activeOverlay) activeOverlay.setMap(null);
@@ -150,7 +156,7 @@ $(document).ready(function () {
         markers = [];
     }
 
-    // 화면 그리기
+    // 검색 리스트 표시
     function displayPlaces(places) {
         clearMarkers();
 
@@ -173,6 +179,18 @@ $(document).ready(function () {
         map.setBounds(bounds);
     }
 
+    // 특정 장소로 이동 및 오버레이 표시
+    function focusOnPlace(position, index) {
+        map.setCenter(position); // 지도 중심 이동
+        if (activeOverlay) activeOverlay.setMap(null); // 기존 오버레이 닫기
+
+        const marker = markers[index];
+        if (marker && marker.overlay) {
+            marker.overlay.setMap(map); // 새로운 오버레이 표시
+            activeOverlay = marker.overlay;
+        }
+    }
+
     // 검색 성공 핸들링
     function handleSearchSuccess(response) {
         if (response.documents.length === 0) {
@@ -189,13 +207,10 @@ $(document).ready(function () {
         alert('장소 검색에 실패했습니다.');
     }
 
-
-
+    // 초기화
     initializeMap();
 
-
     /* 이벤트 바인딩 */
-    
     // 지도 확대 축소
     $('.range-btn.zoomin').on('click', function () {
         let currentLevel = map.getLevel();
@@ -213,7 +228,6 @@ $(document).ready(function () {
         }
     });
 
-    
     // 검색
     $('#search-place').on('keypress', function (e) {
         if (e.key === 'Enter') {
@@ -227,22 +241,15 @@ $(document).ready(function () {
         const categoryCode = $(this).data('category');
         searchPlacesByCategory(categoryCode);
     });
-    
 
-    // 오버레이 닫기
-    $(document).on('click', function (e) {
-        if (
-            !$(e.target).closest('.info-window').length &&
-            !$(e.target).closest('.marker').length
-        ) {
-            if (activeOverlay) {
-                activeOverlay.setMap(null);
-                activeOverlay = null;
-            }
-        }
+    // 로드뷰 토글 버튼 이벤트
+    $(rvToggle).on('click', function () {
+        toggleRoadviewOverlay(map);
     });
 
-    
+    // 로드뷰 닫기 버튼 이벤트
+    $(closeRv).on('click', closeRoadview);
+
     // 현재 위치 이동 
     $('.map-tool-btn.location').on('click', function () {
         if (navigator.geolocation) {
@@ -263,6 +270,44 @@ $(document).ready(function () {
             });
         } else {
             alert("Geolocation을 지원하지 않는 브라우저입니다.");
+        }
+    });
+
+    // li 클릭 시 위치 이동
+    $('.search-result').on('click', '.place-name', function (e) {
+        e.preventDefault();
+
+        const listItem = $(this).closest('.search-result-item');
+        const markerIndex = listItem.data('marker-index');
+        const marker = markers[markerIndex];
+        const overlay = marker.overlay;
+
+        if (marker) {
+            const position = marker.getPosition(); // 마커 위치 가져오기
+            map.setCenter(position); // 지도 중심 이동
+
+            if (activeOverlay) {
+                activeOverlay.setMap(null); // 기존 오버레이 닫기
+                activeOverlay = null;
+            }
+
+            // 새 오버레이 활성화
+            overlay.setMap(map);
+            activeOverlay = overlay;
+        }
+    });
+
+    // 오버레이 닫기
+    $(document).on('click', function (e) {
+        if (
+            !$(e.target).closest('.info-window').length &&
+            !$(e.target).closest('.marker').length &&
+            !$(e.target).closest('.place-name').length
+        ) {
+            if (activeOverlay) {
+                activeOverlay.setMap(null);
+                activeOverlay = null;
+            }
         }
     });
 });

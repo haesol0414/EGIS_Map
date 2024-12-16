@@ -35,6 +35,8 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    user-select: none;
+    cursor: pointer;
 }
 
 .place-link {
@@ -155,6 +157,7 @@
     border-radius: 6px;
     background-color: #ffffff;
     cursor: default;
+    z-index: 1000;
 }
 
 .info-title {
@@ -277,4 +280,20 @@
 
 .category.public {
     color: #76b377;
+}
+
+#close-roadview {
+    display: none;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }

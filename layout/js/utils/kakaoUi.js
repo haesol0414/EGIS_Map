@@ -1,21 +1,19 @@
 import {generateStars} from './kakaoUtils.js';
-
-// 마커
 export function createMarkerHTML(index) {
     return `
         <div class="marker" 
             style="width:30px; height:40px; 
             background:url('https://t1.daumcdn.net/localimg/localimages/07/2018/pc/img/marker_spot.png') no-repeat; 
             background-size:cover; cursor: pointer;"
-            data-index="${index}">
+            data-index="${index}"
+            tabindex="-1">
         </div>
     `;
 }
 
-// 오버레이
 export function createOverlayHTML(place, rating) {
     return `
-        <div class="info-window">
+        <div class="info-window" tabindex="-1">
             <div class="place-name">
                 <p class="info-title">${place.place_name ? place.place_name : '건물명 없음'}</p>
                 <span class="place-category">${place.category_name?.split(' > ').pop() || ''}</span>
@@ -31,23 +29,20 @@ export function createOverlayHTML(place, rating) {
             </div>
             <span class="info-tel">${place.phone || '전화번호 없음'}</span>
             <div class="service">
-                <a href="${place.place_url}" target="_blank" class="info-detail">상세보기</a>
+                <a href="${place.place_url}" target="_blank" class="info-detail" tabindex="-1">상세보기</a>
             </div>
         </div>
     `;
 }
 
-
-// 뱃지
 export function createBadgeHTML(index, place) {
     return `
-        <div class="badge">
+        <div class="badge" tabindex="-1">
             <span class="badge-idx">${String.fromCharCode(65 + index)}. </span>
             <span class="badge-title">${place.place_name ? place.place_name : '건물명 없음'}</span>
         </div>
     `;
 }
-
 
 // 검색 결과 li
 export function createListItemHTML(place, index, rating) {
