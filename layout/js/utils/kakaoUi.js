@@ -1,4 +1,5 @@
 import {generateStars} from './kakaoUtils.js';
+
 export function createMarkerHTML(index) {
     return `
         <div class="marker" 

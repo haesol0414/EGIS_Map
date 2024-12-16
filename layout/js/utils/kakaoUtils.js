@@ -1,3 +1,4 @@
+// 별점 그리기
 export function generateStars(rating) {
     const fullStars = Math.floor(rating);
     const halfStar = rating % 1 >= 0.5 ? 1 : 0;
@@ -20,6 +21,7 @@ export function generateStars(rating) {
     return starsHtml;
 }
 
+// 주소 판단
 export function isAddress(keyword) {
     return /\d/.test(keyword) && /\s/.test(keyword);
 }

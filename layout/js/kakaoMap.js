@@ -1,8 +1,7 @@
 import KakaoAPI from './api/kakaoApi.js'
 import {createMarkerHTML, createOverlayHTML, createBadgeHTML, createListItemHTML} from './utils/kakaoUi.js'
 import {isAddress} from './utils/kakaoUtils.js';
-import {initializeRoadview, toggleRoadviewOverlay, openRoadviewOnClick, closeRoadview} from './kakaoRoadView.js';
-
+import {initializeRoadview, toggleOverlay, closeRoadview, syncMapAndRoadview} from './kakaoRoadView.js';
 
 $(document).ready(function () {
     let map, markers = [];
@@ -35,9 +34,17 @@ $(document).ready(function () {
                         zoomSlider.val(map.getLevel());
                     });
 
+                    const mapTypeControl = new kakao.maps.MapTypeControl();
+                    map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+                    const zoomControl = new kakao.maps.ZoomControl();
+                    map.addControl(zoomControl, kakao.maps.ControlPosition.BOTTOMRIGHT);
+
                     // 로드뷰 초기화 및 이벤트 바인딩
                     initializeRoadview(rvContainer);
-                    openRoadviewOnClick(map);
+
+                    // 지도와 로드뷰 동기화
+                    syncMapAndRoadview(map);
                 } else {
                     map.setCenter(userPosition);
                 }
@@ -46,6 +53,7 @@ $(document).ready(function () {
             alert("Geolocation을 지원하지 않는 브라우저입니다.");
         }
     }
+
 
     // 카테고리별 검색
     function searchPlacesByCategory(categoryCode) {
@@ -179,18 +187,6 @@ $(document).ready(function () {
         map.setBounds(bounds);
     }
 
-    // 특정 장소로 이동 및 오버레이 표시
-    function focusOnPlace(position, index) {
-        map.setCenter(position); // 지도 중심 이동
-        if (activeOverlay) activeOverlay.setMap(null); // 기존 오버레이 닫기
-
-        const marker = markers[index];
-        if (marker && marker.overlay) {
-            marker.overlay.setMap(map); // 새로운 오버레이 표시
-            activeOverlay = marker.overlay;
-        }
-    }
-
     // 검색 성공 핸들링
     function handleSearchSuccess(response) {
         if (response.documents.length === 0) {
@@ -244,14 +240,14 @@ $(document).ready(function () {
 
     // 로드뷰 토글 버튼 이벤트
     $(rvToggle).on('click', function () {
-        toggleRoadviewOverlay(map);
+        toggleOverlay(map);
     });
 
     // 로드뷰 닫기 버튼 이벤트
     $(closeRv).on('click', closeRoadview);
 
     // 현재 위치 이동 
-    $('.map-tool-btn.location').on('click', function () {
+    $('#user-location').on('click', function () {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
                 const lat = position.coords.latitude;
