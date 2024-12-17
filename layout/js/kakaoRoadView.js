@@ -26,40 +26,18 @@ export function toggleOverlay(map) {
         }
 
         overlayOn = false;
-
-        updateUIForRoadview(false);
         console.log('로드뷰 오버레이 비활성화');
     } else {
         // 로드뷰 오버레이 활성화
         map.addOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW);
 
         addRoadviewOverlayMarker(map);
-        overlayOn = true;
 
-        updateUIForRoadview(true);
+        overlayOn = true;
         console.log('로드뷰 오버레이 활성화');
     }
 }
 
-// UI 상태 업데이트
-export function updateUIForRoadview(isActive) {
-    if (isActive) {
-        $(".map-menu .menu-cont").addClass("closed").removeClass("opened");
-        $(".map-menu .menu-cont-btn").removeClass("on");
-    } else {
-        $(".map-menu .menu-cont").addClass("opened").removeClass("closed");
-        $(".map-menu .menu-cont-btn").addClass("on");
-    }
-}
-
-// 로드뷰 닫기
-export function closeRoadview() {
-    $('#roadview-container').hide();
-    $('#map').show();
-    $("#close-roadview").hide();
-
-    updateUIForRoadview(false);
-}
 
 // 로드뷰 마커 추가
 export function addRoadviewOverlayMarker(map) {
@@ -97,9 +75,7 @@ export function addRoadviewOverlayMarker(map) {
             rvClient.getNearestPanoId(newPosition, 50, function (panoId) {
                 if (panoId) {
                     rv.setPanoId(panoId, newPosition); // 로드뷰 업데이트
-                    $('#map').hide();
-                    $('#roadview-container').show();
-                    $("#close-roadview").show();
+                    showRoadView();
 
                     console.log('로드뷰 위치가 업데이트되었습니다:', newPosition);
                 } else {
@@ -119,29 +95,29 @@ function updateMarkerPosition(position) {
 
 // 커스텀 오버레이에서 로드뷰 버튼 클릭 시 위치 설정
 export function updateInfoRoadviewPosition(position, placeName) {
+    if (rvCustomMarker) {
+        rvCustomMarker.setMap(null); // 기존 마커 제거
+        rvCustomMarker = null;
+    }
+
+    if (rvInfoWindow) {
+        rvInfoWindow.setMap(null); // 기존 인포윈도우 제거
+        rvInfoWindow = null;
+    }
+
+    // 로드뷰 파노라마 ID 가져오기
     rvClient.getNearestPanoId(position, 50, function (panoId) {
         if (panoId) {
-            $('#map').hide();
-            $('#roadview-container').show();
-            $("#close-roadview").show();
-
             rv.setPanoId(panoId, position); // 로드뷰 설정
+            showRoadView();
 
-            if (rvCustomMarker) {
-                rvCustomMarker.setMap(null); // 기존 마커 삭제
-            }
-
-            // 기존 인포윈도우 제거
-            if (rvInfoWindow) {
-                rvInfoWindow.close(); // 기존 인포윈도우 닫기
-            }
-
-            // 로드뷰에 마커 생성
+            // 새로운 로드뷰 마커 생성
             rvCustomMarker = new kakao.maps.Marker({
                 position: position,
                 map: rv,
             });
 
+            // 새로운 인포윈도우 생성
             rvInfoWindow = new kakao.maps.CustomOverlay({
                 position: position,
                 map: rv,
@@ -151,10 +127,25 @@ export function updateInfoRoadviewPosition(position, placeName) {
                     </div>
                 `,
                 yAnchor: 2.4,
-                zIndex: 5
+                zIndex: 5,
             });
         } else {
             alert('해당 위치에서는 로드뷰를 지원하지 않습니다.');
         }
     });
 }
+
+export function showRoadView() {
+    $(".map-menu .menu-cont").addClass("closed").removeClass("opened");
+    $(".map-menu .menu-cont-btn, #user-location, #roadview").hide();
+    $("#map").hide();
+    $("#roadview-container, #close-roadview").show();
+}
+
+export function closeRoadView() {
+    $(".map-menu .menu-cont").addClass("opened").removeClass("closed");
+    $(".map-menu .menu-cont-btn, #user-location, #roadview").show();
+    $("#roadview-container, #close-roadview").hide();
+    $("#map").show();
+}
+

@@ -170,12 +170,15 @@
     border-radius: 6px;
     background-color: #ffffff;
     cursor: default;
+    user-select: none;
+    caret-color: transparent;
 }
 
 .info-title {
     font-size: 24px;
     font-weight: bold;
     margin-right: 6px;
+    cursor: default;
 }
 
 .info-road-address {
@@ -331,7 +334,6 @@
     flex-direction: column;
     gap: 5px;
 }
-
 
 .info-bottom {
     display: flex;

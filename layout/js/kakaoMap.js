@@ -1,7 +1,13 @@
 import KakaoAPI from './api/kakaoApi.js'
 import {createMarkerHTML, createOverlayHTML, createBadgeHTML, createListItemHTML} from './utils/kakaoUi.js'
 import {isAddress} from './utils/kakaoUtils.js';
-import {initializeRoadview, toggleOverlay, closeRoadview, updateInfoRoadviewPosition, updateUIForRoadview} from './kakaoRoadView.js';
+import {
+    closeRoadView,
+    initializeRoadview,
+    showRoadView,
+    toggleOverlay,
+    updateInfoRoadviewPosition,
+} from './kakaoRoadView.js';
 
 $(document).ready(function () {
     let map, markers = [];
@@ -216,15 +222,13 @@ $(document).ready(function () {
         searchPlacesByCategory(categoryCode);
     });
 
-    // 로드뷰 토글 버튼 이벤트
-    $(rvToggle).on('click', function () {
-        toggleOverlay(map);
-    });
+    // 로드뷰 오버레이 토글 버튼 이벤트
+    $(rvToggle).on('click', () => toggleOverlay(map));
 
     // 로드뷰 닫기 버튼 이벤트
-    $(closeRv).on('click', closeRoadview);
+    $(closeRv).on('click', () => closeRoadView());
 
-    // 현재 위치 이동 
+    // 현재 위치 이동 버튼
     $('#user-location').on('click', function () {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
@@ -247,7 +251,7 @@ $(document).ready(function () {
         }
     });
 
-    // li 클릭 시 위치 이동
+    // 장소명 클릭 시 해당 위치로 이동
     $('.search-result').on('click', '.place-name', function (e) {
         e.preventDefault();
 
@@ -271,7 +275,7 @@ $(document).ready(function () {
         }
     });
 
-    // 오버레이 닫기
+    // 커스텀 오버레이 닫기
     $(document).on('click', function (e) {
         if (
             !$(e.target).closest('.info-window').length &&
@@ -285,15 +289,15 @@ $(document).ready(function () {
         }
     });
 
-    // 오버레이 로드뷰 버튼 클릭 이벤트 등록
+    // 커스텀 오버레이 로드뷰 버튼 클릭 이벤트
     $(document).on('click', '#info-roadview', function () {
         const lat = $(this).data('lat');
         const lng = $(this).data('lng');
         const title = $(this).data('title');
+        
         const position = new kakao.maps.LatLng(lat, lng);
 
-        updateUIForRoadview(true);
-
+        showRoadView();
         updateInfoRoadviewPosition(position, title);
     });
 });
