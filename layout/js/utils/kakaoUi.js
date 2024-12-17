@@ -33,7 +33,7 @@ export function createOverlayHTML(place, rating) {
                     <span class="info-tel">${place.phone || '전화번호 없음'}</span>
                     <a href="${place.place_url}" target="_blank" class="info-detail" tabindex="-1">상세보기</a>
                 </div>
-                <button id="info-roadview" class="info-roadview-toggle" data-lat="${place.y}" data-lng="${place.x}">
+                <button id="info-roadview" class="info-roadview-toggle" data-lat="${place.y}" data-lng="${place.x}" data-title="${place.place_name ? place.place_name : '건물명 없음'}">
                 </button> 
             </div>
         </div>

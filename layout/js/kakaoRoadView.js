@@ -1,5 +1,6 @@
-let rv, rvClient, rvOverlayMarker;
+let rv, rvClient, rvOverlayMarker, rvCustomMarker, rvInfoWindow;
 let overlayOn = false;
+
 
 // 로드뷰 초기화
 export function initializeRoadview(rvContainer) {
@@ -56,6 +57,8 @@ export function closeRoadview() {
     $('#roadview-container').hide();
     $('#map').show();
     $("#close-roadview").hide();
+
+    updateUIForRoadview(false);
 }
 
 // 로드뷰 마커 추가
@@ -77,7 +80,7 @@ export function addRoadviewOverlayMarker(map) {
     if (rvOverlayMarker) {
         rvOverlayMarker.setPosition(center); // 중심 좌표로 위치 업데이트
     } else {
-        // 마커 생성
+        // 동동이 마커 생성
         rvOverlayMarker = new kakao.maps.Marker({
             position: center,
             image: markerImage,
@@ -114,15 +117,42 @@ function updateMarkerPosition(position) {
     }
 }
 
-export function updateInfoRoadviewPosition(position) {
+// 커스텀 오버레이에서 로드뷰 버튼 클릭 시 위치 설정
+export function updateInfoRoadviewPosition(position, placeName) {
     rvClient.getNearestPanoId(position, 50, function (panoId) {
         if (panoId) {
-            rv.setPanoId(panoId, position); // 로드뷰 설정
             $('#map').hide();
             $('#roadview-container').show();
             $("#close-roadview").show();
 
-            console.log('로드뷰 위치가 업데이트되었습니다:', position);
+            rv.setPanoId(panoId, position); // 로드뷰 설정
+
+            if (rvCustomMarker) {
+                rvCustomMarker.setMap(null); // 기존 마커 삭제
+            }
+
+            // 기존 인포윈도우 제거
+            if (rvInfoWindow) {
+                rvInfoWindow.close(); // 기존 인포윈도우 닫기
+            }
+
+            // 로드뷰에 마커 생성
+            rvCustomMarker = new kakao.maps.Marker({
+                position: position,
+                map: rv,
+            });
+
+            rvInfoWindow = new kakao.maps.CustomOverlay({
+                position: position,
+                map: rv,
+                content: `
+                    <div class="rv-info-window" tabindex="-1">
+                        <span class="rv-info-window-title">${placeName}</span>
+                    </div>
+                `,
+                yAnchor: 2.4,
+                zIndex: 5
+            });
         } else {
             alert('해당 위치에서는 로드뷰를 지원하지 않습니다.');
         }

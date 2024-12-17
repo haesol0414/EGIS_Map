@@ -248,44 +248,36 @@
 /* 카테고리 */
 .category-group {
     display: flex;
-    gap: 5px;
-    margin: 12px 0 15px 0;
+    justify-content: space-evenly;
+    margin: 13px 0 10px 0;
     user-select: none;
     caret-color: transparent;
 }
 
 .category {
-    display: inline-block;
-    border-radius: 12px;
-    border: 1px solid #e5e5e5;
-    padding: 2px 6px;
-    box-shadow: rgba(0, 0, 0, 0.15) 1px 1px 2px;
-
-
-}
-
-.category:hover {
-    transform: scale(1.1); /* 스케일을 1.2배로 확대 */
+    width: 30px;
+    height: 30px;
+    background-image: url("https://t1.daumcdn.net/localimg/localimages/07/2018/pc/info/ico_around.png");
 }
 
 .category.food {
-    color: #d1ac3f;
+    background-position: 0 0;
 }
 
 .category.cafe {
-    color: #91705d;
+    background-position: 0 -30px;
 }
 
 .category.conv {
-    color: #3fa5e7;
+    background-position: 0 -180px;
 }
 
 .category.bank {
-    color: #ff8b9c;
+    background-position: 0 -150px;
 }
 
-.category.public {
-    color: #76b377;
+.category.subway {
+    background-position: 0 -90px;
 }
 
 #close-roadview {
@@ -296,26 +288,13 @@
     z-index: 1000;
     background: #fff;
     border: 1px solid #ccc;
-    padding: 5px 10px;
+    padding: 5px 11px;
     cursor: pointer;
     font-size: 14px;
     color: #333;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-
-/*.mini-map {*/
-/*    display: none;*/
-/*    position: absolute;*/
-/*    top: 61px;*/
-/*    right: 10px;*/
-/*    width: 200px;*/
-/*    height: 200px;*/
-/*    border: 1px solid #ccc;*/
-/*    background-color: #76b377;*/
-/*    border-radius: 5px;*/
-/*    z-index: 999;*/
-/*}*/
 
 .view_roadview {
     width: 50%;
@@ -369,4 +348,15 @@
     background-image: url("https://t1.daumcdn.net/localimg/localimages/07/2018/pc/common/img_search.png");
     background-repeat: no-repeat;
     background-position: 0 -400px;
+}
+
+.rv-info-window {
+    font-size: 15px;
+    font-weight: 600;
+    display: inline-block;
+    padding: 4px 12px;
+    border: 2px solid #D95050;
+    border-radius: 12px;
+    color: #3c3c3c;
+    background-color:#e5e5e5;
 }

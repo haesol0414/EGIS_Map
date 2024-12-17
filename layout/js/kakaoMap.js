@@ -40,11 +40,8 @@ $(document).ready(function () {
                     const zoomControl = new kakao.maps.ZoomControl();
                     map.addControl(zoomControl, kakao.maps.ControlPosition.BOTTOMRIGHT);
 
-                    // 로드뷰 초기화 및 이벤트 바인딩
+                    // 로드뷰 초기화
                     initializeRoadview(rvContainer);
-
-                    // 지도와 로드뷰 동기화
-                    // syncMapAndRoadview(map);
                 } else {
                     map.setCenter(userPosition);
                 }
@@ -53,7 +50,6 @@ $(document).ready(function () {
             alert("Geolocation을 지원하지 않는 브라우저입니다.");
         }
     }
-
 
     // 카테고리별 검색
     function searchPlacesByCategory(categoryCode) {
@@ -88,9 +84,9 @@ $(document).ready(function () {
 
     // 마커 및 오버레이 생성
     function createMarker(position, index, place, rating) {
+        const badgeContent = createBadgeHTML(index, place);
         const markerContent = createMarkerHTML(index);
         const overlayContent = createOverlayHTML(place, rating);
-        const badgeContent = createBadgeHTML(index, place);
 
         const marker = new kakao.maps.CustomOverlay({
             map: map,
@@ -119,7 +115,6 @@ $(document).ready(function () {
         marker.overlay = overlay;
         marker.badge = badge;
     }
-
 
     // 마커 및 오버레이 이벤트
     function bindMarkerEvents() {
@@ -203,27 +198,10 @@ $(document).ready(function () {
         alert('장소 검색에 실패했습니다.');
     }
 
-    // 초기화
+    // 맵 초기화
     initializeMap();
 
-    /* 이벤트 바인딩 */
-    // 지도 확대 축소
-    $('.range-btn.zoomin').on('click', function () {
-        let currentLevel = map.getLevel();
-        if (currentLevel > 1) {
-            map.setLevel(currentLevel - 1);
-            zoomSlider.val(map.getLevel());
-        }
-    });
-
-    $('.range-btn.zoomout').on('click', function () {
-        let currentLevel = map.getLevel();
-        if (currentLevel < 10) {
-            map.setLevel(currentLevel + 1);
-            zoomSlider.val(map.getLevel());
-        }
-    });
-
+    /* ======== 이벤트 바인딩 ======== */
     // 검색
     $('#search-place').on('keypress', function (e) {
         if (e.key === 'Enter') {
@@ -311,10 +289,11 @@ $(document).ready(function () {
     $(document).on('click', '#info-roadview', function () {
         const lat = $(this).data('lat');
         const lng = $(this).data('lng');
+        const title = $(this).data('title');
         const position = new kakao.maps.LatLng(lat, lng);
 
         updateUIForRoadview(true);
 
-        updateInfoRoadviewPosition(position);
+        updateInfoRoadviewPosition(position, title);
     });
 });
