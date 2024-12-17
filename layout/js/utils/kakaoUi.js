@@ -28,9 +28,13 @@ export function createOverlayHTML(place, rating) {
                 <span class="sticker">지번</span>
                 <span>${place.address_name || '지번 주소 없음'}</span>
             </div>
-            <span class="info-tel">${place.phone || '전화번호 없음'}</span>
-            <div class="service">
-                <a href="${place.place_url}" target="_blank" class="info-detail" tabindex="-1">상세보기</a>
+            <div class="info-bottom">
+                <div class="service">
+                    <span class="info-tel">${place.phone || '전화번호 없음'}</span>
+                    <a href="${place.place_url}" target="_blank" class="info-detail" tabindex="-1">상세보기</a>
+                </div>
+                <button id="info-roadview" class="info-roadview-toggle" data-lat="${place.y}" data-lng="${place.x}">
+                </button> 
             </div>
         </div>
     `;

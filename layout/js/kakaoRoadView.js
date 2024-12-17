@@ -41,7 +41,7 @@ export function toggleOverlay(map) {
 }
 
 // UI 상태 업데이트
-function updateUIForRoadview(isActive) {
+export function updateUIForRoadview(isActive) {
     if (isActive) {
         $(".map-menu .menu-cont").addClass("closed").removeClass("opened");
         $(".map-menu .menu-cont-btn").removeClass("on");
@@ -112,4 +112,19 @@ function updateMarkerPosition(position) {
     if (rvOverlayMarker) {
         rvOverlayMarker.setPosition(position); // 로드뷰 위치에 따라 마커 위치 업데이트
     }
+}
+
+export function updateInfoRoadviewPosition(position) {
+    rvClient.getNearestPanoId(position, 50, function (panoId) {
+        if (panoId) {
+            rv.setPanoId(panoId, position); // 로드뷰 설정
+            $('#map').hide();
+            $('#roadview-container').show();
+            $("#close-roadview").show();
+
+            console.log('로드뷰 위치가 업데이트되었습니다:', position);
+        } else {
+            alert('해당 위치에서는 로드뷰를 지원하지 않습니다.');
+        }
+    });
 }

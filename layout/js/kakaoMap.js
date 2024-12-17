@@ -1,7 +1,7 @@
 import KakaoAPI from './api/kakaoApi.js'
 import {createMarkerHTML, createOverlayHTML, createBadgeHTML, createListItemHTML} from './utils/kakaoUi.js'
 import {isAddress} from './utils/kakaoUtils.js';
-import {initializeRoadview, toggleOverlay, closeRoadview} from './kakaoRoadView.js';
+import {initializeRoadview, toggleOverlay, closeRoadview, updateInfoRoadviewPosition, updateUIForRoadview} from './kakaoRoadView.js';
 
 $(document).ready(function () {
     let map, markers = [];
@@ -305,5 +305,16 @@ $(document).ready(function () {
                 activeOverlay = null;
             }
         }
+    });
+
+    // 오버레이 로드뷰 버튼 클릭 이벤트 등록
+    $(document).on('click', '#info-roadview', function () {
+        const lat = $(this).data('lat');
+        const lng = $(this).data('lng');
+        const position = new kakao.maps.LatLng(lat, lng);
+
+        updateUIForRoadview(true);
+
+        updateInfoRoadviewPosition(position);
     });
 });
