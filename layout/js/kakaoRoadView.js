@@ -5,6 +5,12 @@ let overlayOn = false;
 export function initializeRoadview(rvContainer) {
     rv = new kakao.maps.Roadview(rvContainer); // 로드뷰 객체
     rvClient = new kakao.maps.RoadviewClient(); // 로드뷰 클라이언트 객체
+
+    // 로드뷰 위치 변경 이벤트
+    kakao.maps.event.addListener(rv, 'position_changed', function () {
+        const newPosition = rv.getPosition();
+        updateMarkerPosition(newPosition);
+    });
 }
 
 // 로드뷰 오버레이 활성화/비활성화
@@ -20,16 +26,16 @@ export function toggleOverlay(map) {
 
         overlayOn = false;
 
-        updateUIForRoadview(false); // UI 업데이트
+        updateUIForRoadview(false);
         console.log('로드뷰 오버레이 비활성화');
     } else {
         // 로드뷰 오버레이 활성화
         map.addOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW);
 
-        addRoadviewOverlayMarker(map); // 마커 추가
+        addRoadviewOverlayMarker(map);
         overlayOn = true;
 
-        updateUIForRoadview(true); // UI 업데이트
+        updateUIForRoadview(true);
         console.log('로드뷰 오버레이 활성화');
     }
 }
@@ -101,21 +107,9 @@ export function addRoadviewOverlayMarker(map) {
     }
 }
 
-// 지도와 로드뷰 동기화 함수
-export function syncMapAndRoadview(map) {
-    // 지도 중심 변경 시 로드뷰 위치 업데이트
-    // kakao.maps.event.addListener(map, 'center_changed', function () {
-    //     const mapCenter = map.getCenter();
-    //     rvClient.getNearestPanoId(mapCenter, 50, function (panoId) {
-    //         if (panoId) {
-    //             rv.setPanoId(panoId, mapCenter); // 로드뷰 위치 업데이트
-    //         }
-    //     });
-    // });
-
-    // 로드뷰 위치 변경 시 지도 중심 업데이트
-    // kakao.maps.event.addListener(rv, 'position_changed', function () {
-    //     const rvPosition = rv.getPosition();
-    //     map.setCenter(rvPosition); // 지도 중심 업데이트
-    // });
+// 동동이 마커 위치 업데이트
+function updateMarkerPosition(position) {
+    if (rvOverlayMarker) {
+        rvOverlayMarker.setPosition(position); // 로드뷰 위치에 따라 마커 위치 업데이트
+    }
 }

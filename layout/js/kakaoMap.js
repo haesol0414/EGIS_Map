@@ -1,7 +1,7 @@
 import KakaoAPI from './api/kakaoApi.js'
 import {createMarkerHTML, createOverlayHTML, createBadgeHTML, createListItemHTML} from './utils/kakaoUi.js'
 import {isAddress} from './utils/kakaoUtils.js';
-import {initializeRoadview, toggleOverlay, closeRoadview, syncMapAndRoadview} from './kakaoRoadView.js';
+import {initializeRoadview, toggleOverlay, closeRoadview} from './kakaoRoadView.js';
 
 $(document).ready(function () {
     let map, markers = [];
@@ -44,7 +44,7 @@ $(document).ready(function () {
                     initializeRoadview(rvContainer);
 
                     // 지도와 로드뷰 동기화
-                    syncMapAndRoadview(map);
+                    // syncMapAndRoadview(map);
                 } else {
                     map.setCenter(userPosition);
                 }
@@ -104,7 +104,7 @@ $(document).ready(function () {
             position: position,
             content: overlayContent,
             yAnchor: 1.4,
-            zIndex: 2
+            zIndex: 1000
         });
 
         const badge = new kakao.maps.CustomOverlay({
@@ -112,7 +112,7 @@ $(document).ready(function () {
             content: badgeContent,
             xAnchor: -0.2,
             yAnchor: 1.2,
-            zIndex: 4
+            zIndex: 1000
         });
 
         markers.push(marker);
