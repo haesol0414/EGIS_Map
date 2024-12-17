@@ -9,8 +9,11 @@ export function initializeRoadview(rvContainer) {
 
     // 로드뷰 위치 변경 이벤트
     kakao.maps.event.addListener(rv, 'position_changed', function () {
-        const newPosition = rv.getPosition();
-        updateMarkerPosition(newPosition);
+        const position = rv.getPosition();
+
+        if (rvOverlayMarker) {
+            rvOverlayMarker.setPosition(position); // 로드뷰 위치에 따라 마커 위치 업데이트
+        }
     });
 }
 
@@ -39,7 +42,7 @@ export function toggleOverlay(map) {
 }
 
 
-// 로드뷰 마커 추가
+// 로드뷰 오버레이 마커
 export function addRoadviewOverlayMarker(map) {
     const center = map.getCenter(); // 현재 지도의 중심 좌표 (로드뷰 오버레이 중심 좌표와 동일)
 
@@ -86,15 +89,8 @@ export function addRoadviewOverlayMarker(map) {
     }
 }
 
-// 동동이 마커 위치 업데이트
-function updateMarkerPosition(position) {
-    if (rvOverlayMarker) {
-        rvOverlayMarker.setPosition(position); // 로드뷰 위치에 따라 마커 위치 업데이트
-    }
-}
-
-// 커스텀 오버레이에서 로드뷰 버튼 클릭 시 위치 설정
-export function updateInfoRoadviewPosition(position, placeName) {
+// 커스텀 오버레이에서 로드뷰 버튼 클릭 시 마커 설정
+export function updateInfoWindowPosition(position, placeName) {
     if (rvCustomMarker) {
         rvCustomMarker.setMap(null); // 기존 마커 제거
         rvCustomMarker = null;

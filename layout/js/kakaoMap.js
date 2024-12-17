@@ -6,7 +6,7 @@ import {
     initializeRoadview,
     showRoadView,
     toggleOverlay,
-    updateInfoRoadviewPosition,
+    updateInfoWindowPosition,
 } from './kakaoRoadView.js';
 
 $(document).ready(function () {
@@ -23,6 +23,9 @@ $(document).ready(function () {
     // 맵 초기화
     function initializeMap() {
         if (navigator.geolocation) {
+            // 로드뷰 초기화
+            initializeRoadview(rvContainer);
+
             navigator.geolocation.getCurrentPosition(position => {
                 const lat = position.coords.latitude;
                 const lng = position.coords.longitude;
@@ -45,9 +48,6 @@ $(document).ready(function () {
 
                     const zoomControl = new kakao.maps.ZoomControl();
                     map.addControl(zoomControl, kakao.maps.ControlPosition.BOTTOMRIGHT);
-
-                    // 로드뷰 초기화
-                    initializeRoadview(rvContainer);
                 } else {
                     map.setCenter(userPosition);
                 }
@@ -208,7 +208,7 @@ $(document).ready(function () {
     initializeMap();
 
     /* ======== 이벤트 바인딩 ======== */
-    // 검색
+    // 검색 이벤트 바인딩
     $('#search-place').on('keypress', function (e) {
         if (e.key === 'Enter') {
             searchPlaces();
@@ -298,6 +298,6 @@ $(document).ready(function () {
         const position = new kakao.maps.LatLng(lat, lng);
 
         showRoadView();
-        updateInfoRoadviewPosition(position, title);
+        updateInfoWindowPosition(position, title);
     });
 });

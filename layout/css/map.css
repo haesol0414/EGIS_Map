@@ -84,6 +84,7 @@
     padding: 0 2px;
     border-radius: 3px;
     vertical-align: middle;
+    text-align: center;
 }
 
 .no-result {
@@ -350,6 +351,7 @@
     background-image: url("https://t1.daumcdn.net/localimg/localimages/07/2018/pc/common/img_search.png");
     background-repeat: no-repeat;
     background-position: 0 -400px;
+    z-index: 5;
 }
 
 .rv-info-window {
@@ -360,5 +362,5 @@
     border: 2px solid #D95050;
     border-radius: 12px;
     color: #3c3c3c;
-    background-color:#e5e5e5;
+    background-color:#ffffff;
 }
