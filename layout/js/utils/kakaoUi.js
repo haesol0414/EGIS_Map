@@ -93,3 +93,22 @@ export function createListItemHTML(place, index, rating) {
         </li>
     `;
 }
+
+export function createOlInfoHTML(place) {
+    return `
+        <div id="ol-info" className="ol-info">
+            <div className="place-name">
+                <h5 className="ol-place-name">장소명</h5>
+                <span className="place-category">카페</span>
+            </div>
+            <p className="road-address-name">도로명 주소</p>
+            <p className="address-name">
+                <span className="sticker">지번</span>
+                지번 주소</p>
+            <div className="service">
+                <span className="info-tel">전화번호 없음</span>
+                <a href="#" target="_blank" className="info-detail" tabIndex="-1">상세보기</a>
+            </div>
+        </div>
+    `;
+}

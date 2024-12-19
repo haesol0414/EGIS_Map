@@ -97,23 +97,30 @@ $(document).ready(function () {
         if ($(this).is("#div2Btn")) {
             $("#container").attr("class", "mapdiv2");
             $(".map-wrap.div2").show();
-            $(".map-wrap.div4, .map-wrap.two").hide();
+            $(".map-wrap.div4, .map-wrap.two, .map-wrap.ol").hide();
         } else if ($(this).is("#div4Btn")) {
             $("#container").attr("class", "mapdiv4");
             $(".map-wrap.div2, .map-wrap.div4").show();
-            $(".map-wrap.two").hide();
+            $(".map-wrap.two, .map-wrap.ol").hide();
         } else if ($(this).is("#divResetBtn")) {
             $("#container").removeAttr("class");
-            $(".map-wrap.two, .map-wrap.div2, .map-wrap.div4").hide();
+            $(".map-wrap.two, .map-wrap.div2, .map-wrap.div4, .map-wrap.ol").hide();
             $(".map-wrap.reset").show();
             $(".map-menu .menu-cont").addClass("opened").removeClass("closed");
             $(".map-menu .menu-cont-btn").addClass("on");
         } else if ($(this).is("#div2DBtn")) {
             $("#container").removeAttr("class");
-            $(".map-wrap.two").show(); // 2D 지도만 표시
-            $(".map-wrap.div2, .map-wrap.div4, .map-wrap.reset").hide();
+            $(".map-wrap.two").show(); // 카카오 지도만 표시
+            $(".map-wrap.div2, .map-wrap.div4, .map-wrap.reset, .map-wrap.ol").hide();
             $(".map-menu .menu-cont").addClass("opened").removeClass("closed");
             $(".map-menu .menu-cont-btn").addClass("on");
+        } else if ($(this).is("#divOlBtn")) {
+            $("#container").removeAttr("class");
+            $(".map-wrap.ol").show();
+            $(".map-wrap.div2, .map-wrap.div4, .map-wrap.reset, .map-wrap.two").hide();
+            $(".map-menu .menu-cont").addClass("opened").removeClass("closed");
+            $(".map-menu .menu-cont-btn").addClass("on");
+            $('.kakao-map .category').removeClass('active');
         }
 
         if ($(this).is("#div2Btn") || $(this).is("#div4Btn")) {
@@ -142,7 +149,6 @@ $(document).ready(function () {
         }
 
         $(this).on("click", function () {
-
             var barData = $(this).attr("data-tab");
             var barCont = $(this).closest(".map-menu").find("." + barData);
 

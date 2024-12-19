@@ -217,8 +217,12 @@ $(document).ready(function () {
 
     $('.search-group .btn').on('click', searchPlaces);
 
-    $('.category-group .category').on('click', function () {
+    $('.kakao-map .category').on('click', function () {
         const categoryCode = $(this).data('category');
+
+        $('.kakao-map .category').removeClass('active');
+        $(this).addClass('active');
+
         searchPlacesByCategory(categoryCode);
     });
 

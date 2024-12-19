@@ -284,6 +284,13 @@
     background-position: 0 -90px;
 }
 
+
+.category.active.food { background-position: -60px 0; }
+.category.active.cafe { background-position: -60px -30px; }
+.category.active.conv { background-position: -60px -180px; }
+.category.active.bank { background-position: -60px -150px; }
+.category.active.subway { background-position: -60px -90px; }
+
 #close-roadview {
     display: none;
     position: absolute;

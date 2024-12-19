@@ -3,7 +3,7 @@
 @import "./common/common.css";
 @import "form.css";
 @import "content.css";
-@import "map.css";
+@import "kakaoMap.css";
 
 #clearMap {
     background-color: #bbb;
@@ -239,6 +239,8 @@ html, body {
     color: #ccc;
     border-right: 1px solid #777;
     cursor: pointer;
+    user-select: none;
+    caret-color: transparent;
 }
 
 .tool-box .tool-btn:last-child {
@@ -508,3 +510,23 @@ html, body {
     border: 1px solid #000;
 }
 
+.ol-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 2px solid #003472;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+.ol-place-name {
+    font-size: 22px;
+    margin-bottom: 8px;
+    margin-right: 4px;
+    color: #003472;
+}
+
+.map-wrap.ol {
+    display: none;
+}
