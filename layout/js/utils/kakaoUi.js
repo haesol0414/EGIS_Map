@@ -94,20 +94,22 @@ export function createListItemHTML(place, index, rating) {
     `;
 }
 
+
 export function createOlInfoHTML(place) {
     return `
-        <div id="ol-info" className="ol-info">
-            <div className="place-name">
-                <h5 className="ol-place-name">장소명</h5>
-                <span className="place-category">카페</span>
+        <div id="ol-info" class="ol-info">
+            <div class="place-name">
+                <h5 class="ol-place-name">${place.name}</h5>
+                <span class="place-category" style="margin-bottom: 5px !important;">${place.category}</span>
             </div>
-            <p className="road-address-name">도로명 주소</p>
-            <p className="address-name">
-                <span className="sticker">지번</span>
-                지번 주소</p>
-            <div className="service">
-                <span className="info-tel">전화번호 없음</span>
-                <a href="#" target="_blank" className="info-detail" tabIndex="-1">상세보기</a>
+            <p class="road-address-name">${place.roadAddress}</p>
+            <p class="address-name">
+                <span class="sticker">지번</span>
+                ${place.address}
+            </p>
+            <div class="service">
+                <span class="info-tel">${place.phone}</span>
+                <a href="${place.placeUrl}" target="_blank" class="info-detail" tabIndex="-1">상세보기</a>
             </div>
         </div>
     `;
