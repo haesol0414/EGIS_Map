@@ -25,3 +25,18 @@ export function generateStars(rating) {
 export function isAddress(keyword) {
     return /\d/.test(keyword) && /\s/.test(keyword);
 }
+
+// 현재 위치를 가져오는 함수
+export function getUserPosition(successCallback, errorCallback) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            ({ coords }) => {
+                const userPosition = { lng: coords.longitude, lat: coords.latitude };
+                successCallback(userPosition);
+            },
+            errorCallback || (() => alert('현재 위치를 가져올 수 없습니다.'))
+        );
+    } else {
+        alert('Geolocation을 지원하지 않습니다.');
+    }
+}

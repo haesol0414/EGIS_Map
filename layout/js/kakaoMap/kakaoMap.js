@@ -1,6 +1,6 @@
-import KakaoAPI from './api/kakaoApi.js'
-import {createMarkerHTML, createOverlayHTML, createBadgeHTML, createListItemHTML} from './utils/kakaoUi.js'
-import {isAddress} from './utils/kakaoUtils.js';
+import KakaoAPI from '../api/kakaoApi.js'
+import {createMarkerHTML, createOverlayHTML, createBadgeHTML, createListItemHTML} from '../utils/htmlTemplates.js'
+import {isAddress, getUserPosition} from '../utils/utils.js';
 import {
     closeRoadView,
     initializeRoadview,
@@ -20,41 +20,41 @@ $(document).ready(function () {
     const rvToggle = $('#roadview');
     const closeRv = $('#close-roadview');
 
-    // 맵 초기화
+    // 현재 위치로 맵 초기화
     function initializeMap() {
-        if (navigator.geolocation) {
-            // 로드뷰 초기화
-            initializeRoadview(rvContainer);
+        // 로드뷰 초기화
+        initializeRoadview(rvContainer);
 
-            navigator.geolocation.getCurrentPosition(position => {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-
-                const userPosition = new kakao.maps.LatLng(lat, lng);
+        getUserPosition(
+            (userPosition) => {
+                const userLatLng = new kakao.maps.LatLng(userPosition.lat, userPosition.lng);
 
                 if (!map) {
                     map = new kakao.maps.Map(mapContainer, {
-                        center: userPosition,
+                        center: userLatLng,
                         level: 3
                     });
 
+                    // 지도 이벤트 등록
                     kakao.maps.event.addListener(map, 'idle', bindMarkerEvents);
                     kakao.maps.event.addListener(map, 'zoom_changed', () => {
                         zoomSlider.val(map.getLevel());
                     });
 
+                    // 지도 컨트롤 추가
                     const mapTypeControl = new kakao.maps.MapTypeControl();
                     map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
 
                     const zoomControl = new kakao.maps.ZoomControl();
                     map.addControl(zoomControl, kakao.maps.ControlPosition.BOTTOMRIGHT);
                 } else {
-                    map.setCenter(userPosition);
+                    map.setCenter(userLatLng);
                 }
-            });
-        } else {
-            alert("Geolocation을 지원하지 않는 브라우저입니다.");
-        }
+            },
+            () => {
+                alert('현재 위치를 가져올 수 없습니다.');
+            }
+        );
     }
 
     // 카테고리별 검색
@@ -298,7 +298,7 @@ $(document).ready(function () {
         const lat = $(this).data('lat');
         const lng = $(this).data('lng');
         const title = $(this).data('title');
-        
+
         const position = new kakao.maps.LatLng(lat, lng);
 
         showRoadView();
