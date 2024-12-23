@@ -1,7 +1,6 @@
-import { createCategoryLayer, updateCategoryLayers } from './layers.js';
+import { addCategoryLayer, updateCategoryLayers, addSubwayLinesLayers } from './layers.js';
 import { getUserPosition } from '../utils/utils.js';
 import { createOlInfoHTML } from '../utils/htmlTemplates.js'
-
 
 // 지도 초기화
 function initializeMap() {
@@ -10,7 +9,14 @@ function initializeMap() {
             // 지도 초기화
             const map = new ol.Map({
                 target: 'ol-map',
-                layers: [new ol.layer.Tile({ source: new ol.source.OSM() })],
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.XYZ({
+                            url: `https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={z}`,
+                            attributions: 'Map data © Google'
+                        })
+                    })
+                ],
                 view: new ol.View({
                     center: ol.proj.fromLonLat([userPosition.lng, userPosition.lat]),
                     zoom: 17
@@ -19,8 +25,12 @@ function initializeMap() {
 
             // 현재 위치 버튼 설정
             setupCurrentLocationButton(map);
-            // 카테고리 토글 설정
+            
+            // 카테고리 토글 처리
             handleCategoryToggle(map, userPosition);
+
+            // 지하철 라인 추가
+            addSubwayLinesLayers(map);
 
             // 클릭된 feature의 속성 얻기
             map.on('singleclick', (e) => {
@@ -40,56 +50,58 @@ function initializeMap() {
 }
 
 // 카테고리 토글 처리
-function handleCategoryToggle(map, userPosition) {
+async function handleCategoryToggle(map, userPosition) {
     const categoryButtons = document.querySelectorAll('.ol-map .category');
     const layers = {};
 
-    categoryButtons.forEach(categoryButton => {
+    for (const categoryButton of categoryButtons) {
         const categoryCode = categoryButton.getAttribute('data-category');
 
-        createCategoryLayer(userPosition, categoryCode, (layer) => {
-            layers[categoryCode] = layer;
-            map.addLayer(layer);
-        });
+        // 초기 마커 레이어 생성
+        const layer = await addCategoryLayer(userPosition, categoryCode);
+        layers[categoryCode] = layer;
+        map.addLayer(layer);
 
-        categoryButton.addEventListener('click', () => {
+        // 버튼 클릭 이벤트 처리
+        categoryButton.addEventListener('click', async () => {
             const isActive = categoryButton.classList.contains('active');
 
             if (isActive) {
                 categoryButton.classList.remove('active');
                 layers[categoryCode].setVisible(false);
             } else {
+                // 다른 버튼 비활성화 및 숨김 처리
                 categoryButtons.forEach(btn => btn.classList.remove('active'));
                 Object.values(layers).forEach(layer => layer.setVisible(false));
 
                 categoryButton.classList.add('active');
-                layers[categoryCode].setVisible(true);
 
+                // 지도 중심 위치 업데이트
                 const center = ol.proj.toLonLat(map.getView().getCenter());
                 const updatedPosition = { lng: center[0], lat: center[1] };
 
-                createCategoryLayer(updatedPosition, categoryCode, (updatedLayer) => {
-                    map.removeLayer(layers[categoryCode]);
-
-                    layers[categoryCode] = updatedLayer;
-                    map.addLayer(updatedLayer);
-                    updatedLayer.setVisible(true);
-
-                    map.render();
-                });
+                // 새로운 레이어 생성 및 업데이트
+                const updatedLayer = await addCategoryLayer(updatedPosition, categoryCode);
+                map.removeLayer(layers[categoryCode]);
+                layers[categoryCode] = updatedLayer;
+                map.addLayer(updatedLayer);
+                updatedLayer.setVisible(true);
+                map.render();
             }
             map.render();
         });
-    });
+    }
 
-    map.on('moveend', () => {
+    // 지도 이동 종료 후 레이어 갱신
+    map.on('moveend', async () => {
         const activeButton = document.querySelector('.category.active');
         if (activeButton) {
             const activeCategoryCode = activeButton.getAttribute('data-category');
-            updateCategoryLayers(map, layers, activeCategoryCode);
+            await updateCategoryLayers(map, layers, activeCategoryCode);
         }
     });
 }
+
 
 // 현재 위치로 이동 버튼 이벤트 설정
 function setupCurrentLocationButton(map) {

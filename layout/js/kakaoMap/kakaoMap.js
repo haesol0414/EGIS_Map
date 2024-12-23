@@ -58,17 +58,22 @@ $(document).ready(function () {
     }
 
     // 카테고리별 검색
-    function searchPlacesByCategory(categoryCode) {
-        const position = {
-            lat: map.getCenter().getLat(),
-            lng: map.getCenter().getLng()
-        };
+    async function searchPlacesByCategory(categoryCode) {
+        try {
+            const position = {
+                lat: map.getCenter().getLat(),
+                lng: map.getCenter().getLng()
+            };
 
-        KakaoAPI.searchCategory(categoryCode, position, handleSearchSuccess, handleSearchError);
+            const response = await KakaoAPI.searchCategory(categoryCode, position);
+            handleSearchSuccess(response); // 검색 성공 시 처리
+        } catch (error) {
+            handleSearchError(error); // 검색 실패 시 처리
+        }
     }
 
     // 주소 또는 키워드로 검색
-    function searchPlaces() {
+    async function searchPlaces() {
         const keyword = $('#search-place').val().trim();
 
         if (!keyword) {
@@ -76,17 +81,23 @@ $(document).ready(function () {
             return;
         }
 
-        const position = {
-            lat: map.getCenter().getLat(),
-            lng: map.getCenter().getLng()
-        };
-
-        if (isAddress(keyword)) {
-            KakaoAPI.searchAddress(keyword, handleSearchSuccess, handleSearchError);
-        } else {
-            KakaoAPI.searchKeyword(keyword, position, handleSearchSuccess, handleSearchError);
+        try {
+            if (isAddress(keyword)) {
+                const response = await KakaoAPI.searchAddress(keyword);
+                handleSearchSuccess(response); // 검색 성공 시 처리
+            } else {
+                const position = {
+                    lat: map.getCenter().getLat(),
+                    lng: map.getCenter().getLng()
+                };
+                const response = await KakaoAPI.searchKeyword(keyword, position);
+                handleSearchSuccess(response); // 검색 성공 시 처리
+            }
+        } catch (error) {
+            handleSearchError(error); // 검색 실패 시 처리
         }
     }
+
 
     // 마커 및 오버레이 생성
     function createMarker(position, index, place, rating) {
@@ -194,7 +205,7 @@ $(document).ready(function () {
             $('.search-result-info').html('<p class="no-result">검색 결과가 없습니다.</p>');
             $('.search-result').html('');
         } else {
-            displayPlaces(response.documents);
+            displayPlaces(response.documents); // 검색 결과 표시
         }
     }
 
@@ -203,6 +214,7 @@ $(document).ready(function () {
         console.error("Search Error: ", error);
         alert('장소 검색에 실패했습니다.');
     }
+
 
     // 맵 초기화
     initializeMap();
