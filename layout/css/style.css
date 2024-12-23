@@ -4,6 +4,7 @@
 @import "form.css";
 @import "content.css";
 @import "kakaoMap.css";
+@import "openLayersMap.css";
 
 #clearMap {
     background-color: #bbb;
@@ -508,25 +509,4 @@ html, body {
     height: 30px;
     line-height: 28px;
     border: 1px solid #000;
-}
-
-.ol-info {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    border: 2px solid #003472;
-    border-radius: 12px;
-    padding: 20px;
-    margin-top: 30px;
-}
-
-.ol-place-name {
-    font-size: 22px;
-    margin-bottom: 8px;
-    margin-right: 4px;
-    color: #003472;
-}
-
-.map-wrap.ol {
-    display: none;
 }

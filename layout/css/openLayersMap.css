@@ -1,0 +1,94 @@
+@charset "utf-8";
+
+.ol-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 2px solid #003472;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 25px;
+    user-select: none;
+    caret-color: transparent;
+}
+
+.ol-place-name {
+    font-size: 22px;
+    margin-bottom: 8px;
+    margin-right: 4px;
+    color: #003472;
+}
+
+.map-wrap.ol {
+    display: none;
+}
+
+.ol-line-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+    margin-top: 15px;
+}
+
+.ol-line-btn {
+    font-weight: 600;
+    display: flex;
+    padding: 4px;
+    gap: 5px;
+    align-items: center;
+    color: #666666;
+    user-select: none;
+    caret-color: transparent;
+}
+
+
+.ol-line-btn.active {
+    font-weight: 600;
+    display: flex;
+    padding: 4px;
+    gap: 5px;
+    align-items: center;
+    color: #000000;
+}
+
+
+.line {
+    width: 40%;
+    height: 2px;
+    margin-left: 5px;
+}
+
+.red {
+    background-color: red !important;
+}
+
+.green {
+    background-color: green !important;
+}
+
+.ol-feature-title {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.ol-map.category-group {
+    margin-bottom: 20px;
+}
+
+.ol-polygon-wrap {
+    margin: 20px 0;
+}
+
+.ol-polygon-btn {
+    border: 2px solid #003472;
+    color: #003472;
+    padding: 6px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.ol-polygon-btn.active {
+    color: #ffffff;
+    background-color: #003472;
+}

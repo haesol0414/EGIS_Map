@@ -9,7 +9,7 @@ import {
     updateInfoWindowPosition,
 } from './kakaoRoadView.js';
 
-$(document).ready(function () {
+$(document).ready(() => {
     let map, markers = [];
     const mapContainer = $('#map')[0];
     const zoomSlider = $('#zoom-slider');
@@ -21,8 +21,7 @@ $(document).ready(function () {
     const closeRv = $('#close-roadview');
 
     // 현재 위치로 맵 초기화
-    function initializeMap() {
-        // 로드뷰 초기화
+    const initializeMap = () => {
         initializeRoadview(rvContainer);
 
         getUserPosition(
@@ -35,13 +34,11 @@ $(document).ready(function () {
                         level: 3
                     });
 
-                    // 지도 이벤트 등록
                     kakao.maps.event.addListener(map, 'idle', bindMarkerEvents);
                     kakao.maps.event.addListener(map, 'zoom_changed', () => {
                         zoomSlider.val(map.getLevel());
                     });
 
-                    // 지도 컨트롤 추가
                     const mapTypeControl = new kakao.maps.MapTypeControl();
                     map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
 
@@ -51,14 +48,12 @@ $(document).ready(function () {
                     map.setCenter(userLatLng);
                 }
             },
-            () => {
-                alert('현재 위치를 가져올 수 없습니다.');
-            }
+            () => alert('현재 위치를 가져올 수 없습니다.')
         );
-    }
+    };
 
     // 카테고리별 검색
-    async function searchPlacesByCategory(categoryCode) {
+    const searchPlacesByCategory = async (categoryCode) => {
         try {
             const position = {
                 lat: map.getCenter().getLat(),
@@ -66,14 +61,14 @@ $(document).ready(function () {
             };
 
             const response = await KakaoAPI.searchCategory(categoryCode, position);
-            handleSearchSuccess(response); // 검색 성공 시 처리
+            handleSearchSuccess(response);
         } catch (error) {
-            handleSearchError(error); // 검색 실패 시 처리
+            handleSearchError(error);
         }
-    }
+    };
 
     // 주소 또는 키워드로 검색
-    async function searchPlaces() {
+    const searchPlaces = async () => {
         const keyword = $('#search-place').val().trim();
 
         if (!keyword) {
@@ -84,23 +79,22 @@ $(document).ready(function () {
         try {
             if (isAddress(keyword)) {
                 const response = await KakaoAPI.searchAddress(keyword);
-                handleSearchSuccess(response); // 검색 성공 시 처리
+                handleSearchSuccess(response);
             } else {
                 const position = {
                     lat: map.getCenter().getLat(),
                     lng: map.getCenter().getLng()
                 };
                 const response = await KakaoAPI.searchKeyword(keyword, position);
-                handleSearchSuccess(response); // 검색 성공 시 처리
+                handleSearchSuccess(response);
             }
         } catch (error) {
-            handleSearchError(error); // 검색 실패 시 처리
+            handleSearchError(error);
         }
-    }
-
+    };
 
     // 마커 및 오버레이 생성
-    function createMarker(position, index, place, rating) {
+    const createMarker = (position, index, place, rating) => {
         const badgeContent = createBadgeHTML(index, place);
         const markerContent = createMarkerHTML(index);
         const overlayContent = createOverlayHTML(place, rating);
@@ -131,28 +125,26 @@ $(document).ready(function () {
         markers.push(marker);
         marker.overlay = overlay;
         marker.badge = badge;
-    }
+    };
 
     // 마커 및 오버레이 이벤트
-    function bindMarkerEvents() {
+    const bindMarkerEvents = () => {
         markers.forEach((marker, index) => {
             const badge = marker.badge;
             const overlay = marker.overlay;
 
             $(`.marker[data-index="${index}"]`).off('mouseover mouseout click').on({
-                mouseover: function () {
+                mouseover: () => {
                     if (activeBadge) activeBadge.setMap(null);
                     badge.setMap(map);
                     activeBadge = badge;
                 },
-                mouseout: function () {
+                mouseout: () => {
                     badge.setMap(null);
                     activeBadge = null;
                 },
-                mousedown: function (e) {
-                    e.preventDefault();
-                },
-                click: function () {
+                mousedown: (e) => e.preventDefault(),
+                click: () => {
                     map.setCenter(marker.getPosition());
                     if (activeOverlay) activeOverlay.setMap(null);
 
@@ -165,19 +157,19 @@ $(document).ready(function () {
                 }
             });
         });
-    }
+    };
 
     // 마커 초기화
-    function clearMarkers() {
+    const clearMarkers = () => {
         if (activeOverlay) activeOverlay.setMap(null);
         if (activeBadge) activeBadge.setMap(null);
 
         markers.forEach(marker => marker.setMap(null));
         markers = [];
-    }
+    };
 
     // 검색 리스트 표시
-    function displayPlaces(places) {
+    const displayPlaces = (places) => {
         clearMarkers();
 
         let listHtml = '';
@@ -197,34 +189,30 @@ $(document).ready(function () {
         $('.search-result').html(listHtml);
 
         map.setBounds(bounds);
-    }
+    };
 
     // 검색 성공 핸들링
-    function handleSearchSuccess(response) {
+    const handleSearchSuccess = (response) => {
         if (response.documents.length === 0) {
             $('.search-result-info').html('<p class="no-result">검색 결과가 없습니다.</p>');
             $('.search-result').html('');
         } else {
-            displayPlaces(response.documents); // 검색 결과 표시
+            displayPlaces(response.documents);
         }
-    }
+    };
 
     // 에러 핸들링
-    function handleSearchError(error) {
+    const handleSearchError = (error) => {
         console.error("Search Error: ", error);
         alert('장소 검색에 실패했습니다.');
-    }
-
+    };
 
     // 맵 초기화
     initializeMap();
 
     /* ======== 이벤트 바인딩 ======== */
-    // 검색 이벤트 바인딩
-    $('#search-place').on('keypress', function (e) {
-        if (e.key === 'Enter') {
-            searchPlaces();
-        }
+    $('#search-place').on('keypress', (e) => {
+        if (e.key === 'Enter') searchPlaces();
     });
 
     $('.search-group .btn').on('click', searchPlaces);
@@ -238,14 +226,11 @@ $(document).ready(function () {
         searchPlacesByCategory(categoryCode);
     });
 
-    // 로드뷰 오버레이 토글 버튼 이벤트
     $(rvToggle).on('click', () => toggleOverlay(map));
 
-    // 로드뷰 닫기 버튼 이벤트
-    $(closeRv).on('click', () => closeRoadView());
+    $(closeRv).on('click', closeRoadView);
 
-    // 현재 위치 이동 버튼
-    $('#user-location').on('click', function () {
+    $('#user-location').on('click', () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
                 const lat = position.coords.latitude;
@@ -253,8 +238,8 @@ $(document).ready(function () {
                 const userPosition = new kakao.maps.LatLng(lat, lng);
 
                 if (map) {
-                    map.setCenter(userPosition); // 현재 위치로 지도 중심 이동
-                    map.setLevel(3); // 줌 레벨 조정
+                    map.setCenter(userPosition);
+                    map.setLevel(3);
                 } else {
                     alert("지도가 초기화되지 않았습니다.");
                 }
@@ -267,32 +252,29 @@ $(document).ready(function () {
         }
     });
 
-    // 장소명 클릭 시 해당 위치로 이동
-    $('.search-result').on('click', '.place-name', function (e) {
+    $('.search-result').on('click', '.place-name', (e) => {
         e.preventDefault();
 
-        const listItem = $(this).closest('.search-result-item');
+        const listItem = $(e.currentTarget).closest('.search-result-item');
         const markerIndex = listItem.data('marker-index');
         const marker = markers[markerIndex];
         const overlay = marker.overlay;
 
         if (marker) {
-            const position = marker.getPosition(); // 마커 위치 가져오기
-            map.setCenter(position); // 지도 중심 이동
+            const position = marker.getPosition();
+            map.setCenter(position);
 
             if (activeOverlay) {
-                activeOverlay.setMap(null); // 기존 오버레이 닫기
+                activeOverlay.setMap(null);
                 activeOverlay = null;
             }
 
-            // 새 오버레이 활성화
             overlay.setMap(map);
             activeOverlay = overlay;
         }
     });
 
-    // 커스텀 오버레이 닫기
-    $(document).on('click', function (e) {
+    $(document).on('click', (e) => {
         if (
             !$(e.target).closest('.info-window').length &&
             !$(e.target).closest('.marker').length &&
@@ -305,7 +287,6 @@ $(document).ready(function () {
         }
     });
 
-    // 커스텀 오버레이 로드뷰 버튼 클릭 이벤트
     $(document).on('click', '#info-roadview', function () {
         const lat = $(this).data('lat');
         const lng = $(this).data('lng');

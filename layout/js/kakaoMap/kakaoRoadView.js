@@ -1,24 +1,23 @@
 let rv, rvClient, rvOverlayMarker, rvCustomMarker, rvInfoWindow;
 let overlayOn = false;
 
-
 // 로드뷰 초기화
-export function initializeRoadview(rvContainer) {
+export const initializeRoadview = (rvContainer) => {
     rv = new kakao.maps.Roadview(rvContainer); // 로드뷰 객체
     rvClient = new kakao.maps.RoadviewClient(); // 로드뷰 클라이언트 객체
 
     // 로드뷰 위치 변경 이벤트
-    kakao.maps.event.addListener(rv, 'position_changed', function () {
+    kakao.maps.event.addListener(rv, 'position_changed', () => {
         const position = rv.getPosition();
 
         if (rvOverlayMarker) {
             rvOverlayMarker.setPosition(position); // 로드뷰 위치에 따라 마커 위치 업데이트
         }
     });
-}
+};
 
 // 로드뷰 오버레이 활성화/비활성화
-export function toggleOverlay(map) {
+export const toggleOverlay = (map) => {
     if (overlayOn) {
         // 로드뷰 오버레이 비활성화
         map.removeOverlayMapTypeId(kakao.maps.MapTypeId.ROADVIEW);
@@ -39,11 +38,10 @@ export function toggleOverlay(map) {
         overlayOn = true;
         console.log('로드뷰 오버레이 활성화');
     }
-}
-
+};
 
 // 로드뷰 오버레이 마커
-export function addRoadviewOverlayMarker(map) {
+export const addRoadviewOverlayMarker = (map) => {
     const center = map.getCenter(); // 현재 지도의 중심 좌표 (로드뷰 오버레이 중심 좌표와 동일)
 
     // 동동이 마커 이미지 생성
@@ -53,7 +51,7 @@ export function addRoadviewOverlayMarker(map) {
         {
             spriteSize: new kakao.maps.Size(1666, 168),
             spriteOrigin: new kakao.maps.Point(705, 114),
-            offset: new kakao.maps.Point(13, 46)
+            offset: new kakao.maps.Point(13, 46),
         }
     );
 
@@ -67,15 +65,15 @@ export function addRoadviewOverlayMarker(map) {
             image: markerImage,
             map: map,
             draggable: true,
-            zIndex: 1000
+            zIndex: 1000,
         });
 
         // 드래그시 로드뷰 위치 업데이트
-        kakao.maps.event.addListener(rvOverlayMarker, 'dragend', function () {
+        kakao.maps.event.addListener(rvOverlayMarker, 'dragend', () => {
             const newPosition = rvOverlayMarker.getPosition(); // 드래그 종료 후 위치
 
             // 새로운 위치에서 가장 가까운 로드뷰 파노라마 ID 가져오기
-            rvClient.getNearestPanoId(newPosition, 50, function (panoId) {
+            rvClient.getNearestPanoId(newPosition, 50, (panoId) => {
                 if (panoId) {
                     rv.setPanoId(panoId, newPosition); // 로드뷰 업데이트
                     showRoadView();
@@ -87,10 +85,10 @@ export function addRoadviewOverlayMarker(map) {
             });
         });
     }
-}
+};
 
 // 커스텀 오버레이에서 로드뷰 버튼 클릭 시 마커 설정
-export function updateInfoWindowPosition(position, placeName) {
+export const updateInfoWindowPosition = (position, placeName) => {
     if (rvCustomMarker) {
         rvCustomMarker.setMap(null); // 기존 마커 제거
         rvCustomMarker = null;
@@ -102,7 +100,7 @@ export function updateInfoWindowPosition(position, placeName) {
     }
 
     // 로드뷰 파노라마 ID 가져오기
-    rvClient.getNearestPanoId(position, 50, function (panoId) {
+    rvClient.getNearestPanoId(position, 50, (panoId) => {
         if (panoId) {
             rv.setPanoId(panoId, position); // 로드뷰 설정
             showRoadView();
@@ -129,19 +127,18 @@ export function updateInfoWindowPosition(position, placeName) {
             alert('해당 위치에서는 로드뷰를 지원하지 않습니다.');
         }
     });
-}
+};
 
-export function showRoadView() {
+export const showRoadView = () => {
     $(".map-menu .menu-cont").addClass("closed").removeClass("opened");
     $(".map-menu .menu-cont-btn, #user-location, #roadview").hide();
     $("#map").hide();
     $("#roadview-container, #close-roadview").show();
-}
+};
 
-export function closeRoadView() {
+export const closeRoadView = () => {
     $(".map-menu .menu-cont").addClass("opened").removeClass("closed");
     $(".map-menu .menu-cont-btn, #user-location, #roadview").show();
     $("#roadview-container, #close-roadview").hide();
     $("#map").show();
-}
-
+};

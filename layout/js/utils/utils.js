@@ -1,5 +1,5 @@
 // 별점 그리기
-export function generateStars(rating) {
+export const generateStars = (rating) => {
     const fullStars = Math.floor(rating);
     const halfStar = rating % 1 >= 0.5 ? 1 : 0;
     const emptyStars = 5 - fullStars - halfStar;
@@ -19,15 +19,13 @@ export function generateStars(rating) {
     }
 
     return starsHtml;
-}
+};
 
 // 주소 판단
-export function isAddress(keyword) {
-    return /\d/.test(keyword) && /\s/.test(keyword);
-}
+export const isAddress = (keyword) => /\d/.test(keyword) && /\s/.test(keyword);
 
-// 현재 위치를 가져오는 함수
-export function getUserPosition(successCallback, errorCallback) {
+// 현재 위치 가져오기
+export const getUserPosition = (successCallback, errorCallback) => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             ({ coords }) => {
@@ -39,4 +37,4 @@ export function getUserPosition(successCallback, errorCallback) {
     } else {
         alert('Geolocation을 지원하지 않습니다.');
     }
-}
+};

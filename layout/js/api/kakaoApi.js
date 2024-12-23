@@ -21,7 +21,7 @@ const KakaoAPI = {
             query: keyword,
             x: position.lng,
             y: position.lat,
-            radius: 3000,
+            radius: 5000,
             size: 15,
             sort: "distance"
         };
@@ -37,7 +37,7 @@ const KakaoAPI = {
             category_group_code: categoryCode,
             x: position.lng,
             y: position.lat,
-            radius: 3000,
+            radius: 5000,
             size: 15,
             sort: "distance"
         };

@@ -1,56 +1,50 @@
 import {generateStars} from './utils.js';
 
-export function createMarkerHTML(index) {
-    return `
-        <div class="marker" 
-            style="width:30px; height:40px; 
-            background:url('https://t1.daumcdn.net/localimg/localimages/07/2018/pc/img/marker_spot.png') no-repeat; 
-            background-size:cover; cursor: pointer;"
-            data-index="${index}"
-            tabindex="-1">
-        </div>
-    `;
-}
+export const createMarkerHTML = (index) => `
+    <div class="marker" 
+        style="width:30px; height:40px; 
+        background:url('https://t1.daumcdn.net/localimg/localimages/07/2018/pc/img/marker_spot.png') no-repeat; 
+        background-size:cover; cursor: pointer;"
+        data-index="${index}"
+        tabindex="-1">
+    </div>
+`;
 
-export function createOverlayHTML(place, rating) {
-    return `
-        <div class="info-window" tabindex="-1">
-            <div class="place-name">
-                <p class="info-title">${place.place_name ? place.place_name : '건물명 없음'}</p>
-                <span class="place-category">${place.category_name?.split(' > ').pop() || ''}</span>
-            </div>
-            <div class="place-rating">
-                ${generateStars(rating)}
-                <span class="rating-value">${rating}</span>
-            </div>
-            <p class="info-road-address">${place.road_address_name || '도로명 주소 없음'}</p>
-            <div class="info-address">
-                <span class="sticker">지번</span>
-                <span>${place.address_name || '지번 주소 없음'}</span>
-            </div>
-            <div class="info-bottom">
-                <div class="service">
-                    <span class="info-tel">${place.phone || '전화번호 없음'}</span>
-                    <a href="${place.place_url}" target="_blank" class="info-detail" tabindex="-1">상세보기</a>
-                </div>
-                <button id="info-roadview" class="info-roadview-toggle" data-lat="${place.y}" data-lng="${place.x}" data-title="${place.place_name ? place.place_name : '건물명 없음'}">
-                </button> 
-            </div>
+export const createOverlayHTML = (place, rating) => `
+    <div class="info-window" tabindex="-1">
+        <div class="place-name">
+            <p class="info-title">${place.place_name ? place.place_name : '건물명 없음'}</p>
+            <span class="place-category">${place.category_name?.split(' > ').pop() || ''}</span>
         </div>
-    `;
-}
+        <div class="place-rating">
+            ${generateStars(rating)}
+            <span class="rating-value">${rating}</span>
+        </div>
+        <p class="info-road-address">${place.road_address_name || '도로명 주소 없음'}</p>
+        <div class="info-address">
+            <span class="sticker">지번</span>
+            <span>${place.address_name || '지번 주소 없음'}</span>
+        </div>
+        <div class="info-bottom">
+            <div class="service">
+                <span class="info-tel">${place.phone || '전화번호 없음'}</span>
+                <a href="${place.place_url}" target="_blank" class="info-detail" tabindex="-1">상세보기</a>
+            </div>
+            <button id="info-roadview" class="info-roadview-toggle" data-lat="${place.y}" data-lng="${place.x}" data-title="${place.place_name ? place.place_name : '건물명 없음'}">
+            </button> 
+        </div>
+    </div>
+`;
 
-export function createBadgeHTML(index, place) {
-    return `
-        <div class="badge" tabindex="-1">
-            <span class="badge-idx">${String.fromCharCode(65 + index)}. </span>
-            <span class="badge-title">${place.place_name ? place.place_name : '건물명 없음'}</span>
-        </div>
-    `;
-}
+export const createBadgeHTML = (index, place) => `
+    <div class="badge" tabindex="-1">
+        <span class="badge-idx">${String.fromCharCode(65 + index)}. </span>
+        <span class="badge-title">${place.place_name ? place.place_name : '건물명 없음'}</span>
+    </div>
+`;
 
 // 검색 결과 li
-export function createListItemHTML(place, index, rating) {
+export const createListItemHTML = (place, index, rating) => {
     const markerLabel = String.fromCharCode(65 + index);
 
     const isAddressSearch = place.address || place.road_address;
@@ -92,25 +86,22 @@ export function createListItemHTML(place, index, rating) {
             </div>
         </li>
     `;
-}
+};
 
-
-export function createOlInfoHTML(place) {
-    return `
-        <div id="ol-info" class="ol-info">
-            <div class="place-name">
-                <h5 class="ol-place-name">${place.name}</h5>
-                <span class="place-category" style="margin-bottom: 5px !important;">${place.category}</span>
-            </div>
-            <p class="road-address-name">${place.roadAddress}</p>
-            <p class="address-name">
-                <span class="sticker">지번</span>
-                ${place.address}
-            </p>
-            <div class="service">
-                <span class="info-tel">${place.phone}</span>
-                <a href="${place.placeUrl}" target="_blank" class="info-detail" tabIndex="-1">상세보기</a>
-            </div>
+export const createOlInfoHTML = (place) => `
+    <div id="ol-info" class="ol-info">
+        <div class="place-name">
+            <h5 class="ol-place-name">${place.name}</h5>
+            <span class="place-category" style="margin-bottom: 5px !important;">${place.category}</span>
         </div>
-    `;
-}
+        <p class="road-address-name">${place.roadAddress}</p>
+        <p class="address-name">
+            <span class="sticker">지번</span>
+            ${place.address}
+        </p>
+        <div class="service">
+            <span class="info-tel">${place.phone}</span>
+            <a href="${place.placeUrl}" target="_blank" class="info-detail" tabIndex="-1">상세보기</a>
+        </div>
+    </div>
+`;
