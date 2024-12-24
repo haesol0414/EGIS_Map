@@ -5,6 +5,7 @@ import {createOlInfoHTML} from '../utils/htmlTemplates.js';
 let map, hover = null;
 const initialCenter = [128.6, 35.87];
 const mainLocation = document.getElementById('main-location');
+const polygonToggleBtn = document.querySelector('.ol-polygon-btn');
 
 // 지도 초기화
 const initializeMap = async () => {
@@ -159,7 +160,6 @@ const handleSubwayLineToggle = () => {
 
 // 폴리곤 토글
 const handlePolygonToggle = () => {
-    const polygonToggleBtn = document.querySelector('.ol-polygon-btn'); // 버튼 선택
     let polygonLayer = null;
 
     polygonToggleBtn.addEventListener('click', () => {
