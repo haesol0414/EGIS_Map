@@ -2,7 +2,9 @@ import {createCategoryLayer, updateCategoryLayers, createSubwayLineLayer, create
 import {getUserPosition} from '../utils/utils.js';
 import {createOlInfoHTML} from '../utils/htmlTemplates.js';
 
-let map = null;
+let map, hover = null;
+const initialCenter = [128.6, 35.87];
+const mainLocation = document.getElementById('main-location');
 
 // 지도 초기화
 const initializeMap = async () => {
@@ -17,7 +19,7 @@ const initializeMap = async () => {
             }),
         ],
         view: new ol.View({
-            center: ol.proj.fromLonLat([128.6, 35.87]),
+            center: ol.proj.fromLonLat(initialCenter),
             zoom: 17,
         }),
     });
@@ -31,10 +33,35 @@ const initializeMap = async () => {
     // 폴리곤 토글
     handlePolygonToggle();
 
-    // 클릭된 마커 속성 얻기
+    // 마커 이벤트
     map.on('singleclick', handleMarkerClick);
+    map.on('pointermove', handleMarkerHover);
+
+    // 지도 클릭 이벤트 
+    map.on('singleclick', (e) => updatePositionOnMapClick(map, e));
+
+    // 초기 위치로 이동
+    mainLocation.addEventListener('click', () => {
+        const view = map.getView();
+
+        view.setCenter(ol.proj.fromLonLat(initialCenter));
+        view.setZoom(17);
+    });
 }
 
+// 지도 클릭 시 좌표 정보 업데이트
+const updatePositionOnMapClick = (map, e) => {
+    const coordinates = ol.proj.toLonLat(e.coordinate);
+    const [lon, lat] = coordinates;
+
+    // 소수점 6자리로 자르기
+    const formattedLon = lon.toFixed(6);
+    const formattedLat = lat.toFixed(6);
+
+    // HTML 업데이트
+    document.getElementById('position-x').textContent = formattedLon;
+    document.getElementById('position-y').textContent = formattedLat;
+};
 
 // 카테고리 토글 처리
 const handleCategoryToggle = () => {
@@ -43,7 +70,7 @@ const handleCategoryToggle = () => {
     // 지도 중심 좌표 가져오기
     const getCenterPosition = () => {
         const center = ol.proj.toLonLat(map.getView().getCenter());
-        return { lng: center[0], lat: center[1] };
+        return {lng: center[0], lat: center[1]};
     };
 
     categoryButtons.forEach((cBtn) => {
@@ -93,24 +120,6 @@ const handleCategoryToggle = () => {
             const activeCategoryCode = activeButton.getAttribute('data-category');
             await updateCategoryLayers(map, layers, activeCategoryCode);
         }
-    });
-};
-
-// 현재 위치로 이동 버튼 설정
-const handleCurrentLocationBtn = () => {
-    const currentBtn = document.getElementById('current-location');
-
-    currentBtn.addEventListener('click', () => {
-        getUserPosition(
-            (userPosition) => {
-                const view = map.getView();
-                view.setCenter(ol.proj.fromLonLat([userPosition.lng, userPosition.lat]));
-                view.setZoom(17);
-            },
-            () => {
-                alert('현재 위치를 가져올 수 없습니다.');
-            }
-        );
     });
 };
 
@@ -176,11 +185,58 @@ const handleMarkerClick = (e) => {
     });
 
     if (feature && feature.getProperties()) {
-        const infoHTML = createOlInfoHTML(feature.getProperties());
         const infoContainer = document.getElementById('ol-info-container');
+        const infoHTML = createOlInfoHTML(feature.getProperties());
+
         infoContainer.innerHTML = infoHTML;
     }
 };
+
+// 마커 hover 이벤트
+const handleMarkerHover = (evt) => {
+    map.getTargetElement().style.cursor = map.hasFeatureAtPixel(evt.pixel) ? 'pointer' : '';
+
+    // 기존 hover 피처에 대한 처리
+    if (hover !== null) {
+        const currentStyle = hover.getStyle();
+        currentStyle.getImage().setScale(1);  // 기본 크기로 복원
+        hover.setStyle(currentStyle);
+
+        hover = null;
+    }
+
+    // 마우스 위치에 있는 피처 찾기
+    map.forEachFeatureAtPixel(evt.pixel, (f) => {
+        hover = f;
+        return true;  // 첫 번째 마커를 찾으면 바로 종료
+    });
+
+    if (hover) {
+        const currentStyle = hover.getStyle();
+        currentStyle.getImage().setScale(1.2);  // 크기 증가
+        hover.setStyle(currentStyle);
+    }
+};
+
+
+// 현재 사용자 위치로 이동 버튼 설정
+const handleCurrentLocationBtn = () => {
+    const currentBtn = document.getElementById('current-location');
+
+    currentBtn.addEventListener('click', () => {
+        getUserPosition(
+            (userPosition) => {
+                const view = map.getView();
+                view.setCenter(ol.proj.fromLonLat([userPosition.lng, userPosition.lat]));
+                view.setZoom(17);
+            },
+            () => {
+                alert('현재 위치를 가져올 수 없습니다.');
+            }
+        );
+    });
+};
+
 
 // 지도 초기화
 initializeMap().catch((error) => {

@@ -7,7 +7,7 @@
     border: 2px solid #003472;
     border-radius: 12px;
     padding: 20px;
-    margin-top: 25px;
+    margin-top: 15px;
 }
 
 .ol-place-name {
@@ -86,4 +86,27 @@
 .ol-polygon-btn.active {
     color: #ffffff;
     background-color: #003472;
+}
+
+.position {
+    display: inline-block;
+    position: relative;
+    left: 3px;
+    font-size: 13px;
+    color: #3a3a3a;
+    margin-top: 3px;
+    margin-bottom: 4px;
+    background-color: #f4f4f4;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+
+.main-location {
+    width: 38px;
+    height: 38px;
+    background-repeat: no-repeat;
+    background-position: -310px -450px;
+    transform: scale(1.1);
+    background-image: url("https://t1.daumcdn.net/localimg/localimages/07/2018/pc/common/img_search.png");
 }

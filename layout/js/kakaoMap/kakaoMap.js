@@ -207,8 +207,13 @@ $(document).ready(() => {
         alert('장소 검색에 실패했습니다.');
     };
 
+
+
     // 맵 초기화
     initializeMap();
+
+
+
 
     /* ======== 이벤트 바인딩 ======== */
     $('#search-place').on('keypress', (e) => {

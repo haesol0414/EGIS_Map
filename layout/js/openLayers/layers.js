@@ -93,9 +93,11 @@ export const updateCategoryLayers = async (map, layers, categoryCode) => {
     }
 };
 
+
 // 라인 레이어 생성
 export const createSubwayLineLayer = (lineName, color) => {
     let lineLayer;
+
     const vectorSource = new ol.source.Vector({
         features: new ol.format.GeoJSON().readFeatures(daeguSubwayGeoJSON, {
             featureProjection: 'EPSG:3857', // 지도 좌표계에 맞게 변환
@@ -143,7 +145,6 @@ export const createPolygonLayer = () => {
             ]
         ),
     });
-
     feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
 
     const vectorSource = new ol.source.Vector({
