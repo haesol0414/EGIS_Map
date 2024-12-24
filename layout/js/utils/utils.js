@@ -38,3 +38,4 @@ export const getUserPosition = (successCallback, errorCallback) => {
         alert('Geolocation을 지원하지 않습니다.');
     }
 };
+

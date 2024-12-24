@@ -8,8 +8,6 @@
     border-radius: 12px;
     padding: 20px;
     margin-top: 25px;
-    user-select: none;
-    caret-color: transparent;
 }
 
 .ol-place-name {
@@ -38,10 +36,7 @@
     gap: 5px;
     align-items: center;
     color: #666666;
-    user-select: none;
-    caret-color: transparent;
 }
-
 
 .ol-line-btn.active {
     font-weight: 600;

@@ -1,7 +1,7 @@
 import KakaoAPI from '../api/kakaoApi.js';
 import {daeguSubwayGeoJSON} from "../data/geoJSON.js";
 
-// 카테고리별 마커 색상 정의
+// 카테고리별 마커 색상
 const categoryColors = {
     "FD6": "#FF5733",
     "CE7": "#33FF57",
@@ -10,15 +10,16 @@ const categoryColors = {
     "SW8": "#C700FF"
 };
 
-// 마커 레이어 추가
+// 마커 레이어 생성
 export const createCategoryLayer = async (currentPosition, categoryCode) => {
     try {
         const res = await KakaoAPI.searchCategory(categoryCode, currentPosition);
         const places = res.documents;
+        let markerLayer;
 
         const markers = places.map((p) => {
             const position = ol.proj.fromLonLat([parseFloat(p.x), parseFloat(p.y)]);
-            const color = categoryColors[categoryCode] || '#003472'; // 기본 색상
+            const color = categoryColors[categoryCode] || '#000000';
 
             // 마커 객체 생성
             const marker = new ol.Feature({
@@ -53,7 +54,7 @@ export const createCategoryLayer = async (currentPosition, categoryCode) => {
         });
 
         // 마커 레이어 생성
-        const markerLayer = new ol.layer.Vector({
+        markerLayer = new ol.layer.Vector({
             source: new ol.source.Vector({
                 features: markers,
             }),
@@ -68,14 +69,15 @@ export const createCategoryLayer = async (currentPosition, categoryCode) => {
 };
 
 
-// 지도 중심 변경에 따른 카테고리 마커 레이어 갱신
+// 지도 중심 변경에 따른 마커 레이어 갱신
 export const updateCategoryLayers = async (map, layers, categoryCode) => {
     try {
         const center = ol.proj.toLonLat(map.getView().getCenter());
         const currentPosition = { lng: center[0], lat: center[1] };
+        let updatedLayer;
 
         // 새로운 레이어 생성
-        const updatedLayer = await createCategoryLayer(currentPosition, categoryCode);
+        updatedLayer = await createCategoryLayer(currentPosition, categoryCode);
 
         // 기존 레이어 제거 후 새로운 레이어 추가
         if (layers[categoryCode]) {
@@ -83,6 +85,7 @@ export const updateCategoryLayers = async (map, layers, categoryCode) => {
         }
 
         layers[categoryCode] = updatedLayer;
+
         map.addLayer(updatedLayer);
         updatedLayer.setVisible(true);
     } catch (err) {
@@ -90,15 +93,16 @@ export const updateCategoryLayers = async (map, layers, categoryCode) => {
     }
 };
 
-// 라인 레이어 생성 함수
+// 라인 레이어 생성
 export const createSubwayLineLayer = (lineName, color) => {
+    let lineLayer;
     const vectorSource = new ol.source.Vector({
         features: new ol.format.GeoJSON().readFeatures(daeguSubwayGeoJSON, {
             featureProjection: 'EPSG:3857', // 지도 좌표계에 맞게 변환
         }),
     });
 
-    return new ol.layer.Vector({
+    lineLayer = new ol.layer.Vector({
         source: vectorSource,
         style: (feature) => {
             if (feature.get('line') === lineName) {
@@ -119,10 +123,14 @@ export const createSubwayLineLayer = (lineName, color) => {
         },
         visible: false,
     });
+
+    return lineLayer;
 };
 
 // 폴리곤 레이어 생성
 export const createPolygonLayer = () => {
+    let polygonLayer;
+
     const feature = new ol.Feature({
         geometry: new ol.geom.Polygon(
             [
@@ -142,9 +150,9 @@ export const createPolygonLayer = () => {
         features: [feature]
     });
 
-    const polygonLayer = new ol.layer.Vector({
-        source : vectorSource,
-        style : [
+    polygonLayer = new ol.layer.Vector({
+        source: vectorSource,
+        style: [
             new ol.style.Style({
                 stroke: new ol.style.Stroke({
                     color: 'blue',
@@ -155,7 +163,7 @@ export const createPolygonLayer = () => {
                 })
             })
         ],
-        visible: false, 
+        visible: false,
     });
 
     return polygonLayer;
