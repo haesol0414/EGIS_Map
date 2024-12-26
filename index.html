@@ -5,26 +5,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>지도 레이아웃</title>
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!--jquery ui-->
+    <!-- jQuery UI -->
     <link rel="stylesheet" href="/layout/js/common/jquery-ui/jquery-ui.css">
     <script src="/layout/js/common/jquery-ui/jquery-ui.js"></script>
-    <!--scrollbar-->
+    <!-- Scrollbar Plugin -->
     <link rel="stylesheet" href="/layout/js/plugin/mCustomScrollbar/jquery.mCustomScrollbar.min.css">
     <script src="/layout/js/plugin/mCustomScrollbar/jquery.mCustomScrollbar.js"></script>
-    <!--style-->
+    <!-- Common -->
     <link rel="stylesheet" href="./layout/css/style.css">
     <script src="./layout/js/script.js"></script>
-    <!--kakao-->
-    <script type="text/javascript"
-            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8003a4b7ec88e8b617d20527b6326a5c"></script>
-    <script type="text/javascript"
-            src="//dapi.kakao.com/v2/maps/sdk.js?appkey=APIKEY&libraries=services,clusterer,drawing"></script>
-    <script type="module" src="layout/js/kakaoMap/kakaoMap.js"></script>
-    <!--open layers-->
-    <script src="https://cdn.jsdelivr.net/npm/ol@v7.4.0/dist/ol.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@v7.4.0/ol.css">
-    <script type="module" src="layout/js/openLayers/openLayersMap.js"></script>
 </head>
 <body>
 <div id="wrap">
@@ -55,9 +46,13 @@
 						<label for="divOlBtn">OpenLayers</label>
 				</span>
                 <span class="tool-btn">
+						<input type="radio" id="divXdBtn" name="divBtn">
+						<label for="divXdBtn">3D</label>
+				</span>
+                <span class="tool-btn">
 						<input type="radio" id="divResetBtn" name="divBtn">
 						<label for="divResetBtn">초기화</label>
-					</span>
+				</span>
                 <span class="tool-btn">
 						<input type="radio" id="div2Btn" name="divBtn">
 						<label for="div2Btn">2분할</label>
@@ -115,8 +110,7 @@
             </div>
             <button id="close-roadview">X</button>
         </div>
-
-        <!--   ================================ open layers ================================     -->
+        <!--   ================================ 2D - open layers ================================     -->
         <div class="map-wrap ol">
             <div class="map-aside">
                 <div class="map-menu">
@@ -127,7 +121,7 @@
                     </ul>
                     <div class="menu-cont">
                         <div class="bar-cont barCont01">
-                            <h5 class="ol-feature-title">· POI</h5>
+                            <h5 class="feature-title">· POI</h5>
                             <div class="ol-map category-group">
                                 <button type="button" id="ol-food" class="category food" data-category="FD6"></button>
                                 <button type="button" id="ol-cafe" class="category cafe" data-category="CE7"></button>
@@ -136,12 +130,12 @@
                                 <button type="button" id="ol-subway" class="category subway"
                                         data-category="SW8"></button>
                             </div>
-                            <h5 class="ol-feature-title">· LINE</h5>
+                            <h5 class="feature-title">· LINE</h5>
                             <div class="ol-line-wrap">
                                 <button type="button" id="ol-line1" class="ol-line-btn">1호선 <span class="line red"></span></button>
                                 <button type="button" id="ol-line2" class="ol-line-btn">2호선 <span class="line green"></span></button>
                             </div>
-                            <h5 class="ol-feature-title">· POLYGON</h5>
+                            <h5 class="feature-title">· POLYGON</h5>
                             <div class="ol-polygon-wrap">
                                 <button class="ol-polygon-btn">Polygon</button>
                             </div>
@@ -161,7 +155,32 @@
             <div id="ol-map" style="width:100%; height:100%; background-color:black;">
             </div>
         </div>
-
+        <!--   ================================ 3D ================================     -->
+        <div class="map-wrap xd">
+            <div class="map-aside">
+                <div class="map-menu">
+                    <ul class="menu-bar">
+                        <li>
+                            <button type="button" class="bar-btn" data-tab="barCont01">정보</button>
+                        </li>
+                    </ul>
+                    <div class="menu-cont">
+                        <div class="bar-cont barCont01">
+                            <h5 class="feature-title">· POI</h5>
+                            <h5 class="feature-title">· LINE</h5>
+                            <h5 class="feature-title">· POLYGON</h5>
+                        </div>
+                    </div>
+                    <button type="button" class="menu-cont-btn" title="열기"></button>
+                </div>
+            </div>
+            <div class="map-tool">
+                <div class="map-tool-group">
+                </div>
+            </div>
+            <div id="xd-map" style="width:100%; height:100%;">
+            </div>
+        </div>
         <!--   ================================ 초기화 ================================     -->
         <div class="map-wrap reset">
             <div class="map-aside">
@@ -270,8 +289,6 @@
             </div>
             <canvas style="background: #f2f0e8;"></canvas>
         </div>
-
-
         <!--   ================================ 2분할 ================================     -->
         <div class="map-wrap div2">
             <div class="map-aside">
@@ -327,8 +344,6 @@
             </div>
             <canvas style="background: #f2f0e8;"></canvas>
         </div>
-
-
         <!--   ================================ 4분할 ================================     -->
         <div class="map-wrap div4">
             <div class="map-aside">
@@ -459,5 +474,16 @@
     </div>
     <!--// 로그인-->
 </div>
+<!-- Kakao Maps -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8003a4b7ec88e8b617d20527b6326a5c"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=APIKEY&libraries=services,clusterer,drawing"></script>
+<!-- OpenLayers -->
+<script src="https://cdn.jsdelivr.net/npm/ol@v7.4.0/dist/ol.js"></script>
+<!-- XDWorld -->
+<script src="https://cdn.xdworld.kr/latest/XDWorldEM.js"></script>
+<!-- 내부 JS -->
+<script type="module" src="layout/js/kakaoMap/kakaoMap.js"></script>
+<script type="module" src="layout/js/openLayers/openLayersMap.js"></script>
+<script src="layout/js/xd/xdMap.js"></script>
 </body>
 </html>

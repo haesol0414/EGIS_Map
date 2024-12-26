@@ -1,5 +1,5 @@
 import KakaoAPI from '../api/kakaoApi.js';
-import {daeguSubwayGeoJSON} from "../data/geoJSON.js";
+import {daeguSubwayGeoJSON} from "./geoJSON.js";
 
 // 카테고리별 마커 색상
 const categoryColors = {

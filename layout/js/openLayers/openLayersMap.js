@@ -39,7 +39,7 @@ const initializeMap = async () => {
     map.on('pointermove', handleMarkerHover);
 
     // 지도 클릭 이벤트 
-    map.on('singleclick', (e) => updatePositionOnMapClick(map, e));
+    map.on('singleclick', (evt) => updatePositionOnMapClick(map, evt));
 
     // 초기 위치로 이동
     mainLocation.addEventListener('click', () => {
@@ -49,20 +49,6 @@ const initializeMap = async () => {
         view.setZoom(17);
     });
 }
-
-// 지도 클릭 시 좌표 정보 업데이트
-const updatePositionOnMapClick = (map, e) => {
-    const coordinates = ol.proj.toLonLat(e.coordinate);
-    const [lon, lat] = coordinates;
-
-    // 소수점 6자리로 자르기
-    const formattedLon = lon.toFixed(6);
-    const formattedLat = lat.toFixed(6);
-
-    // HTML 업데이트
-    document.getElementById('position-x').textContent = formattedLon;
-    document.getElementById('position-y').textContent = formattedLat;
-};
 
 // 카테고리 토글 처리
 const handleCategoryToggle = () => {
@@ -178,8 +164,8 @@ const handlePolygonToggle = () => {
 
 
 // 마커 클릭 이벤트
-const handleMarkerClick = (e) => {
-    const feature = map.forEachFeatureAtPixel(e.pixel, (feat) => {
+const handleMarkerClick = (evt) => {
+    const feature = map.forEachFeatureAtPixel(evt.pixel, (feat) => {
         // Poi 타입인지 확인 (마커만 처리)
         return feat.getGeometry().getType() === 'Point' ? feat : null;
     });
@@ -237,6 +223,19 @@ const handleCurrentLocationBtn = () => {
     });
 };
 
+// 지도 클릭 시 좌표 정보 업데이트
+const updatePositionOnMapClick = (map, evt) => {
+    const coordinates = ol.proj.toLonLat(evt.coordinate);
+    const [lon, lat] = coordinates;
+
+    // 소수점 6자리로 자르기
+    const formattedLon = lon.toFixed(6);
+    const formattedLat = lat.toFixed(6);
+
+    // HTML 업데이트
+    document.getElementById('position-x').textContent = formattedLon;
+    document.getElementById('position-y').textContent = formattedLat;
+};
 
 // 지도 초기화
 initializeMap().catch((error) => {
