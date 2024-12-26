@@ -473,6 +473,10 @@ html, body {
     background-image: url(/layout/images/ico/ico-earth.png);
 }
 
+.map-tool-btn.altitude {
+    background-image: url(/layout/images/ico/ico-length.png);
+}
+
 .popup-panel {
     display: none;
     position: absolute;

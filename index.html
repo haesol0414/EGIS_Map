@@ -13,9 +13,8 @@
     <!-- Scrollbar Plugin -->
     <link rel="stylesheet" href="/layout/js/plugin/mCustomScrollbar/jquery.mCustomScrollbar.min.css">
     <script src="/layout/js/plugin/mCustomScrollbar/jquery.mCustomScrollbar.js"></script>
-    <!-- Common -->
+    <!-- Style -->
     <link rel="stylesheet" href="./layout/css/style.css">
-    <script src="./layout/js/script.js"></script>
 </head>
 <body>
 <div id="wrap">
@@ -155,13 +154,13 @@
             <div id="ol-map" style="width:100%; height:100%; background-color:black;">
             </div>
         </div>
-        <!--   ================================ 3D ================================     -->
+        <!--   ================================ 3D - XDworld ================================     -->
         <div class="map-wrap xd">
             <div class="map-aside">
                 <div class="map-menu">
                     <ul class="menu-bar">
                         <li>
-                            <button type="button" class="bar-btn" data-tab="barCont01">정보</button>
+                            <button type="button" class="bar-btn" data-tab="barCont01">오브젝트</button>
                         </li>
                     </ul>
                     <div class="menu-cont">
@@ -176,7 +175,22 @@
             </div>
             <div class="map-tool">
                 <div class="map-tool-group">
+                    <button type="button" class="compass-btn"><span class="compass"
+                                                                    style="transform: rotate(0deg);"></span></button>
+                    <button type="button" class="map-tool-btn initial" title="초기화"></button>
+                    <div class="btn-group">
+                        <button type="button" id="distance-btn" class="map-tool-btn distance"></button>
+                        <button type="button" id="altitude-btn" class="map-tool-btn altitude"></button>
+                        <button type="button" id="area-btn" class="map-tool-btn area"></button>
+                        <button type="button" id="radius-btn" class="map-tool-btn earth"></button>
+                    </div>
                 </div>
+<!--                <div class="map-range">-->
+<!--                    <input type="range" orient="vertical">-->
+<!--                    <div class="range-bar"></div>-->
+<!--                    <button type="button" class="range-btn zoomin">+</button>-->
+<!--                    <button type="button" class="range-btn zoomout">-</button>-->
+<!--                </div>-->
             </div>
             <div id="xd-map" style="width:100%; height:100%;">
             </div>
@@ -474,7 +488,7 @@
     </div>
     <!--// 로그인-->
 </div>
-<!-- Kakao Maps -->
+<!-- script : Kakao Maps -->
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8003a4b7ec88e8b617d20527b6326a5c"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=APIKEY&libraries=services,clusterer,drawing"></script>
 <!-- OpenLayers -->
@@ -482,6 +496,7 @@
 <!-- XDWorld -->
 <script src="https://cdn.xdworld.kr/latest/XDWorldEM.js"></script>
 <!-- 내부 JS -->
+<script src="./layout/js/script.js"></script>
 <script type="module" src="layout/js/kakaoMap/kakaoMap.js"></script>
 <script type="module" src="layout/js/openLayers/openLayersMap.js"></script>
 <script src="layout/js/xd/xdMap.js"></script>
