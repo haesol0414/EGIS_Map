@@ -84,7 +84,7 @@ function handleDistanceAddPoint(e) {
 
 // 면적 측정 로직
 function handleAreaAddPoint(e) {
-    createPOI(
+    createAreaPOI(
         new Module.JSVector3D(e.dLon, e.dLat, e.dAlt),
         "rgba(255, 204, 198, 0.8)",
         `${e.dArea.toFixed(2)}m²`,
@@ -207,38 +207,38 @@ const distanceBtn = document.getElementById("distance-btn");
 const areaBtn = document.getElementById("area-btn");
 const clearBtn = document.querySelector(".map-tool-btn.initial");
 
-// 거리 측정 버튼
 distanceBtn.addEventListener("click", () => {
-    const isActive = distanceBtn.classList.contains("active");
-    clearAnalysis();
+    clearAnalysis(); // 분석 초기화
 
-    if (isActive) {
+    const currentState = distanceBtn.getAttribute("data-state"); // 현재 상태 확인
+
+    if (currentState === "measure") {
         distanceBtn.setAttribute("data-state", "move");
-
+        distanceBtn.classList.add("active"); // active 클래스 제거
         Module.XDSetMouseState(Module.MML_MOVE_GRAB);
         console.log("move");
     } else {
         distanceBtn.setAttribute("data-state", "measure");
-
+        distanceBtn.classList.remove("active"); // active 클래스 추가
         Module.XDSetMouseState(Module.MML_ANALYS_DISTANCE_STRAIGHT);
         console.log("거리 측정");
     }
 });
 
 // 면적 측정 버튼
-areaBtn.addEventListener('click', () => {
-    const isActive = distanceBtn.classList.contains("active");
-    clearAnalysis();
-    console.log(GLOBAL);
+areaBtn.addEventListener("click", () => {
+    clearAnalysis(); // 분석 초기화
 
-    if (isActive) {
-        distanceBtn.setAttribute("data-state", "move");
+    const currentState = areaBtn.getAttribute("data-state"); // 현재 상태 확인
 
+    if (currentState === "measure") {
+        areaBtn.setAttribute("data-state", "move");
+        areaBtn.classList.add("active"); // active 클래스 제거
         Module.XDSetMouseState(Module.MML_MOVE_GRAB);
         console.log("move");
     } else {
-        distanceBtn.setAttribute("data-state", "measure");
-
+        areaBtn.setAttribute("data-state", "measure");
+        areaBtn.classList.remove("active"); // active 클래스 추가
         Module.XDSetMouseState(Module.MML_ANALYS_AREA_PLANE);
         console.log("면적 측정");
     }
@@ -277,6 +277,37 @@ function createPOI(position, color, value, balloonType) {
     GLOBAL.m_objcount++;
 
     // 강제로 레이어 상태를 갱신
+    Module.XDRenderData();
+}
+
+
+// 면적 측정 POI 생성
+function createAreaPOI(position, color, value, balloonType) {
+    // POI 아이콘 이미지를 그리기 위한 캔버스 생성
+    const drawCanvas = document.createElement("canvas");
+    drawCanvas.width = 100;
+    drawCanvas.height = 100;
+
+    // 아이콘 이미지 데이터 생성
+    const imageData = drawIcon(drawCanvas, color, value, balloonType);
+
+    // POI 레이어 가져오기
+    let layerList = new Module.JSLayerList(true);
+    let layer = layerList.nameAtLayer("MEASURE_POI");
+
+    // 기존 POI 삭제
+    const key = GLOBAL.m_mercount + "_AREA_POI"; // 면적 키 패턴 (유지 보장)
+    layer.removeAtKey(key);
+
+    // 새로운 POI 생성
+    const poi = Module.createPoint(key);
+    poi.setPosition(position); // 위치 설정
+    poi.setImage(imageData, drawCanvas.width, drawCanvas.height); // 아이콘 설정
+    layer.addObject(poi, 0); // 레이어에 등록
+
+    console.log("면적 POI 생성 완료:", key);
+
+    // 화면 갱신
     Module.XDRenderData();
 }
 
