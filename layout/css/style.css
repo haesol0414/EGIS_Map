@@ -5,6 +5,7 @@
 @import "content.css";
 @import "kakaoMap.css";
 @import "openLayersMap.css";
+@import "xdMap.css";
 
 #clearMap {
     background-color: #bbb;
@@ -440,7 +441,7 @@ html, body {
     height: 35px;
     line-height: 35px;
     text-align: center;
-    background-color: rgba(0, 52, 114, 0.75);
+    background-color: rgba(57, 90, 131, 0.75);
     background-repeat: no-repeat;
     background-position: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.5);
@@ -450,7 +451,7 @@ html, body {
 .map-tool-group .map-tool-btn:hover,
 .map-tool-group .map-tool-btn:active,
 .map-tool-group .map-tool-btn.active {
-    background-color: #003472;
+    background-color: #002146;
 }
 
 .map-tool-group .map-tool-btn input[type='radio'] + label::before {

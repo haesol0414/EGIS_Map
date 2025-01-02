@@ -1,1 +1,26 @@
 @charset "utf-8";
+
+.distance-li {
+    padding: 5px 10px;
+    margin-bottom: 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.distance-del-btn {
+    text-align: center;
+    border: 1px solid #000000;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+
+.distance-del-btn:hover {
+    background-color: #f2f2f2;
+}

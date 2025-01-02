@@ -108,10 +108,10 @@ $(document).ready(function () {
             $(".map-wrap.reset").show();
             $(".map-menu .menu-cont").addClass("opened").removeClass("closed");
             $(".map-menu .menu-cont-btn").addClass("on");
-        } else if ($(this).is("#div2DBtn")) {
+        } else if ($(this).is("#div2DBtn")) {   // 카카오맵
             $("#container").removeAttr("class");
+            $(".map-wrap.div2, .map-wrap.div4, .map-wrap.reset, .map-wrap.xd, .map-wrap.ol").hide();
             $(".map-wrap.two").show();
-            $(".map-wrap.div2, .map-wrap.div4, .map-wrap.reset, .map-wrap.ol, .map-wrap.xd").hide();
             $(".map-menu .menu-cont").addClass("opened").removeClass("closed");
             $(".map-menu .menu-cont-btn").addClass("on");
         } else if ($(this).is("#divOlBtn")) {
