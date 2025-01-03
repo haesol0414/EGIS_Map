@@ -179,9 +179,9 @@ $(document).ready(function () {
     });
 
     /* map tool */
-    $(".map-tool-btn").not(".initial").on("click", function () {
-        $(this).toggleClass("active").siblings().removeClass("active");
-    });
+    // $(".map-tool-btn").not(".initial").on("click", function () {
+    //     $(this).toggleClass("active").siblings().removeClass("active");
+    // });
 
     /* popup */
     $("*[data-popup]").on("click", function () {

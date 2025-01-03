@@ -3,6 +3,10 @@ var GLOBAL = {
     m_mercount: 0, // 측정 작업의 총 개수
 };
 
+const distanceBtn = document.getElementById("distance-btn");
+const areaBtn = document.getElementById("area-btn");
+const clearBtn = document.getElementById("xd-clear-btn");
+
 var Module = {
     locateFile: function (s) {
         return "https://cdn.xdworld.kr/latest/" + s;
@@ -35,11 +39,11 @@ var Module = {
         layer.setMaxDistance(20000.0);
         layer.setSelectable(false);
 
-        // 면적 측정 선의 렌더링 옵션 설정
+        // 렌더링 옵션 설정
         Module.getOption().SetAreaMeasurePolygonDepthBuffer(false); // WEBGL의 GL_DEPTH_TEST 설정
         Module.getOption().SetDistanceMeasureLineDepthBuffer(false); // Set WEBGL GL_DEPTH_TEST configuration
 
-        // 지속적인 사용을 위한 콜백 함수 설정
+        // 콜백 함수 설정
         Module.getOption().callBackAddPoint(addPoint);    // 마우스 입력 시 발생하는 콜백, 성공 시 성공 반환, 실패 시 오류 반환
         Module.getOption().callBackCompletePoint(endPoint); // 측정 완료(더블 클릭) 시 발생하는 콜백, 성공 시 성공 반환, 실패 시 오류 반환
 
@@ -47,7 +51,7 @@ var Module = {
     }
 };
 
-// 점 추가 콜백 함수
+// POI 추가 콜백
 function addPoint(e) {
     const mouseState = Module.XDGetMouseState();
 
@@ -92,13 +96,11 @@ function handleAreaAddPoint(e) {
     );
 }
 
-// 측정 완료 콜백 함수
+// 측정 완료 콜백
 function endPoint(e) {
-    console.log("측정 완료");
     viewListOBjKey(e); // 측정된 객체를 UI 리스트에 추가
-    GLOBAL.m_mercount++; // 총 측정 작업 수 증가
+    GLOBAL.m_mercount++; // 총 작업 수 증가
 }
-
 
 // 측정된 객체를 UI 리스트에 추가
 function viewListOBjKey(key) {
@@ -125,35 +127,12 @@ function viewListOBjKey(key) {
 
 // 측정된 객체 삭제
 function deleteObject(_key) {
-    console.log("삭제할 키:", _key);
-
-    // UI에서 리스트 항목 삭제
-    let li = document.getElementById(_key);
-    if (li) {
-        li.remove();
-        console.log("UI 리스트 항목 삭제 완료:", _key);
-    } else {
-        console.warn("UI 리스트 항목을 찾을 수 없음:", _key);
-    }
-
-    // POI 레이어에서 관련 객체 삭제
     let layerList = new Module.JSLayerList(true);
     let layer = layerList.nameAtLayer("MEASURE_POI");
 
     if (layer) {
         let list = layer.getObjectKeyList();
-        console.log("레이어 객체 키 리스트:", list);
-
-        // _key에서 숫자 부분만 추출
-        let keyBase = _key.match(/\d+/g)?.[0]; // ANAL_DIST_1 -> "1"
-        if (!keyBase) {
-            console.error("키에서 숫자를 추출하지 못했습니다:", _key);
-            return;
-        }
-
-        // POI 키 패턴 생성
-        let poiKeyPattern = `${keyBase}_`; // 예: "1_" (1_10_POI와 매칭)
-        console.log("삭제 - POI 키 패턴:", poiKeyPattern);
+        let poiKeyPattern = `${_key.match(/\d+/g)?.[0]}_`;
 
         // 레이어 객체 키와 비교하여 삭제
         let strlist = list.split(",");
@@ -163,11 +142,13 @@ function deleteObject(_key) {
                 console.log("POI 객체 삭제:", item);
             }
         });
+
+        document.getElementById(_key).remove();
     } else {
         console.warn("POI 레이어를 찾을 수 없음");
     }
 
-    // XDWorld에서 거리 및 면적 객체 초기화
+    // XDWorld에서 거리 및 면적 객체 초기화 **
     Module.XDClearDistanceObject(_key);
     Module.XDClearAreaObject(_key);
 
@@ -178,6 +159,9 @@ function deleteObject(_key) {
 
 // 초기화 함수
 function clearAnalysis() {
+    // 활성화된 버튼 모두 비활성화
+    document.querySelectorAll(".map-tool-btn.active").forEach(btn => btn.classList.remove("active"));
+
     // 실행 중인 분석 내용 초기화
     Module.XDClearDistanceMeasurement();
     Module.XDClearAreaMeasurement();
@@ -199,49 +183,29 @@ function clearAnalysis() {
     GLOBAL.m_mercount = 0;
     GLOBAL.m_objcount = 0;
 
+    // 마우스 변경
+    Module.XDSetMouseState(Module.MML_MOVE_GRAB);
+
     // 화면 다시 렌더링
     Module.XDRenderData();
 }
 
-const distanceBtn = document.getElementById("distance-btn");
-const areaBtn = document.getElementById("area-btn");
-const clearBtn = document.querySelector(".map-tool-btn.initial");
-
+// 거리 측정 버튼
 distanceBtn.addEventListener("click", () => {
     clearAnalysis(); // 분석 초기화
 
-    const currentState = distanceBtn.getAttribute("data-state"); // 현재 상태 확인
-
-    if (currentState === "measure") {
-        distanceBtn.setAttribute("data-state", "move");
-        distanceBtn.classList.add("active"); // active 클래스 제거
-        Module.XDSetMouseState(Module.MML_MOVE_GRAB);
-        console.log("move");
-    } else {
-        distanceBtn.setAttribute("data-state", "measure");
-        distanceBtn.classList.remove("active"); // active 클래스 추가
-        Module.XDSetMouseState(Module.MML_ANALYS_DISTANCE_STRAIGHT);
-        console.log("거리 측정");
-    }
+    distanceBtn.classList.add("active");
+    Module.XDSetMouseState(Module.MML_ANALYS_DISTANCE_STRAIGHT);
+    console.log("거리 측정");
 });
 
 // 면적 측정 버튼
 areaBtn.addEventListener("click", () => {
     clearAnalysis(); // 분석 초기화
 
-    const currentState = areaBtn.getAttribute("data-state"); // 현재 상태 확인
-
-    if (currentState === "measure") {
-        areaBtn.setAttribute("data-state", "move");
-        areaBtn.classList.add("active"); // active 클래스 제거
-        Module.XDSetMouseState(Module.MML_MOVE_GRAB);
-        console.log("move");
-    } else {
-        areaBtn.setAttribute("data-state", "measure");
-        areaBtn.classList.remove("active"); // active 클래스 추가
-        Module.XDSetMouseState(Module.MML_ANALYS_AREA_PLANE);
-        console.log("면적 측정");
-    }
+    areaBtn.classList.add("active");
+    Module.XDSetMouseState(Module.MML_ANALYS_AREA_PLANE);
+    console.log("면적 측정");
 });
 
 // 초기화 버튼
