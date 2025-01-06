@@ -1,10 +1,17 @@
 var GLOBAL = {
     m_objcount: 0, // 측정 오브젝트(POI)의 개수
     m_mercount: 0, // 측정 작업의 총 개수
+    nIndex: 0
 };
 let Symbol, // 아이콘 관리 심볼 객체
     POILayer, // POI 저장 레이어
     WallLayer; // 반경 벽 저장 레이어
+
+const distanceBtn = document.getElementById("distance-btn");
+const areaBtn = document.getElementById("area-btn");
+const clearBtn = document.getElementById("xd-clear-btn");
+const radiusBtn = document.getElementById("radius-btn");
+const altitudeBtn = document.getElementById("altitude-btn");
 
 var Module = {
     locateFile: function (s) {
@@ -36,12 +43,9 @@ var Module = {
                 clearIcon();
 
                 // 반경 POI 객체 생성
-                createPOI(e.dMidLon, e.dMidLat, e.dMidAlt, "rgba(255, 204, 198, 0.8)", e.dTotalDistance, true);
+                createPOI(new Module.JSVector3D(e.dMidLon, e.dMidLat, e.dMidAlt), "rgba(255, 204, 198, 0.8)", e.dTotalDistance, true);
             }
         });
-
-        // 카메라 위치 설정
-        Module.getViewCamera().setLocation(new Module.JSVector3D(126.92836647767662, 37.52439503321471, 1000.0));
 
         // POI 레이어 생성
         let layerList = new Module.JSLayerList(true);
@@ -66,10 +70,130 @@ var Module = {
         Module.getOption().SetAreaMeasurePolygonDepthBuffer(false);
         Module.getOption().SetDistanceMeasureLineDepthBuffer(false);
 
-        // 콜백 함수 설정
-        // Module.getOption().callBackAddPoint(addPoint);
-        // Module.getOption().callBackCompletePoint(endPoint);
+        // 카메라 위치 설정
+        Module.getViewCamera().look(
+            new Module.JSVector3D(126.93831646026437, 37.517164463389214, 629.4693173738196), // 카메라 위치
+            new Module.JSVector3D(126.93866761878483, 37.52295801173619, 10.460245016030967)  // 카메라가 바라보는 위치
+        );
+
+        // XDServer 레이어 생성 (건물 데이터 로드)
+        Module.getTileLayerList().createXDServerLayer({
+            url: "https://xdworld.vworld.kr",
+            servername: "XDServer3d",
+            name: "facility_build",
+            type: 9,
+            minLevel: 0,
+            maxLevel: 15
+        });
+
+        // 고도 측정 이벤트 추가
+        Module.canvas.addEventListener("Fire_EventAddAltitudePoint", function (e) {
+            createPOI(new Module.JSVector3D(e.dLon, e.dLat, e.dAlt),
+                "rgba(10, 10, 0, 0.5)",
+                e.dGroundAltitude, false, e.dObjectAltitude);
+        });
 
         console.log("XDWorld 엔진 로딩 완료");
     }
 };
+
+/* 현재 마우스 상태 반환 함수 */
+function getCurrentMouseState() {
+    const mouseState = Module.XDGetMouseState();
+
+    if (mouseState === Module.MML_ANALYS_DISTANCE || mouseState === Module.MML_ANALYS_DISTANCE_STRAIGHT) {
+        return "distance";
+    } else if (mouseState === Module.MML_ANALYS_AREA || mouseState === Module.MML_ANALYS_AREA_PLANE) {
+        return "area";
+    } else if (mouseState === Module.MML_ANALYS_AREA_CIRCLE) {
+        return "radius";
+    } else if (mouseState === Module.MML_ANALYS_ALTITUDE) {
+        return "altitude";
+    }
+    return "unknown";
+}
+
+/* 마우스 상태 설정 함수 */
+function setMouseState(state) {
+    switch (state) {
+        case "move":
+            Module.XDSetMouseState(Module.MML_MOVE_GRAB); // 이동 모드
+            break;
+        case "distance":
+            Module.XDSetMouseState(Module.MML_ANALYS_DISTANCE_STRAIGHT); // 거리 측정 모드
+            break;
+        case "area":
+            Module.XDSetMouseState(Module.MML_ANALYS_AREA_PLANE); // 면적 측정 모드
+            break;
+        case "radius":
+            Module.XDSetMouseState(Module.MML_ANALYS_AREA_CIRCLE); // 반경 측정 모드
+            break;
+        case "altitude":
+            Module.XDSetMouseState(Module.MML_ANALYS_ALTITUDE); // 고도 측정 모드
+            break;
+        default:
+            console.warn(`알 수 없는 마우스 상태: ${state}`);
+            return;
+    }
+}
+
+/* ========================= 버튼 이벤트 ============================= */
+// 반경 측정 버튼
+radiusBtn.addEventListener("click", function () {
+    clearAnalysis();
+    radiusBtn.classList.add("active");
+
+    Module.getOption().callBackAddPoint(null); // 거리/면적 콜백 해제
+    Module.getOption().callBackCompletePoint(null); // 완료 콜백 해제
+
+    setMouseState("radius"); // 반경 측정 모드 활성화
+
+    console.log("반경 측정");
+});
+
+// 거리 측정 버튼
+distanceBtn.addEventListener("click", () => {
+    clearAnalysis();
+    distanceBtn.classList.add("active");
+
+    // 콜백 등록
+    Module.getOption().callBackAddPoint(addPoint);
+    Module.getOption().callBackCompletePoint(endPoint);
+
+    setMouseState("distance"); // 거리 측정 모드
+
+    console.log("거리 측정");
+});
+
+// 면적 측정 버튼
+areaBtn.addEventListener("click", () => {
+    clearAnalysis();
+    areaBtn.classList.add("active");
+
+    // 콜백 등록
+    Module.getOption().callBackAddPoint(addPoint);
+    Module.getOption().callBackCompletePoint(endPoint);
+
+    setMouseState("area"); // 면적 측정 모드
+
+    console.log("면적 측정");
+});
+
+// 고도 측정 버튼
+altitudeBtn.addEventListener("click", () => {
+    clearAnalysis();
+
+    altitudeBtn.classList.add("active");
+    Module.XDSetMouseState(Module.MML_ANALYS_ALTITUDE); // 고도 측정 모드
+
+    console.log("고도 측정");
+});
+
+
+// 초기화 버튼
+clearBtn.addEventListener("click", () => {
+    clearAnalysis();
+
+    setMouseState("move");
+    console.log("분석 내용 초기화");
+});

@@ -63,11 +63,23 @@ $(document).ready(function () {
         $(this).find(".range-btn.zoomin").click(function () {
             var sliderValue = rangeValue.slider("option", "value");
             slider.slider("value", sliderValue + 1);
+
+            // xd 카메라 줌 인 실행
+            var API = {
+                JSCamera: Module.getViewCamera()
+            };
+            API.JSCamera.ZoomIn();
         });
 
         $(this).find(".range-btn.zoomout").click(function () {
             var sliderValue = rangeValue.slider("option", "value");
             slider.slider("value", sliderValue - 1);
+
+            // xd 카메라 줌 아웃 실행
+            var API = {
+                JSCamera: Module.getViewCamera()
+            };
+            API.JSCamera.ZoomOut();
         });
     });
 
