@@ -53,8 +53,33 @@ function drawRoundRect(ctx, x, y, width, height, radius, color) {
 
 // 텍스트 설정
 function setText(ctx, x, y, value) {
+    let strText = value;
+
+    // 반경 측정 모드일 때만 단위 변환
+    if (Module.XDGetMouseState() === Module.MML_ANALYS_AREA_CIRCLE && typeof value === 'number') {
+        strText = setKilloUnit(value, 0.001, 0);
+    }
+
+    // 공통 텍스트 스타일 설정
     ctx.font = "bold 16px sans-serif";
     ctx.textAlign = "center";
     ctx.fillStyle = "rgb(0, 0, 0)";
-    ctx.fillText(value, x, y);
+
+    // 텍스트 그리기
+    ctx.fillText(strText, x, y);
+}
+
+/* m/km 텍스트 변환 */
+function setKilloUnit(_text, _meterToKilloRate, _decimalSize) {
+    if (_decimalSize < 0) {
+        _decimalSize = 0;
+    }
+    if (typeof _text == "number") {
+        if (_text < 1.0 / (_meterToKilloRate * Math.pow(10, _decimalSize))) {
+            _text = _text.toFixed(1).toString() + 'm';
+        } else {
+            _text = (_text * _meterToKilloRate).toFixed(2).toString() + '㎞';
+        }
+    }
+    return _text;
 }
