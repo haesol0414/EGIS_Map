@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 .distance-li {
-    padding: 5px 10px;
+    padding: 4px 8px;
     margin-bottom: 2px;
     display: flex;
     justify-content: space-between;
@@ -12,7 +12,9 @@
 
 .distance-del-btn {
     text-align: center;
-    border: 1px solid #000000;
+    border: 1px solid #003472;
+    background-color: #003472;
+    color: #ffffff;
     padding: 4px 6px;
     border-radius: 4px;
     cursor: pointer;
@@ -20,7 +22,15 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-
 .distance-del-btn:hover {
-    background-color: #f2f2f2;
+    background-color: #ffffff;
+    color: #003472;
+    border-color: #003472;
+}
+
+.xd-feature-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 6px 0 10px 0;
+    color: #003472;
 }

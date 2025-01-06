@@ -1,6 +1,12 @@
 const distanceBtn = document.getElementById("distance-btn");
 const areaBtn = document.getElementById("area-btn");
 const clearBtn = document.getElementById("xd-clear-btn");
+const radiusBtn = document.getElementById("radius-btn");
+// const AltitudeBtn = document.getElementById("altitude-btn");
+let Symbol, // Icon management symbol object
+    POILayer, // POI storage layer
+    WallLayer; // Radius wall storage layer
+
 
 // 거리 측정 버튼
 distanceBtn.addEventListener("click", () => {
@@ -66,9 +72,12 @@ function addPoint(e) {
 
     if (mouseState === Module.MML_ANALYS_DISTANCE || mouseState === Module.MML_ANALYS_DISTANCE_STRAIGHT) {
         console.log('거리 측정');
-        
-        // 중간 거리와 전체 거리 POI 생성
-        createPOI(e.dMidLon, e.dMidLat, e.dMidAlt, "rgba(255, 255, 0, 0.8)", `${e.dDistance.toFixed(2)}m`, false);
+
+        // 중간 거리 POI
+        if (e.dDistance > 0.01) {
+            createPOI(e.dMidLon, e.dMidLat, e.dMidAlt, "rgba(255, 255, 0, 0.8)", `${e.dDistance.toFixed(2)}m`, false);
+        }
+        // 전체 거리 POI
         createPOI(e.dLon, e.dLat, e.dAlt, "rgba(255, 204, 198, 0.8)", `${e.dTotalDistance.toFixed(2)}m`, true);
     } else if (mouseState === Module.MML_ANALYS_AREA || mouseState === Module.MML_ANALYS_AREA_PLANE) {
         console.log('면적 측정');
@@ -78,7 +87,7 @@ function addPoint(e) {
             createPOI(e.dLon, e.dLat, e.dAlt, "rgba(255, 204, 198, 0.8)", `${e.dArea.toFixed(2)}m²`, true);
         }
     } else if (mouseState === Module.MML_ANALYS_AREA_CIRCLE) {
-        console.log('반경 측정'); 
+        console.log('반경 측정');
     } else {
         console.warn("알 수 없는 마우스 상태:", mouseState);
     }
@@ -86,22 +95,38 @@ function addPoint(e) {
 
 // POI 생성 함수
 function createPOI(lon, lat, alt, color, value, balloonType) {
+    const mouseState = Module.XDGetMouseState();
+
+    // POI 아이콘 이미지를 그리기 위한 캔버스 생성
     const drawCanvas = document.createElement("canvas");
     drawCanvas.width = 100;
     drawCanvas.height = 100;
 
+    // 아이콘 이미지 데이터 생성
     const imageData = drawIcon(drawCanvas, color, value, balloonType);
+
+    // POI 레이어 가져오기
     const layerList = new Module.JSLayerList(true);
     const layer = layerList.nameAtLayer("MEASURE_POI");
 
-    const uniqueKey = `${GLOBAL.m_mercount}_${GLOBAL.m_objcount}_POI`;
+    const key = `${GLOBAL.m_mercount}_${GLOBAL.m_objcount}_POI`;
 
-    const poi = Module.createPoint(uniqueKey);
+    // 면적 측정 마우스 상태일 때만 기존 POI 삭제
+    if (mouseState === Module.MML_ANALYS_AREA || mouseState === Module.MML_ANALYS_AREA_PLANE) {
+        layer.removeAtKey(key);
+    }
+
+    // 새로운 POI 생성
+    const poi = Module.createPoint(key);
     poi.setPosition(new Module.JSVector3D(lon, lat, alt));
     poi.setImage(imageData, drawCanvas.width, drawCanvas.height);
     layer.addObject(poi, 0);
 
-    GLOBAL.m_objcount++;
+    // 거리 측정 마우스 상태일 때만 객체 카운트 증가
+    if (mouseState === Module.MML_ANALYS_DISTANCE || mouseState === Module.MML_ANALYS_DISTANCE_STRAIGHT) {
+        GLOBAL.m_objcount++;
+    }
+
     Module.XDRenderData();
 }
 
@@ -126,7 +151,7 @@ function viewListOBjKey(key) {
     deleteBtn.classList.add("distance-del-btn");
 
     deleteBtn.addEventListener("click", () => {
-        deleteObject(key); 
+        deleteObject(key);
     });
 
     li.appendChild(deleteBtn); // 리스트 항목에 삭제 버튼 추가
