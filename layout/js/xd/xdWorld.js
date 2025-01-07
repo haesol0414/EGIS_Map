@@ -1,17 +1,11 @@
 var GLOBAL = {
-    m_objcount: 0, // 측정 오브젝트(POI)의 개수
-    m_mercount: 0, // 측정 작업의 총 개수
-    nIndex: 0
+    m_objcount: 0,  // 측정 오브젝트(POI)의 개수
+    m_mercount: 0,  // 측정 작업의 총 개수
+    n_index: 0      // 높이 측정 아이콘-POI 인덱스 관리
 };
 let Symbol, // 아이콘 관리 심볼 객체
     POILayer, // POI 저장 레이어
     WallLayer; // 반경 벽 저장 레이어
-
-const distanceBtn = document.getElementById("distance-btn");
-const areaBtn = document.getElementById("area-btn");
-const clearBtn = document.getElementById("xd-clear-btn");
-const radiusBtn = document.getElementById("radius-btn");
-const altitudeBtn = document.getElementById("altitude-btn");
 
 var Module = {
     locateFile: function (s) {
@@ -47,20 +41,16 @@ var Module = {
             }
         });
 
-        // POI 레이어 생성
-        let layerList = new Module.JSLayerList(true);
-        let layer = layerList.createLayer("MEASURE_POI", Module.ELT_3DPOINT);
-        layer.setMaxDistance(20000.0);
-        layer.setSelectable(false);
-
         // 아이콘 관리 심볼 생성
         Symbol = Module.getSymbol();
 
-        // 분석 내용을 표시할 POI 레이어 생성
+        // POI 레이어 생성
+        let layerList = new Module.JSLayerList(true);
         POILayer = layerList.createLayer("MEASURE_POI", Module.ELT_3DPOINT);
         POILayer.setMaxDistance(20000.0);
         POILayer.setSelectable(false);
 
+        // 반경 측정 레이어
         WallLayer = layerList.createLayer("MEASURE_WALL", Module.ELT_POLYHEDRON);
         WallLayer.setMaxDistance(20000.0);
         WallLayer.setSelectable(false);
@@ -136,64 +126,3 @@ function setMouseState(state) {
             return;
     }
 }
-
-/* ========================= 버튼 이벤트 ============================= */
-// 반경 측정 버튼
-radiusBtn.addEventListener("click", function () {
-    clearAnalysis();
-    radiusBtn.classList.add("active");
-
-    Module.getOption().callBackAddPoint(null); // 거리/면적 콜백 해제
-    Module.getOption().callBackCompletePoint(null); // 완료 콜백 해제
-
-    setMouseState("radius"); // 반경 측정 모드 활성화
-
-    console.log("반경 측정");
-});
-
-// 거리 측정 버튼
-distanceBtn.addEventListener("click", () => {
-    clearAnalysis();
-    distanceBtn.classList.add("active");
-
-    // 콜백 등록
-    Module.getOption().callBackAddPoint(addPoint);
-    Module.getOption().callBackCompletePoint(endPoint);
-
-    setMouseState("distance"); // 거리 측정 모드
-
-    console.log("거리 측정");
-});
-
-// 면적 측정 버튼
-areaBtn.addEventListener("click", () => {
-    clearAnalysis();
-    areaBtn.classList.add("active");
-
-    // 콜백 등록
-    Module.getOption().callBackAddPoint(addPoint);
-    Module.getOption().callBackCompletePoint(endPoint);
-
-    setMouseState("area"); // 면적 측정 모드
-
-    console.log("면적 측정");
-});
-
-// 고도 측정 버튼
-altitudeBtn.addEventListener("click", () => {
-    clearAnalysis();
-
-    altitudeBtn.classList.add("active");
-    Module.XDSetMouseState(Module.MML_ANALYS_ALTITUDE); // 고도 측정 모드
-
-    console.log("고도 측정");
-});
-
-
-// 초기화 버튼
-clearBtn.addEventListener("click", () => {
-    clearAnalysis();
-
-    setMouseState("move");
-    console.log("분석 내용 초기화");
-});
