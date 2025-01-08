@@ -1,7 +1,7 @@
 var GLOBAL = {
 	m_objcount: 0,  // 측정 오브젝트(POI)의 개수
 	m_mercount: 0,  // 측정 작업의 총 개수
-	n_index: 0      // 높이 측정 아이콘-POI 인덱스 관리
+	n_index: 0      // 고도 측정 인덱스 관리
 };
 let Symbol, // 아이콘 관리 심볼 객체
 	POILayer, // POI 저장 레이어
@@ -45,6 +45,15 @@ var Module = {
 		Module.getOption().callBackAddPoint(addPoint);
 		Module.getOption().callBackCompletePoint(endPoint);
 
+		// 반경 측정 이벤트 리스너 등록
+		// Module.canvas.addEventListener("Fire_EventAddRadius", function(e){
+		// 	if(e.dTotalDistance > 0) {
+		// 		clearRadiusIcon();
+		//
+		// 		createPOI( new Module.JSVector3D(e.dMidLon, e.dMidLat, e.dMidAlt), "rgba(255, 204, 198, 0.8)", e.dTotalDistance, true );
+		// 	}
+		// });
+
 		// 고도 측정 이벤트 리스너 등록
 		Module.canvas.addEventListener('Fire_EventAddAltitudePoint', altitudeHandler);
 
@@ -78,7 +87,7 @@ var Module = {
 };
 
 
-/* 현재 마우스 상태 반환 함수 */
+// 현재 마우스 상태 반환 함수
 function getMouseState() {
 	const mouseState = Module.XDGetMouseState();
 
@@ -86,7 +95,7 @@ function getMouseState() {
 		return 'move';
 	} else if (mouseState === Module.MML_ANALYS_DISTANCE_STRAIGHT) {
 		return 'distance';
-	} else if (mouseState === mouseState === Module.MML_ANALYS_AREA_PLANE) {
+	} else if (mouseState === Module.MML_ANALYS_AREA_PLANE) {
 		return 'area';
 	} else if (mouseState === Module.MML_ANALYS_AREA_CIRCLE) {
 		return 'radius';
@@ -96,7 +105,7 @@ function getMouseState() {
 	return 'unknown';
 }
 
-/* 마우스 상태 설정 함수 */
+// 마우스 상태 설정 함수
 function setMouseState(state) {
 	switch (state) {
 		case 'move':

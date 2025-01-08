@@ -1,7 +1,6 @@
 /* POI 생성 함수 */
 function createPOI(_position, _color, _value, _balloonType, _subValue = null) {
 	const currentState = getMouseState();
-	console.log('현재 상태:', currentState);
 
 	const drawCanvas = document.createElement('canvas');
 	drawCanvas.width = (currentState === 'altitude') ? 200 : 100;
@@ -9,15 +8,15 @@ function createPOI(_position, _color, _value, _balloonType, _subValue = null) {
 
 	// 아이콘 이미지 데이터 생성
 	const imageData = drawIcon(drawCanvas, _color, _value, _balloonType, _subValue);
-	var nIndex = GLOBAL.n_index;
+	let  nIndex = GLOBAL.n_index;
 
+	// 고도 측정 POI 추가
 	if (currentState === 'altitude') {
-		// 고도 측정 POI 추가
 		if (Symbol.insertIcon('Icon' + nIndex, imageData, drawCanvas.width, drawCanvas.height)) {
 			const icon = Symbol.getIcon('Icon' + nIndex);
 
 			// JSPoint 객체 생성
-			var poi = Module.createPoint('POI' + nIndex);
+			let poi = Module.createPoint('POI' + nIndex);
 
 			poi.setPosition(_position);    // 위치 설정
 			poi.setIcon(icon);             // 아이콘 설정
@@ -26,47 +25,52 @@ function createPOI(_position, _color, _value, _balloonType, _subValue = null) {
 
 			GLOBAL.n_index++;               // 인덱스 증가
 		}
-	} else {
-		if (currentState === 'radius') {
-			// 반경 측정 POI 추가
-			if (Symbol.insertIcon('Icon', imageData, drawCanvas.width, drawCanvas.height)) {
-				// 등록한 아이콘 객체 반환
-				var icon = Symbol.getIcon('Icon');
+		return;  // Early return
+	}
 
-				// Point 객체 생성
-				var poi = Module.createPoint('POI');
+	// 반경 측정 POI 추가
+	if (currentState === 'radius') {
+		if (Symbol.insertIcon('Icon', imageData, drawCanvas.width, drawCanvas.height)) {
+			// 등록한 아이콘 객체 반환
+			let icon = Symbol.getIcon('Icon');
 
-				poi.setPosition(_position);		// 위치 설정
-				poi.setIcon(icon);				// 아이콘 설정
+			// Point 객체 생성
+			let poi = Module.createPoint('POI');
 
-				// 레이어에 오브젝트 추가
-				POILayer.addObject(poi, 0);
-			}
-		} else {
-			// 거리 또는 면적 POI 추가
-			const key = `${GLOBAL.m_mercount}_${GLOBAL.m_objcount}_POI`;
+			poi.setPosition(_position);     // 위치 설정
+			poi.setIcon(icon);              // 아이콘 설정
 
-			// 면적 측정 마우스 상태일 때만 기존 POI 삭제
-			if (currentState === 'area') {
-				POILayer.removeAtKey(key);
-			}
-
-			const poi = Module.createPoint(key);
-			poi.setPosition(_position);       // 위치 설정
-			poi.setImage(imageData, drawCanvas.width, drawCanvas.height);
-
-			POILayer.addObject(poi, 0); // 레이어에 객체 추가
-
-			// 거리 측정 마우스 상태일 때만 객체 카운트 증가
-			if (currentState === 'distance') {
-				GLOBAL.m_objcount++;
-			}
-
-			// 화면 다시 렌더링
-			Module.XDRenderData();
+			// 레이어에 오브젝트 추가
+			POILayer.addObject(poi, 0);
 		}
+		return;  // Early return
+	}
+
+	// 거리 또는 면적 POI 추가
+	if (currentState === 'distance' || currentState === 'area') {
+		const key = `${GLOBAL.m_mercount}_${GLOBAL.m_objcount}_POI`;
+
+		// 면적 측정 상태일 때만 기존 POI 삭제
+		if (currentState === 'area') {
+			POILayer.removeAtKey(key);
+		}
+
+		const poi = Module.createPoint(key);
+		poi.setPosition(_position);            // 위치 설정
+		poi.setImage(imageData, drawCanvas.width, drawCanvas.height);
+
+		POILayer.addObject(poi, 0);            // 레이어에 객체 추가
+
+		// 거리 측정 상태일 때만 객체 카운트 증가
+		if (currentState === 'distance') {
+			GLOBAL.m_objcount++;
+		}
+
+		// 화면 다시 렌더링
+		Module.XDRenderData();
 	}
 }
+
 
 // 아이콘 이미지 생성 함수
 function drawIcon(_canvas, _color, _value, _balloonType = false, _subValue = null) {
@@ -91,6 +95,7 @@ function drawIcon(_canvas, _color, _value, _balloonType = false, _subValue = nul
 		// 위치 마커 그리기
 		drawDot(ctx, _canvas.width, _canvas.height);
 	} else {
+		// 그 외
 		if (_balloonType) {
 			drawBalloon(ctx, _canvas.height * 0.5, _canvas.width, _canvas.height, 5, _canvas.height * 0.25, _color);
 			setText(ctx, _canvas.width * 0.5, _canvas.height * 0.2, _value, 'rgb(0, 0, 0)', '16px');
@@ -103,7 +108,7 @@ function drawIcon(_canvas, _color, _value, _balloonType = false, _subValue = nul
 	return ctx.getImageData(0, 0, _canvas.width, _canvas.height).data;
 }
 
-// 고도 측정시 점 그리기
+// 고도 측정 - 점 그리기
 function drawDot(_ctx, _width, _height) {
 	_ctx.beginPath();
 	_ctx.lineWidth = 6;
@@ -155,7 +160,7 @@ function drawRoundRect(_ctx, _x, _y, _width, _height, _radius, _color) {
 // 텍스트 설정
 function setText(_ctx, _posX, _posY, _value, _color, _size) {
 	const currentState = getMouseState();
-	var strText = String(_value);
+	let strText = String(_value);
 
 	// 텍스트 문자열 설정
 	if (typeof _value === 'number') {
@@ -221,6 +226,23 @@ function viewListOBjKey(_key) {
 	objList.appendChild(obj); // 리스트에 항목 추가
 }
 
+// 고도 측정 - 결과값 표시
+function viewAltiResult(lon, lat, alt, gAlt, oAlt) {
+	const objList = document.getElementById('xd-object-list');
+
+	objList.innerHTML = `<li class="alti-wrap">
+                <div class="alti-position">
+                    <span>Lon : ${lon.toFixed(6)}</span>
+                    <span>Lat : ${lat.toFixed(6)}</span>
+                    <p>Alt : ${alt.toFixed(6)}</p>
+                </div>
+                <div class="alti-result">
+                    ${oAlt > 0 ? `<p>지면고도 : ${oAlt.toFixed(1)}m</p>` : ''}
+                    <p>해발고도 : ${gAlt.toFixed(1)}m</p>
+                </div>
+            </li>`;
+}
+
 // 오브젝트 개별 삭제
 function deleteObject(_key) {
 	const currentState = getMouseState();
@@ -259,7 +281,7 @@ function clearRadiusIcon() {
 		return;
 	}
 
-	var icon, poi;
+	let icon, poi;
 	poi = POILayer.keyAtObject('POI');
 
 	if (poi == null) {
@@ -274,20 +296,4 @@ function clearRadiusIcon() {
 	console.log('POILayer에서 POI 삭제 완료');
 
 	Symbol.deleteIcon(icon.getId());
-}
-
-function viewAltiResult(lon, lat, alt, gAlt, oAlt) {
-	const objList = document.getElementById('xd-object-list');
-
-	objList.innerHTML = `<li class="alti-wrap">
-                <div class="alti-position">
-                    <span>Lon : ${lon.toFixed(6)}</span>
-                    <span>Lat : ${lat.toFixed(6)}</span>
-                    <p>Alt : ${alt.toFixed(6)}</p>
-                </div>
-                <div class="alti-result">
-                    <p>해발고도 : ${gAlt.toFixed(2)}m</p>
-                    ${oAlt > 0 ? `<p>지면고도 : ${oAlt.toFixed(2)}m</p>` : ''}
-                </div>
-            </li>`;
 }
