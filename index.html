@@ -22,23 +22,13 @@
 		<h1 class="logo">
 			<a href="javascript:void(0);"><img src="/layout/images/logo-white.svg" alt=""></a>
 		</h1>
-		<div class="user-util">
-			<div class="login">
-				<button type="button" class="login-btn" data-popup="login">LOGIN</button>
-			</div>
-			<div class="logout">
-				<span class="img-box"><img src="" alt=""></span>
-				<p class="cont">반갑습니다! <strong>관리자</strong> 님!</p>
-				<button type="button" class="logout-btn">LOGOUT</button>
-			</div>
-		</div>
 	</div>
 	<div id="container">
 		<div class="map-control">
 			<div class="tool-box">
                 <span class="tool-btn">
-						<input type="radio" id="div2DBtn" name="divBtn">
-						<label for="div2DBtn">Kakao</label>
+						<input type="radio" id="divKakaoBtn" name="divBtn">
+						<label for="divKakaoBtn">Kakao</label>
 				</span>
 				<span class="tool-btn">
 						<input type="radio" id="divOlBtn" name="divBtn">
@@ -49,19 +39,9 @@
 						<label for="divXdBtn">3D</label>
 				</span>
 				<span class="tool-btn">
-						<input type="radio" id="divResetBtn" name="divBtn">
-						<label for="divResetBtn">초기화</label>
-				</span>
-				<span class="tool-btn">
 						<input type="radio" id="div2Btn" name="divBtn">
 						<label for="div2Btn">2분할</label>
-					</span>
-				<span class="tool-btn">
-						<input type="radio" id="div4Btn" name="divBtn">
-						<label for="div4Btn">4분할</label>
-					</span>
-				<button type="button" class="tool-btn roadview">로드뷰</button>
-				<button type="button" class="tool-btn printing">인쇄</button>
+				</span>
 			</div>
 		</div>
 		<!--   ================================ 2D - kakao ================================     -->
@@ -195,117 +175,13 @@
 					<button type="button" class="range-btn zoomin">+</button>
 					<button type="button" class="range-btn zoomout">-</button>
 				</div>
+				<span class="switch-btn">
+						<input type="checkbox" id="swchTest2">
+						<label for="swchTest2"></label>
+				</span>
 			</div>
 			<div id="xd-map" style="width:100%; height:100%;">
 			</div>
-		</div>
-		<!--   ================================ 초기화 ================================     -->
-		<div class="map-wrap reset">
-			<div class="map-aside">
-				<div class="map-menu">
-					<ul class="menu-bar">
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont01">재난안전</button>
-						</li>
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont02">시설/SOC</button>
-						</li>
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont03">사회복지</button>
-						</li>
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont04">도시계획</button>
-						</li>
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont05">기타</button>
-						</li>
-					</ul>
-					<div class="menu-cont">
-						<div class="bar-cont barCont01">
-							<div class="search-group">
-								<select name="" id="" class="form-select">
-									<option value="">제목</option>
-									<option value="">이름</option>
-								</select>
-								<input type="text" class="form-control auto" placeholder="내용 입력">
-								<button type="button" class="btn">검색</button>
-							</div>
-							<div class="tbl-wrap marT20" style="height: 690px;"> <!-- style="height: 필요한 높이값 입력;"-->
-								<div class="tbl-head">
-									<table>
-										<colgroup>
-											<col style="width: 20%;">
-											<col style="width: 40%;">
-											<col style="width: 40%;">
-										</colgroup>
-										<thead>
-										<tr>
-											<th scope="col">test1</th>
-											<th scope="col">test2</th>
-											<th scope="col">test3</th>
-										</tr>
-										</thead>
-									</table>
-								</div>
-								<div class="mCustomScrollbar-y">
-									<table>
-										<colgroup>
-											<col style="width: 20%;">
-											<col style="width: 40%;">
-											<col style="width: 40%;">
-										</colgroup>
-										<tbody>
-										<tr>
-											<td class="align-center">test1</td>
-											<td class="align-center">test2</td>
-											<td class="align-center">test3</td>
-										</tr>
-										<tr>
-											<td><input type="text" class="form-control"></td>
-											<td><input type="text" class="form-control"></td>
-											<td><input type="text" class="form-control"></td>
-										</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-							<div class="btn-wrap justify-content-end">
-								<button type="button" class="btn">test</button>
-								<button type="button" class="btn type01">test</button>
-								<button type="button" class="btn type02">test</button>
-							</div>
-						</div>
-						<div class="bar-cont barCont02">2</div>
-						<div class="bar-cont barCont03">3</div>
-						<div class="bar-cont barCont04">4</div>
-						<div class="bar-cont barCont05">5</div>
-					</div>
-					<button type="button" class="menu-cont-btn" title="열기"></button>
-				</div>
-			</div>
-			<div class="map-tool">
-				<div class="map-tool-group">
-					<button type="button" class="compass-btn"><span class="compass"
-																	style="transform: rotate(0deg);"></span></button>
-					<button type="button" class="map-tool-btn initial" title="초기화"></button>
-					<div class="btn-group">
-						<button type="button" class="map-tool-btn distance"></button>
-						<button type="button" class="map-tool-btn area"></button>
-						<button type="button" class="map-tool-btn earth"></button>
-					</div>
-				</div>
-				<div class="map-range">
-					<input type="range" orient="vertical">
-					<div class="range-bar"></div>
-					<button type="button" class="range-btn zoomin">+</button>
-					<button type="button" class="range-btn zoomout">-</button>
-				</div>
-				<span class="switch-btn">
-						<input type="checkbox" id="swchTest1">
-						<label for="swchTest1"></label>
-					</span>
-			</div>
-			<canvas style="background: #f2f0e8;"></canvas>
 		</div>
 		<!--   ================================ 2분할 ================================     -->
 		<div class="map-wrap div2">
@@ -362,135 +238,6 @@
 			</div>
 			<canvas style="background: #f2f0e8;"></canvas>
 		</div>
-		<!--   ================================ 4분할 ================================     -->
-		<div class="map-wrap div4">
-			<div class="map-aside">
-				<div class="map-menu">
-					<ul class="menu-bar">
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont01">재난안전</button>
-						</li>
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont02">시설/SOC</button>
-						</li>
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont03">사회복지</button>
-						</li>
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont04">도시계획</button>
-						</li>
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont05">기타</button>
-						</li>
-					</ul>
-					<div class="menu-cont">
-						<div class="bar-cont barCont01">1</div>
-						<div class="bar-cont barCont02">2</div>
-						<div class="bar-cont barCont03">3</div>
-						<div class="bar-cont barCont04">4</div>
-						<div class="bar-cont barCont05">5</div>
-					</div>
-					<button type="button" class="menu-cont-btn" title="열기"></button>
-				</div>
-			</div>
-			<div class="map-tool">
-				<div class="map-tool-group">
-					<button type="button" class="compass-btn"><span class="compass"
-																	style="transform: rotate(0deg);"></span></button>
-					<button type="button" class="map-tool-btn initial" title="초기화"></button>
-					<div class="btn-group">
-						<button type="button" class="map-tool-btn distance"></button>
-						<button type="button" class="map-tool-btn area"></button>
-						<button type="button" class="map-tool-btn earth"></button>
-					</div>
-				</div>
-				<div class="map-range">
-					<input type="range" orient="vertical">
-					<div class="range-bar"></div>
-					<button type="button" class="range-btn zoomin">+</button>
-					<button type="button" class="range-btn zoomout">-</button>
-				</div>
-				<span class="switch-btn">
-						<input type="checkbox" id="swchTest3">
-						<label for="swchTest3"></label>
-					</span>
-			</div>
-			<canvas style="background: #f2f0e8;"></canvas>
-		</div>
-		<div class="map-wrap div4">
-			<div class="map-aside">
-				<div class="map-menu">
-					<ul class="menu-bar">
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont01">재난안전</button>
-						</li>
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont02">시설/SOC</button>
-						</li>
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont03">사회복지</button>
-						</li>
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont04">도시계획</button>
-						</li>
-						<li>
-							<button type="button" class="bar-btn" data-tab="barCont05">기타</button>
-						</li>
-					</ul>
-					<div class="menu-cont">
-						<div class="bar-cont barCont01">1</div>
-						<div class="bar-cont barCont02">2</div>
-						<div class="bar-cont barCont03">3</div>
-						<div class="bar-cont barCont04">4</div>
-						<div class="bar-cont barCont05">5</div>
-					</div>
-					<button type="button" class="menu-cont-btn" title="열기"></button>
-				</div>
-			</div>
-			<div class="map-tool">
-				<div class="map-tool-group">
-					<button type="button" class="compass-btn"><span class="compass"
-																	style="transform: rotate(0deg);"></span></button>
-					<button type="button" class="map-tool-btn initial" title="초기화"></button>
-					<div class="btn-group">
-						<button type="button" class="map-tool-btn distance"></button>
-						<button type="button" class="map-tool-btn area"></button>
-						<button type="button" class="map-tool-btn earth"></button>
-					</div>
-				</div>
-				<div class="map-range">
-					<input type="range" orient="vertical">
-					<div class="range-bar"></div>
-					<button type="button" class="range-btn zoomin">+</button>
-					<button type="button" class="range-btn zoomout">-</button>
-				</div>
-				<span class="switch-btn">
-						<input type="checkbox" id="swchTest4">
-						<label for="swchTest4"></label>
-					</span>
-			</div>
-			<canvas style="background: #f2f0e8;"></canvas>
-		</div>
-	</div>
-	<!--로그인-->
-	<div class="popup-panel login">
-		<div class="pophead">로그인</div>
-		<div class="popbody">
-			<div class="login-cont">
-				<div class="col">
-					<span class="cat">아이디</span>
-					<input type="text" class="form-control">
-				</div>
-				<div class="col">
-					<span class="cat">패스워드</span>
-					<input type="password" class="form-control">
-				</div>
-			</div>
-			<button type="button" class="submit-btn">LOGIN</button>
-		</div>
-		<button type="button" class="popup-close">x</button>
-	</div>
-	<!--// 로그인-->
 </div>
 <!-- script : Kakao Maps -->
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8003a4b7ec88e8b617d20527b6326a5c"></script>

@@ -1,8 +1,9 @@
+const clearBtn = document.getElementById('xd-clear-btn');
 const distanceBtn = document.getElementById('distance-btn');
 const areaBtn = document.getElementById('area-btn');
-const clearBtn = document.getElementById('xd-clear-btn');
 const radiusBtn = document.getElementById('radius-btn');
 const altitudeBtn = document.getElementById('altitude-btn');
+
 
 // 고도 측정 이벤트 핸들러
 function altitudeHandler(e) {
@@ -132,7 +133,7 @@ radiusBtn.addEventListener('click', () => {
 
 // 초기화 버튼
 clearBtn.addEventListener('click', () => {
-	clearAnalysis();
+	//clearAnalysis();
 
 	setMouseState('move');
 	console.log('분석 내용 초기화');

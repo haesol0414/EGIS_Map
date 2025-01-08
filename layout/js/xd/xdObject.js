@@ -15,7 +15,6 @@ function createPOI(_position, _color, _value, _balloonType, _subValue = null) {
 		if (Symbol.insertIcon('Icon' + nIndex, imageData, drawCanvas.width, drawCanvas.height)) {
 			const icon = Symbol.getIcon('Icon' + nIndex);
 
-			// JSPoint 객체 생성
 			let poi = Module.createPoint('POI' + nIndex);
 
 			poi.setPosition(_position);    // 위치 설정
@@ -25,7 +24,7 @@ function createPOI(_position, _color, _value, _balloonType, _subValue = null) {
 
 			GLOBAL.n_index++;               // 인덱스 증가
 		}
-		return;  // Early return
+		return;
 	}
 
 	// 반경 측정 POI 추가
@@ -43,7 +42,7 @@ function createPOI(_position, _color, _value, _balloonType, _subValue = null) {
 			// 레이어에 오브젝트 추가
 			POILayer.addObject(poi, 0);
 		}
-		return;  // Early return
+		return;
 	}
 
 	// 거리 또는 면적 POI 추가
@@ -277,7 +276,6 @@ function deleteObject(_key) {
 // 반경 측정 - 아이콘 삭제
 function clearRadiusIcon() {
 	if (POILayer === null) {
-		console.log('POILayer가 null입니다.');
 		return;
 	}
 
@@ -285,15 +283,12 @@ function clearRadiusIcon() {
 	poi = POILayer.keyAtObject('POI');
 
 	if (poi == null) {
-		console.log('POI가 존재하지 않습니다.');
 		return;
 	}
 
 	icon = poi.getIcon();
-	console.log('아이콘: ', icon.getId());
 
 	POILayer.removeAtKey('POI');
-	console.log('POILayer에서 POI 삭제 완료');
 
 	Symbol.deleteIcon(icon.getId());
 }

@@ -66,7 +66,7 @@ var Module = {
 		POILayer.setMaxDistance(20000.0);
 		POILayer.setSelectable(false);
 
-		// 반경 측정 레이어
+		// 반경 측정 벽 레이어
 		WallLayer = layerList.createLayer('MEASURE_WALL', Module.ELT_POLYHEDRON);
 		WallLayer.setMaxDistance(20000.0);
 		WallLayer.setSelectable(false);
@@ -93,6 +93,8 @@ function getMouseState() {
 
 	if (mouseState === Module.MML_MOVE_GRAB) {
 		return 'move';
+	} else if (mouseState === Module.MML_SELECT_POINT) {
+		return 'select';
 	} else if (mouseState === Module.MML_ANALYS_DISTANCE_STRAIGHT) {
 		return 'distance';
 	} else if (mouseState === Module.MML_ANALYS_AREA_PLANE) {
@@ -110,6 +112,9 @@ function setMouseState(state) {
 	switch (state) {
 		case 'move':
 			Module.XDSetMouseState(Module.MML_MOVE_GRAB); // 이동 모드
+			break;
+		case 'select':
+			Module.XDSetMouseState(Module.MML_SELECT_POINT); // 객체 선택 모드
 			break;
 		case 'distance':
 			Module.XDSetMouseState(Module.MML_ANALYS_DISTANCE_STRAIGHT); // 거리 측정 모드

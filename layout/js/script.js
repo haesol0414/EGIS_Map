@@ -12,7 +12,7 @@ $(document).ready(function() {
 		$(this).closest('.logout').removeClass('active');
 		$('.login').addClass('active');
 	});
-	/* ========== 로그인 임시 스크립트 ========== */
+	/* ========== 로그인 임시 스크립트 ========== */``
 
 	/* ========== switch button 임시 스크립트 ========== */
 	$('.switch-btn input[type=\'checkbox\']').on('click', function() {
@@ -109,34 +109,24 @@ $(document).ready(function() {
 		if ($(this).is('#div2Btn')) {
 			$('#container').attr('class', 'mapdiv2');
 			$('.map-wrap.div2').show();
-			$('.map-wrap.div4, .map-wrap.two, .map-wrap.ol, .map-wrap.xd').hide();
-		} else if ($(this).is('#div4Btn')) {
-			$('#container').attr('class', 'mapdiv4');
-			$('.map-wrap.div2, .map-wrap.div4').show();
 			$('.map-wrap.two, .map-wrap.ol, .map-wrap.xd').hide();
-		} else if ($(this).is('#divResetBtn')) {
+		} else if ($(this).is('#divKakaoBtn')) {   // 카카오맵
 			$('#container').removeAttr('class');
-			$('.map-wrap.two, .map-wrap.div2, .map-wrap.div4, .map-wrap.ol, .map-wrap.xd').hide();
-			$('.map-wrap.reset').show();
-			$('.map-menu .menu-cont').addClass('opened').removeClass('closed');
-			$('.map-menu .menu-cont-btn').addClass('on');
-		} else if ($(this).is('#div2DBtn')) {   // 카카오맵
-			$('#container').removeAttr('class');
-			$('.map-wrap.div2, .map-wrap.div4, .map-wrap.reset, .map-wrap.xd, .map-wrap.ol').hide();
+			$('.map-wrap.div2, .map-wrap.xd, .map-wrap.ol').hide();
 			$('.map-wrap.two').show();
 			$('.map-menu .menu-cont').addClass('opened').removeClass('closed');
 			$('.map-menu .menu-cont-btn').addClass('on');
 		} else if ($(this).is('#divOlBtn')) {
 			$('#container').removeAttr('class');
 			$('.map-wrap.ol').show();
-			$('.map-wrap.div2, .map-wrap.div4, .map-wrap.reset, .map-wrap.two, .map-wrap.xd').hide();
+			$('.map-wrap.div2, .map-wrap.two, .map-wrap.xd').hide();
 			$('.map-menu .menu-cont').addClass('opened').removeClass('closed');
 			$('.map-menu .menu-cont-btn').addClass('on');
 			$('.kakao-map .category').removeClass('active');
 		} else if ($(this).is('#divXdBtn')) {
 			$('#container').removeAttr('class');
 			$('.map-wrap.xd').show();
-			$('.map-wrap.div2, .map-wrap.div4, .map-wrap.reset, .map-wrap.two, .map-wrap.ol').hide();
+			$('.map-wrap.div2, .map-wrap.two, .map-wrap.ol').hide();
 			$('.map-menu .menu-cont').addClass('opened').removeClass('closed');
 			$('.map-menu .menu-cont-btn').addClass('on');
 			$('.kakao-map .category').removeClass('active');
@@ -203,4 +193,42 @@ $(document).ready(function() {
 	$('.popup-panel .popup-close').on('click', function() {
 		$(this).closest('.popup-panel').hide();
 	});
+
+	/* 새로고침 처리 */
+	// 저장된 탭 불러오기
+	const selectedTabId = localStorage.getItem('selectedTab');
+	if (selectedTabId) {
+		$(`#${selectedTabId}`).prop('checked', true); // 탭 선택
+		showMapWrap(selectedTabId);                   // 매칭된 map-wrap 보이기
+	} else {
+		// 기본 탭 설정 (Kakao)
+		$('#divKakaoBtn').prop('checked', true);
+		showMapWrap('divKakaoBtn');
+	}
+
+	// 탭 클릭 시 이벤트 처리
+	$('input[name="divBtn"]').on('change', function () {
+		const selectedId = $(this).attr('id');
+		localStorage.setItem('selectedTab', selectedId); // 선택된 탭 ID 저장
+		showMapWrap(selectedId);                         // 매칭된 map-wrap 보이기
+	});
+
+	// 선택된 탭에 맞는 map-wrap 보여주는 함수
+	function showMapWrap(tabId) {
+		$('.map-wrap').hide(); // 모든 map-wrap 숨기기
+		switch (tabId) {
+			case 'divKakaoBtn':
+				$('.map-wrap.two').show();
+				break;
+			case 'divOlBtn':
+				$('.map-wrap.ol').show();
+				break;
+			case 'divXdBtn':
+				$('.map-wrap.xd').show();
+				break;
+			case 'div2Btn':
+				$('.map-wrap.div2').show();
+				break;
+		}
+	}
 });
