@@ -1,4 +1,4 @@
-import {generateStars} from './utils.js';
+import { generateStars } from './utils.js';
 
 export const createMarkerHTML = (index) => `
     <div class="marker" 
@@ -45,25 +45,25 @@ export const createBadgeHTML = (index, place) => `
 
 // 검색 결과 li
 export const createListItemHTML = (place, index, rating) => {
-    const markerLabel = String.fromCharCode(65 + index);
+	const markerLabel = String.fromCharCode(65 + index);
 
-    const isAddressSearch = place.address || place.road_address;
+	const isAddressSearch = place.address || place.road_address;
 
-    const placeName = isAddressSearch
-        ? (place.road_address?.building_name || '건물명 없음')
-        : place.place_name;
+	const placeName = isAddressSearch
+		? (place.road_address?.building_name || '건물명 없음')
+		: place.place_name;
 
-    const roadAddress = isAddressSearch
-        ? (place.road_address?.address_name || '도로명 주소 없음')
-        : place.road_address_name;
+	const roadAddress = isAddressSearch
+		? (place.road_address?.address_name || '도로명 주소 없음')
+		: place.road_address_name;
 
-    const addressName = isAddressSearch
-        ? (place.address?.address_name || '지번 주소 없음')
-        : place.address_name;
+	const addressName = isAddressSearch
+		? (place.address?.address_name || '지번 주소 없음')
+		: place.address_name;
 
-    const categoryName = place.category_name?.split(' > ').pop() || '';
+	const categoryName = place.category_name?.split(' > ').pop() || '';
 
-    return `
+	return `
         <li class="search-result-item" data-marker-index="${index}">
             <div class="place-title">
                 <span class="place-idx">${markerLabel}.</span>
