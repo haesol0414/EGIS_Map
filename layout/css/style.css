@@ -478,6 +478,10 @@ html, body {
     background-image: url(/layout/images/ico/ico-length.png);
 }
 
+.map-tool-btn.select {
+    background-image: url(/layout/images/ico/ico-marker.png);
+}
+
 .popup-panel {
     display: none;
     position: absolute;

@@ -12,16 +12,15 @@ $(document).ready(function() {
 		$(this).closest('.logout').removeClass('active');
 		$('.login').addClass('active');
 	});
-	/* ========== 로그인 임시 스크립트 ========== */``
+	/* ========== 로그인 임시 스크립트 ========== */
+	``;
 
 	/* ========== switch button 임시 스크립트 ========== */
-	$('.switch-btn input[type=\'checkbox\']').on('click', function() {
-		if ($(this).is(':checked')) {
-			$(this).closest('.map-wrap').find('canvas').css('background', 'black');
-		} else {
-			$(this).closest('.map-wrap').find('canvas').css('background', '#f2f0e8');
-		}
-	});
+	// $('.switch-btn input[type=\'checkbox\']').on('click', function() {
+	// 	if ($(this).is(':checked')) {
+	// 	} else {
+	// 	}
+	// });
 	/* ========== switch button 임시 스크립트 ========== */
 
 
@@ -106,35 +105,33 @@ $(document).ready(function() {
 
 	/* division */
 	$('.tool-btn *[name=\'divBtn\']').on('click', function() {
-		if ($(this).is('#div2Btn')) {
-			$('#container').attr('class', 'mapdiv2');
-			$('.map-wrap.div2').show();
-			$('.map-wrap.two, .map-wrap.ol, .map-wrap.xd').hide();
-		} else if ($(this).is('#divKakaoBtn')) {   // 카카오맵
+		if ($(this).is('#divKakaoBtn')) {   // 카카오맵
 			$('#container').removeAttr('class');
-			$('.map-wrap.div2, .map-wrap.xd, .map-wrap.ol').hide();
+			$('.map-wrap.xd, .map-wrap.ol').hide();
 			$('.map-wrap.two').show();
 			$('.map-menu .menu-cont').addClass('opened').removeClass('closed');
 			$('.map-menu .menu-cont-btn').addClass('on');
 		} else if ($(this).is('#divOlBtn')) {
 			$('#container').removeAttr('class');
 			$('.map-wrap.ol').show();
-			$('.map-wrap.div2, .map-wrap.two, .map-wrap.xd').hide();
+			$('.map-wrap.two, .map-wrap.xd').hide();
 			$('.map-menu .menu-cont').addClass('opened').removeClass('closed');
 			$('.map-menu .menu-cont-btn').addClass('on');
 			$('.kakao-map .category').removeClass('active');
 		} else if ($(this).is('#divXdBtn')) {
 			$('#container').removeAttr('class');
 			$('.map-wrap.xd').show();
-			$('.map-wrap.div2, .map-wrap.two, .map-wrap.ol').hide();
+			$('.map-wrap.two, .map-wrap.ol').hide();
 			$('.map-menu .menu-cont').addClass('opened').removeClass('closed');
 			$('.map-menu .menu-cont-btn').addClass('on');
 			$('.kakao-map .category').removeClass('active');
+			Module.getOption().setStereoView(false);
 		}
 
 		if ($(this).is('#div2Btn') || $(this).is('#div4Btn')) {
 			$('.map-menu .menu-cont').addClass('closed').removeClass('opened');
 			$('.map-menu .menu-cont-btn').removeClass('on');
+			Module.getOption().setStereoView(true);
 		}
 	});
 
@@ -149,7 +146,6 @@ $(document).ready(function() {
 
 	/* menu button */
 	$('.bar-btn').each(function(index, btn) {
-
 		if ($(btn).parent('li').is(':first-child')) {
 			$(this).parent().addClass('active');
 			$('.' + $(this).attr('data-tab')).addClass('active');
@@ -169,7 +165,6 @@ $(document).ready(function() {
 				$(this).closest('.map-menu').find('.menu-cont-btn').addClass('on');
 			}
 		});
-
 	});
 
 	$('.bar-cont').mCustomScrollbar({
@@ -198,8 +193,9 @@ $(document).ready(function() {
 	// 저장된 탭 불러오기
 	const selectedTabId = localStorage.getItem('selectedTab');
 	if (selectedTabId) {
-		$(`#${selectedTabId}`).prop('checked', true); // 탭 선택
-		showMapWrap(selectedTabId);                   // 매칭된 map-wrap 보이기
+		const tabToActivate = (selectedTabId === 'div2Btn') ? 'divXdBtn' : selectedTabId; // div2Btn일 경우 divXdBtn으로 대체
+		$(`#${tabToActivate}`).prop('checked', true); // 탭 선택
+		showMapWrap(tabToActivate);                   // 매칭된 map-wrap 보이기
 	} else {
 		// 기본 탭 설정 (Kakao)
 		$('#divKakaoBtn').prop('checked', true);
@@ -207,7 +203,7 @@ $(document).ready(function() {
 	}
 
 	// 탭 클릭 시 이벤트 처리
-	$('input[name="divBtn"]').on('change', function () {
+	$('input[name="divBtn"]').on('change', function() {
 		const selectedId = $(this).attr('id');
 		localStorage.setItem('selectedTab', selectedId); // 선택된 탭 ID 저장
 		showMapWrap(selectedId);                         // 매칭된 map-wrap 보이기
@@ -227,7 +223,7 @@ $(document).ready(function() {
 				$('.map-wrap.xd').show();
 				break;
 			case 'div2Btn':
-				$('.map-wrap.div2').show();
+				$('.map-wrap.xd').show();
 				break;
 		}
 	}
