@@ -54,7 +54,6 @@ function addPoint(e) {
 
 		if (e.dTotalDistance > 0) {
 			clearRadiusIcon();
-
 			createRadiusPOI(new Module.JSVector3D(e.dMidLon, e.dMidLat, e.dMidAlt), 'rgba(255, 204, 198, 0.8)', true, e.dTotalDistance);
 		}
 	}
@@ -157,17 +156,12 @@ function drawIcon(_canvas, _color, _balloonType, _value, _subValue = null) {
 function clearAnalysis() {
 	document.querySelectorAll('.map-tool-btn.active').forEach(btn => btn.classList.remove('active'));
 
-	clearRadiusIcon();
-
 	// 측정 관련 객체 초기화
 	Module.XDClearDistanceMeasurement();
 	Module.XDClearAreaMeasurement();
 	Module.XDClearCircleMeasurement();
 
-	// 오브젝트 전체 삭제
-	if (POILayer != null) {
-		POILayer.removeAll();
-	}
+	clearRadiusIcon();
 
 	// li 초기화
 	let objList = document.getElementById('xd-object-list');
@@ -178,7 +172,6 @@ function clearAnalysis() {
 	// 전역 변수 초기화
 	GLOBAL.m_mercount = 0;
 	GLOBAL.m_objcount = 0;
-	GLOBAL.n_index = 0;
 
 	// 화면 렌더링
 	Module.XDRenderData();
@@ -191,7 +184,7 @@ distanceBtn.addEventListener('click', () => {
 	clearAnalysis();
 
 	distanceBtn.classList.add('active');
-	if (!switchBtn.checked) switchBtn.click();
+	if (switchBtn.checked) switchBtn.click();
 
 	setMouseState('distance'); // 거리 측정 모드
 
@@ -202,7 +195,7 @@ distanceBtn.addEventListener('click', () => {
 areaBtn.addEventListener('click', () => {
 	clearAnalysis();
 	areaBtn.classList.add('active');
-	if (!switchBtn.checked) switchBtn.click();
+	if (switchBtn.checked) switchBtn.click();
 
 	setMouseState('area'); // 면적 측정 모드
 
@@ -233,7 +226,7 @@ radiusBtn.addEventListener('click', () => {
 
 // 초기화 버튼
 clearBtn.addEventListener('click', () => {
-	clearAnalysis();
+	//clearAnalysis();
 
 	setMouseState('select');
 	console.log('분석 내용 초기화');

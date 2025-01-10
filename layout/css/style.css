@@ -482,6 +482,12 @@ html, body {
     background-image: url(/layout/images/ico/ico-marker.png);
 }
 
+.marker {
+    display: block;
+    width: 35px;
+    height: 35px;
+    background-image: url(/layout/images/ico/map_pin.png);
+}
 .popup-panel {
     display: none;
     position: absolute;

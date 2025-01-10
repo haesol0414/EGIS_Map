@@ -30,6 +30,7 @@ function createDiscAndAreaPOI(_position, _color, _balloonType, _result) {
 
 // 고도 측정 POI 생성
 function createAltiPOI(_position, _color, _balloonType, _gAltitude, _oAltitude) {
+	console.log("ㅇㅇ");
 	const drawCanvas = document.createElement('canvas');
 	drawCanvas.width = 200;
 	drawCanvas.height = 100;
@@ -54,6 +55,8 @@ function createAltiPOI(_position, _color, _balloonType, _gAltitude, _oAltitude) 
 	}
 }
 
+// 전역변수에 반경 icon 이름 저장
+let radiusIconNm = "";
 // 반경 측정 POI 생성
 function createRadiusPOI(_position, _color, _balloonType, _radius) {
 	const drawCanvas = document.createElement('canvas');
@@ -62,17 +65,24 @@ function createRadiusPOI(_position, _color, _balloonType, _radius) {
 
 	const imageData = drawIcon(drawCanvas, _color, _balloonType, _radius);
 
-	if (XD.Symbol.insertIcon('Icon', imageData, drawCanvas.width, drawCanvas.height)) {
-		let icon = XD.Symbol.getIcon('Icon');
+	let createIconNm = 'Icon_'+_radius;
+	if (!XD.Symbol.getIcon(createIconNm)) {
+		// 기존의 Icon은 삭제
+		XD.Symbol.deleteIcon(radiusIconNm);
 
-		let poi = Module.createPoint('POI');
-		poi.setPosition(_position);     // 위치 설정
-		poi.setIcon(icon);              // 아이콘 설정
-
-		POILayer.addObject(poi, 0);     // 레이어에 오브젝트 추가
+		// 새 Icon 그리기
+		XD.Symbol.insertIcon(createIconNm, imageData, drawCanvas.width, drawCanvas.height);
+		radiusIconNm = createIconNm;
 	}
 
-	objList.innerHTML = createRadiusResultHTML(_position, _radius);
+	let icon = XD.Symbol.getIcon(createIconNm);
+	let poi = Module.createPoint('POI');
+	poi.setPosition(_position);     // 위치 설정
+	poi.setIcon(icon);              // 아이콘 설정
+
+	POILayer.addObject(poi, 0);     // 레이어에 오브젝트 추가
+
+	// objList.innerHTML = createRadiusResultHTML(_position, _radius);
 }
 
 // 오브젝트 개별 삭제
@@ -108,18 +118,10 @@ function clearObject(_key) {
 
 // 반경 측정 - 아이콘 삭제
 function clearRadiusIcon() {
-	if (POILayer === null) {
-		return;
+	if (POILayer !== null) {
+		POILayer.removeAll();
 	}
-
-	let icon, poi;
-	poi = POILayer.keyAtObject('POI');
-
-	if (poi == null) {
-		return;
+	if (WallLayer !== null) {
+		WallLayer.removeAll();
 	}
-
-	icon = poi.getIcon();
-	POILayer.removeAtKey('POI');
-	XD.Symbol.deleteIcon(icon.getId());
 }

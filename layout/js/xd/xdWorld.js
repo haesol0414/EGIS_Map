@@ -9,6 +9,7 @@ const XD = {
 	Symbol: null    // 심볼 객체 (초기값 null)
 };
 let POILayer = null;  // POI 저장 레이어
+let WallLayer  = null;  // 반경 벽 저장 레이어
 const switchBtn = document.getElementById('xd-switch');
 
 var Module = {
@@ -56,8 +57,26 @@ var Module = {
 		Module.canvas.addEventListener('Fire_EventAddAltitudePoint', altitudeHandler);
 
 		// 객체 선택 이벤트 등록
-		Module.canvas.addEventListener('Fire_EventSelectedObject', function() {
-			console.log('객체선택ㅇㅇㅇ');
+		Module.canvas.addEventListener('Fire_EventSelectedObject', function(e) {
+			console.log("e = ", e);
+			const layerList = new Module.JSLayerList(true);
+			const targetLayerName = layerList.nameAtLayer(e.layerName);
+			console.log("targetLayerName = ", targetLayerName);
+			console.log("e.objKey = ", e.objKey);
+			const obj = targetLayerName.keyAtObject(e.objKey);
+			console.log("obj = ", obj);
+			console.log("obj.getId = ", obj.getId());
+			console.log("obj.getPosition = ", obj.getPosition());
+			console.log("obj.getName = ", obj.getName());
+			console.log("obj.getDescription = ", obj.getDescription());
+			console.log("obj.getVisible = ", obj.getVisible());
+
+			obj.setName("test!!");
+			obj.setDescription("Description!!!!");
+
+			console.log("obj.getName = ", obj.getName());
+			console.log("obj.getDescription = ", obj.getDescription());
+
 		});
 
 		// POI 레이어 생성
@@ -65,6 +84,12 @@ var Module = {
 		POILayer = layerList.createLayer('MEASURE_POI', Module.ELT_3DPOINT);
 		POILayer.setMaxDistance(20000.0);
 		POILayer.setSelectable(true);					// 클릭 이벤트 허용
+
+		// 반경 벽 레이어
+		WallLayer = layerList.createLayer("MEASURE_WALL", Module.ELT_POLYHEDRON);
+		WallLayer.setMaxDistance(20000.0);
+		WallLayer.setSelectable(true);
+		WallLayer.setEditable(true);
 
 		// 건물 레이어
 		const buildLayer = Module.getTileLayerList().createXDServerLayer({
