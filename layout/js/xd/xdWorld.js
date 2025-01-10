@@ -9,7 +9,6 @@ const XD = {
 	Symbol: null    // 심볼 객체 (초기값 null)
 };
 let POILayer = null;  // POI 저장 레이어
-let WallLayer = null; // 반경 벽 저장 레이어
 const switchBtn = document.getElementById('xd-switch');
 
 var Module = {
@@ -66,12 +65,6 @@ var Module = {
 		POILayer = layerList.createLayer('MEASURE_POI', Module.ELT_3DPOINT);
 		POILayer.setMaxDistance(20000.0);
 		POILayer.setSelectable(true);					// 클릭 이벤트 허용
-
-		// 반경 측정 벽 레이어
-		WallLayer = layerList.createLayer('MEASURE_WALL', Module.ELT_POLYHEDRON);
-		WallLayer.setMaxDistance(20000.0);
-		WallLayer.setSelectable(false);
-		WallLayer.setEditable(true);
 
 		// 건물 레이어
 		const buildLayer = Module.getTileLayerList().createXDServerLayer({

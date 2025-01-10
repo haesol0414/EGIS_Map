@@ -20,6 +20,31 @@ function setKilloUnit(_text, _meterToKilloRate, _decimalSize) {
 	return _text;
 }
 
+// 반환 받은 값을 텍스트로 그리는 함수
+function setText(_ctx, _posX, _posY, _value, _color, _size) {
+	const currentState = getMouseState();
+	let strText = String(_value);
+
+	// 텍스트 문자열 설정
+	if (typeof _value === 'number') {
+		strText = setKilloUnit(_value, 0.001, 0);
+	}
+
+	if (currentState === 'area') {
+		const numValue = parseFloat(_value.replace(/[^0-9.]/g, ''));
+
+		strText = setTextComma(numValue.toFixed(2)) + '㎡';
+	}
+
+	// 텍스트 스타일 설정
+	_ctx.font = `bold ${_size} sans-serif`;
+	_ctx.textAlign = 'center';
+	_ctx.fillStyle = _color;
+
+	// 텍스트 그리기
+	_ctx.fillText(strText, _posX, _posY);
+}
+
 // 현재 마우스 상태 반환 함수
 function getMouseState() {
 	const mouseState = Module.XDGetMouseState();

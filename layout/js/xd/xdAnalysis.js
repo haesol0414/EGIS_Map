@@ -1,23 +1,23 @@
 const clearBtn = document.getElementById('xd-clear-btn');
-const selectBtn = document.getElementById('xd-select-btn');
 const distanceBtn = document.getElementById('distance-btn');
 const areaBtn = document.getElementById('area-btn');
 const radiusBtn = document.getElementById('radius-btn');
 const altitudeBtn = document.getElementById('altitude-btn');
+const selectBtn = document.getElementById('xd-select-btn');
 
 // 고도 측정 이벤트 핸들러
 function altitudeHandler(e) {
-	createAltitudePOI(new Module.JSVector3D(e.dLon, e.dLat, e.dAlt),
-		'rgba(10, 10, 0, 0.5)',
-		e.dGroundAltitude, e.dObjectAltitude, false);
+	createAltiPOI(new Module.JSVector3D(e.dLon, e.dLat, e.dAlt),
+		'rgba(10, 10, 0, 0.5)', false,
+		e.dGroundAltitude, e.dObjectAltitude);
 
-	// viewListResult(e);
+	addAltiResultToList(e);
 }
 
 // 거리, 면적, 반경 측정에서 callBackAddPoint()의 콜백 함수
 function addPoint(e) {
 	const currentState = getMouseState();
-	c;	// 마우스 상태가 '거리'일 경우
+	// 마우스 상태가 '거리'일 경우
 	if (currentState === 'distance') {
 		console.log('거리 측정');
 		let partDistance = e.dDistance,
@@ -25,15 +25,15 @@ function addPoint(e) {
 
 		if (partDistance === 0 && totalDistance === 0) {
 			m_objcount = 0;
-			createDiscAndAreaPOI(new Module.JSVector3D(e.dLon, e.dLat, e.dAlt), 'rgba(255, 204, 198, 0.8)', 'Start', true);
+			createDiscAndAreaPOI(new Module.JSVector3D(e.dLon, e.dLat, e.dAlt), 'rgba(255, 204, 198, 0.8)', true, 'Start');
 
 			return;
 		}
 
 		if (e.dDistance > 0.01) {
-			createDiscAndAreaPOI(new Module.JSVector3D(e.dMidLon, e.dMidLat, e.dMidAlt), 'rgba(255, 255, 0, 0.8)', e.dDistance, false);
+			createDiscAndAreaPOI(new Module.JSVector3D(e.dMidLon, e.dMidLat, e.dMidAlt), 'rgba(255, 255, 0, 0.8)', false, e.dDistance);
 		}
-		createDiscAndAreaPOI(new Module.JSVector3D(e.dLon, e.dLat, e.dAlt), 'rgba(255, 204, 198, 0.8)', e.dTotalDistance, true);
+		createDiscAndAreaPOI(new Module.JSVector3D(e.dLon, e.dLat, e.dAlt), 'rgba(255, 204, 198, 0.8)', true, e.dTotalDistance);
 
 		return;
 	}
@@ -43,7 +43,7 @@ function addPoint(e) {
 		console.log('면적 측정');
 
 		if (e.dArea > 0) {
-			createDiscAndAreaPOI(new Module.JSVector3D(e.dLon, e.dLat, e.dAlt), 'rgba(255, 204, 198, 0.8)', `${e.dArea.toFixed(2)}m²`, true);
+			createDiscAndAreaPOI(new Module.JSVector3D(e.dLon, e.dLat, e.dAlt), 'rgba(255, 204, 198, 0.8)', true, `${e.dArea.toFixed(2)}m²`);
 		}
 		return;
 	}
@@ -55,7 +55,7 @@ function addPoint(e) {
 		if (e.dTotalDistance > 0) {
 			clearRadiusIcon();
 
-			createRadiusPOI(new Module.JSVector3D(e.dMidLon, e.dMidLat, e.dMidAlt), 'rgba(255, 204, 198, 0.8)', e.dTotalDistance, true);
+			createRadiusPOI(new Module.JSVector3D(e.dMidLon, e.dMidLat, e.dMidAlt), 'rgba(255, 204, 198, 0.8)', true, e.dTotalDistance);
 		}
 	}
 }
@@ -63,7 +63,7 @@ function addPoint(e) {
 // 거리, 면적, (반경) 측정에서 callBackAddPoint()의 콜백 함수
 function endPoint(e) {
 	console.log('endPoint: ', e);
-	viewListOBjKey(e); // UI 목록에 추가
+	addObjectKeyToList(e); // UI 목록에 추가
 
 	GLOBAL.m_mercount++; // 작업 카운트 증가
 }
@@ -117,33 +117,8 @@ function drawRoundRect(_ctx, _x, _y, _width, _height, _radius, _color) {
 	_ctx.fill();
 }
 
-// 반환 받은 값을 텍스트로 그리는 함수
-function setText(_ctx, _posX, _posY, _value, _color, _size) {
-	const currentState = getMouseState();
-	let strText = String(_value);
-
-	// 텍스트 문자열 설정
-	if (typeof _value === 'number') {
-		strText = setKilloUnit(_value, 0.001, 0);
-	}
-
-	if (currentState === 'area') {
-		const numValue = parseFloat(_value.replace(/[^0-9.]/g, ''));
-
-		strText = setTextComma(numValue.toFixed(2)) + '㎡';
-	}
-
-	// 텍스트 스타일 설정
-	_ctx.font = `bold ${_size} sans-serif`;
-	_ctx.textAlign = 'center';
-	_ctx.fillStyle = _color;
-
-	// 텍스트 그리기
-	_ctx.fillText(strText, _posX, _posY);
-}
-
 // 아이콘 생성 함수
-function drawIcon(_canvas, _color, _value, _balloonType, _subValue = null) {
+function drawIcon(_canvas, _color, _balloonType, _value, _subValue = null) {
 	const ctx = _canvas.getContext('2d');
 	ctx.clearRect(0, 0, _canvas.width, _canvas.height);
 
@@ -178,30 +153,6 @@ function drawIcon(_canvas, _color, _value, _balloonType, _subValue = null) {
 	return ctx.getImageData(0, 0, _canvas.width, _canvas.height).data;
 }
 
-// 고도 측정 결과값을 UI 리스트에 추가
-function viewListResult(e) {
-	const index = objList.children.length + 1;
-
-	objList.insertAdjacentHTML('afterbegin', createAltiResultHTML(e, index));
-}
-
-// 거리/면적 측정에서 오브젝트 key값을 UI 리스트에 추가
-function viewListOBjKey(_key) {
-	const objList = document.getElementById('xd-object-list');
-	const obj = document.createElement('li');
-
-	// li 생성
-	obj.id = _key;
-	obj.textContent = `· ${_key}`;
-	obj.classList.add('xd-object');
-
-	// 삭제 버튼 추가
-	const deleteBtn = createDeleteButton(_key);
-	obj.appendChild(deleteBtn); // 리스트 항목에 삭제 버튼 추가
-
-	objList.appendChild(obj);   // 리스트에 항목 추가
-}
-
 // 전체 측정 초기화
 function clearAnalysis() {
 	document.querySelectorAll('.map-tool-btn.active').forEach(btn => btn.classList.remove('active'));
@@ -213,29 +164,10 @@ function clearAnalysis() {
 	Module.XDClearAreaMeasurement();
 	Module.XDClearCircleMeasurement();
 
-
-	// 등록된 아이콘 리스트 삭제
-	var i, len, icon, poi;
-
 	// 오브젝트 전체 삭제
 	if (POILayer != null) {
-		for (i = 0, len = POILayer.getObjectCount(); i < len; i++) {
-			poi = POILayer.keyAtObject('POI' + i);
-			icon = poi.getIcon();
-
-			// 아이콘을 참조 중인 POI 삭제
-			POILayer.removeAtKey('POI' + i);
-
-			// 아이콘을 심볼에서 삭제
-			XD.Symbol.deleteIcon(icon.getId());
-		}
-
 		POILayer.removeAll();
 	}
-	if (WallLayer != null) {
-		WallLayer.removeAll();
-	}
-
 
 	// li 초기화
 	let objList = document.getElementById('xd-object-list');
@@ -308,3 +240,4 @@ clearBtn.addEventListener('click', () => {
 });
 
 // 객체 선택 버튼 ==>  레이어 토글로 표시한 후에 토글 켜진 상태에서 선택하면 사용자가 입력한 값으로 저장
+// selectBtn.click()

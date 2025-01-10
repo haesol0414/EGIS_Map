@@ -36,6 +36,29 @@ function createRadiusResultHTML(position, totalDistance) {
     `
 }
 
+// 고도 측정 결과값을 UI 리스트에 추가
+function addAltiResultToList(e) {
+	const index = objList.children.length + 1;
+
+	objList.insertAdjacentHTML('afterbegin', createAltiResultHTML(e, index));
+}
+
+// 거리/면적 측정에서 오브젝트 key값을 UI 리스트에 추가
+function addObjectKeyToList(_key) {
+	const objList = document.getElementById('xd-object-list');
+	const obj = document.createElement('li');
+
+	// li 생성
+	obj.id = _key;
+	obj.textContent = `· ${_key}`;
+	obj.classList.add('xd-object');
+
+	// 삭제 버튼 추가
+	const deleteBtn = createDeleteButton(_key);
+	obj.appendChild(deleteBtn); // 리스트 항목에 삭제 버튼 추가
+
+	objList.appendChild(obj);   // 리스트에 항목 추가
+}
 
 // 삭제 버튼 생성 및 이벤트 처리 함수
 function createDeleteButton(_key) {
@@ -44,7 +67,7 @@ function createDeleteButton(_key) {
 	deleteBtn.classList.add('xd-del-btn');
 
 	deleteBtn.addEventListener('click', () => {
-		deleteObject(_key);
+		clearObject(_key);
 	});
 
 	return deleteBtn;

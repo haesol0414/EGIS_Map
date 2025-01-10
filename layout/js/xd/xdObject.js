@@ -1,12 +1,12 @@
 const objList = document.getElementById('xd-object-list');
 
 // 거리 또는 면적 측정 POI 생성
-function createDiscAndAreaPOI(_position, _color, _result, _balloonType) {
+function createDiscAndAreaPOI(_position, _color, _balloonType, _result) {
 	const drawCanvas = document.createElement('canvas');
 	drawCanvas.width = 100;
 	drawCanvas.height = 100;
 
-	const imageData = drawIcon(drawCanvas, _color, _result, _balloonType);
+	const imageData = drawIcon(drawCanvas, _color, _balloonType, _result);
 	const key = `${GLOBAL.m_mercount}_${GLOBAL.m_objcount}_POI`;
 
 	// 면적 측정 시 기존 POI 삭제
@@ -29,12 +29,15 @@ function createDiscAndAreaPOI(_position, _color, _result, _balloonType) {
 }
 
 // 고도 측정 POI 생성
-function createAltitudePOI(_position, _color, _gAltitude, _oAltitude, _balloonType) {
+function createAltiPOI(_position, _color, _balloonType, _gAltitude, _oAltitude) {
 	const drawCanvas = document.createElement('canvas');
 	drawCanvas.width = 200;
 	drawCanvas.height = 100;
 
-	const imageData = drawIcon(drawCanvas, _color, _gAltitude, _oAltitude, _balloonType);
+	console.log('Ground Altitude:', _gAltitude);
+	console.log('Object Altitude:', _oAltitude);
+
+	const imageData = drawIcon(drawCanvas, _color, _balloonType, _gAltitude, _oAltitude);
 	let index = GLOBAL.n_index;
 
 	if (XD.Symbol.insertIcon('Icon' + index, imageData, drawCanvas.width, drawCanvas.height)) {
@@ -52,12 +55,12 @@ function createAltitudePOI(_position, _color, _gAltitude, _oAltitude, _balloonTy
 }
 
 // 반경 측정 POI 생성
-function createRadiusPOI(_position, _color, _radius, _balloonType) {
+function createRadiusPOI(_position, _color, _balloonType, _radius) {
 	const drawCanvas = document.createElement('canvas');
 	drawCanvas.width = 100;
 	drawCanvas.height = 100;
 
-	const imageData = drawIcon(drawCanvas, _color, _radius, _balloonType);
+	const imageData = drawIcon(drawCanvas, _color, _balloonType, _radius);
 
 	if (XD.Symbol.insertIcon('Icon', imageData, drawCanvas.width, drawCanvas.height)) {
 		let icon = XD.Symbol.getIcon('Icon');
@@ -73,7 +76,7 @@ function createRadiusPOI(_position, _color, _radius, _balloonType) {
 }
 
 // 오브젝트 개별 삭제
-function deleteObject(_key) {
+function clearObject(_key) {
 	const currentState = getMouseState();
 
 	if (POILayer) {
