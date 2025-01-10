@@ -45,6 +45,8 @@ var Module = {
 			new Module.JSVector3D(126.93866761878483, 37.52295801173619, 10.460245016030967)  // 카메라가 바라보는 위치
 		);
 
+		console.log("dd", XD.Camera.getTilt()); // 89.9
+
 		// 렌더링 옵션 설정
 		XD.Option.SetAreaMeasurePolygonDepthBuffer(false);
 		XD.Option.SetDistanceMeasureLineDepthBuffer(false);
@@ -59,10 +61,12 @@ var Module = {
 		// 객체 선택 이벤트 등록
 		Module.canvas.addEventListener('Fire_EventSelectedObject', function(e) {
 			console.log("e = ", e);
+
 			const layerList = new Module.JSLayerList(true);
 			const targetLayerName = layerList.nameAtLayer(e.layerName);
 			console.log("targetLayerName = ", targetLayerName);
 			console.log("e.objKey = ", e.objKey);
+
 			const obj = targetLayerName.keyAtObject(e.objKey);
 			console.log("obj = ", obj);
 			console.log("obj.getId = ", obj.getId());
@@ -76,7 +80,6 @@ var Module = {
 
 			console.log("obj.getName = ", obj.getName());
 			console.log("obj.getDescription = ", obj.getDescription());
-
 		});
 
 		// POI 레이어 생성
@@ -105,19 +108,21 @@ var Module = {
 		// 반경 측정시에는 건물 레이어 off, 그 외 거리, 면적, 고도 측정시에는 on
 		switchBtn.addEventListener('click', function() {
 			let location = XD.Camera.getLocation();
-			XD.Camera.setLocation(new Module.JSVector3D(location.Longitude, location.Latitude, location.Altitude));
 
 			if (switchBtn.checked) {
 				// 현재 위치에서 건물 올리도록 각도 조정 필요 (3D)
-				XD.Camera.setTilt(60);
-				XD.Camera.setDistance(600.0);
+				// XD.Camera.setTilt(60);
+				// XD.Camera.setDistance(600.0);
+				XD.Camera.setLocation(new Module.JSVector3D(location.Longitude, location.Latitude, location.Altitude));
 
 				buildLayer.setVisible(true);
 				console.log('building Layer on');
 			} else {
+				XD.Camera.setLocation(new Module.JSVector3D(location.Longitude, location.Latitude, location.Altitude));
+
 				// 현재 위치에서 건물 내리도록 각도 조정 필요 (2D)
 				XD.Camera.setTilt(90);
-				XD.Camera.setDistance(800.0);
+				// XD.Camera.setDistance(800.0);
 
 				buildLayer.setVisible(false);
 				console.log('building Layer off');

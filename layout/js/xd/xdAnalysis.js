@@ -226,11 +226,15 @@ radiusBtn.addEventListener('click', () => {
 
 // 초기화 버튼
 clearBtn.addEventListener('click', () => {
-	//clearAnalysis();
+	clearAnalysis();
 
-	setMouseState('select');
+	setMouseState('move');
 	console.log('분석 내용 초기화');
 });
 
 // 객체 선택 버튼 ==>  레이어 토글로 표시한 후에 토글 켜진 상태에서 선택하면 사용자가 입력한 값으로 저장
-// selectBtn.click()
+selectBtn.addEventListener('click', () => {
+
+	setMouseState('select');
+	console.log('분석 내용 초기화');
+});
