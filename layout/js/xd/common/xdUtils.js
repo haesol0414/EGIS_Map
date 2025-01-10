@@ -67,36 +67,4 @@ function setMouseState(state) {
 	}
 }
 
-// 삭제 버튼 생성 및 이벤트 처리 함수
-function createDeleteButton(_key) {
-	const deleteBtn = document.createElement('button');
-	deleteBtn.textContent = '삭제';
-	deleteBtn.classList.add('xd-del-btn');
 
-	deleteBtn.addEventListener('click', () => {
-		deleteObject(_key);
-	});
-
-	return deleteBtn;
-}
-
-
-// 고도 측정 결과값 리스트 표시
-function createAltiResultHTML(lon, lat, alt, gAlt, oAlt, itemCount) {
-	return `
-        <li class="alti-wrap">
-            <h5 class="alti-number">${itemCount}.</h5>
-            <div class="alti-content">
-                <div class="alti-result">
-                    ${oAlt > 0 ? `<p>지면고도 : ${oAlt.toFixed(1)}m</p>` : ''}
-                    <p>해발고도 : ${gAlt.toFixed(1)}m</p>
-                </div>
-                <div class="alti-position">
-                    <span>Lon : ${lon.toFixed(6)}</span>
-                    <span>Lat : ${lat.toFixed(6)}</span>
-                    <p>Alt : ${alt.toFixed(6)}</p>
-                </div>
-            </div>
-        </li>
-    `
-}

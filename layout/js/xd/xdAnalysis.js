@@ -9,16 +9,15 @@ const altitudeBtn = document.getElementById('altitude-btn');
 function altitudeHandler(e) {
 	createAltitudePOI(new Module.JSVector3D(e.dLon, e.dLat, e.dAlt),
 		'rgba(10, 10, 0, 0.5)',
-		e.dGroundAltitude, false, e.dObjectAltitude);
+		e.dGroundAltitude, e.dObjectAltitude, false);
 
-	viewAltiResult(e.dLon, e.dLat, e.dAlt, e.dGroundAltitude, e.dObjectAltitude);
+	// viewListResult(e);
 }
 
 // 거리, 면적, 반경 측정에서 callBackAddPoint()의 콜백 함수
 function addPoint(e) {
 	const currentState = getMouseState();
-
-	// 마우스 상태가 '거리'일 경우
+	c;	// 마우스 상태가 '거리'일 경우
 	if (currentState === 'distance') {
 		console.log('거리 측정');
 		let partDistance = e.dDistance,
@@ -51,7 +50,7 @@ function addPoint(e) {
 
 	// 마우스 상태가 '반경'일 경우
 	if (currentState === 'radius') {
-		console.log('반경 측정');
+		console.log('반경 addPoint: ', e);
 
 		if (e.dTotalDistance > 0) {
 			clearRadiusIcon();
@@ -63,7 +62,9 @@ function addPoint(e) {
 
 // 거리, 면적, (반경) 측정에서 callBackAddPoint()의 콜백 함수
 function endPoint(e) {
+	console.log('endPoint: ', e);
 	viewListOBjKey(e); // UI 목록에 추가
+
 	GLOBAL.m_mercount++; // 작업 카운트 증가
 }
 
@@ -141,22 +142,100 @@ function setText(_ctx, _posX, _posY, _value, _color, _size) {
 	_ctx.fillText(strText, _posX, _posY);
 }
 
+// 아이콘 생성 함수
+function drawIcon(_canvas, _color, _value, _balloonType, _subValue = null) {
+	const ctx = _canvas.getContext('2d');
+	ctx.clearRect(0, 0, _canvas.width, _canvas.height);
+
+	if (_subValue !== null) {
+		// 고도 측정 시
+		if (_subValue === -1) {
+			drawRoundRect(ctx, 50, 20, 100, 20, 5, _color); // 객체 높이 값이 유효하지 않을 경우
+		} else {
+			drawRoundRect(ctx, 50, 5, 100, 35, 5, _color);  // 객체 높이 값이 유효할 경우
+			setText(ctx, _canvas.width * 0.5, _canvas.height * 0.2,
+				'지면고도 : ' + setKilloUnit(_subValue, 0.001, 0),
+				'rgb(255, 255, 255)', '12px');
+		}
+
+		setText(ctx, _canvas.width * 0.5, _canvas.height * 0.2 + 15,
+			'해발고도 : ' + setKilloUnit(_value, 0.001, 0),
+			'rgb(255, 255, 255)', '12px');
+
+		// 높이 위치에 점 찍기
+		drawDot(ctx, _canvas.width, _canvas.height);
+	} else {
+		// 그 외
+		if (_balloonType) {
+			drawBalloon(ctx, _canvas.height * 0.5, _canvas.width, _canvas.height, 5, _canvas.height * 0.25, _color);
+			setText(ctx, _canvas.width * 0.5, _canvas.height * 0.2, _value, 'rgb(0, 0, 0)', '16px');
+		} else {
+			drawRoundRect(ctx, 0, _canvas.height * 0.3, _canvas.width, _canvas.height * 0.25, 5, _color);
+			setText(ctx, _canvas.width * 0.5, _canvas.height * 0.5, _value, 'rgb(0, 0, 0)', '16px');
+		}
+	}
+
+	return ctx.getImageData(0, 0, _canvas.width, _canvas.height).data;
+}
+
+// 고도 측정 결과값을 UI 리스트에 추가
+function viewListResult(e) {
+	const index = objList.children.length + 1;
+
+	objList.insertAdjacentHTML('afterbegin', createAltiResultHTML(e, index));
+}
+
+// 거리/면적 측정에서 오브젝트 key값을 UI 리스트에 추가
+function viewListOBjKey(_key) {
+	const objList = document.getElementById('xd-object-list');
+	const obj = document.createElement('li');
+
+	// li 생성
+	obj.id = _key;
+	obj.textContent = `· ${_key}`;
+	obj.classList.add('xd-object');
+
+	// 삭제 버튼 추가
+	const deleteBtn = createDeleteButton(_key);
+	obj.appendChild(deleteBtn); // 리스트 항목에 삭제 버튼 추가
+
+	objList.appendChild(obj);   // 리스트에 항목 추가
+}
+
 // 전체 측정 초기화
 function clearAnalysis() {
 	document.querySelectorAll('.map-tool-btn.active').forEach(btn => btn.classList.remove('active'));
+
+	clearRadiusIcon();
 
 	// 측정 관련 객체 초기화
 	Module.XDClearDistanceMeasurement();
 	Module.XDClearAreaMeasurement();
 	Module.XDClearCircleMeasurement();
 
+
+	// 등록된 아이콘 리스트 삭제
+	var i, len, icon, poi;
+
 	// 오브젝트 전체 삭제
 	if (POILayer != null) {
+		for (i = 0, len = POILayer.getObjectCount(); i < len; i++) {
+			poi = POILayer.keyAtObject('POI' + i);
+			icon = poi.getIcon();
+
+			// 아이콘을 참조 중인 POI 삭제
+			POILayer.removeAtKey('POI' + i);
+
+			// 아이콘을 심볼에서 삭제
+			XD.Symbol.deleteIcon(icon.getId());
+		}
+
 		POILayer.removeAll();
 	}
 	if (WallLayer != null) {
 		WallLayer.removeAll();
 	}
+
 
 	// li 초기화
 	let objList = document.getElementById('xd-object-list');
@@ -167,6 +246,7 @@ function clearAnalysis() {
 	// 전역 변수 초기화
 	GLOBAL.m_mercount = 0;
 	GLOBAL.m_objcount = 0;
+	GLOBAL.n_index = 0;
 
 	// 화면 렌더링
 	Module.XDRenderData();
@@ -177,9 +257,12 @@ function clearAnalysis() {
 // 거리 측정 버튼
 distanceBtn.addEventListener('click', () => {
 	clearAnalysis();
+
 	distanceBtn.classList.add('active');
+	if (!switchBtn.checked) switchBtn.click();
 
 	setMouseState('distance'); // 거리 측정 모드
+
 	console.log('거리 측정');
 });
 
@@ -187,8 +270,10 @@ distanceBtn.addEventListener('click', () => {
 areaBtn.addEventListener('click', () => {
 	clearAnalysis();
 	areaBtn.classList.add('active');
+	if (!switchBtn.checked) switchBtn.click();
 
 	setMouseState('area'); // 면적 측정 모드
+
 	console.log('면적 측정');
 });
 
@@ -196,8 +281,10 @@ areaBtn.addEventListener('click', () => {
 altitudeBtn.addEventListener('click', () => {
 	clearAnalysis();
 	altitudeBtn.classList.add('active');
+	if (!switchBtn.checked) switchBtn.click();
 
 	setMouseState('altitude'); // 고도 측정 모드
+
 	console.log('고도 측정');
 });
 
@@ -205,8 +292,10 @@ altitudeBtn.addEventListener('click', () => {
 radiusBtn.addEventListener('click', () => {
 	clearAnalysis();
 	radiusBtn.classList.add('active');
+	if (switchBtn.checked) switchBtn.click();
 
 	setMouseState('radius'); // 반경 측정 모드
+
 	console.log('반경 측정');
 });
 
@@ -218,13 +307,4 @@ clearBtn.addEventListener('click', () => {
 	console.log('분석 내용 초기화');
 });
 
-// 객체 선택 버튼 ==> 나중에 지우기
-// 레이어 토글로 표시한 후에 토글 켜진 상태에서 선택하면 사용자가 입력한 값으로 저장???
-selectBtn.addEventListener('click', () => {
-	document.querySelectorAll('.map-tool-btn.active').forEach(btn => btn.classList.remove('active'));
-	selectBtn.classList.add('active');
-
-	setMouseState('select');
-
-	console.log(getMouseState());
-});
+// 객체 선택 버튼 ==>  레이어 토글로 표시한 후에 토글 켜진 상태에서 선택하면 사용자가 입력한 값으로 저장
