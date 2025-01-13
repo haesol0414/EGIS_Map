@@ -37,7 +37,7 @@ const KakaoAPI = {
 			category_group_code: categoryCode,
 			x: position.lng,
 			y: position.lat,
-			radius: 5000,
+			radius: 5000,	// 반경 5km 이내
 			size: 15,
 			sort: 'distance'
 		};

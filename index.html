@@ -38,10 +38,10 @@
 						<input type="radio" id="divXdBtn" name="divBtn">
 						<label for="divXdBtn">3D</label>
 				</span>
-				<span class="tool-btn">
-						<input type="radio" id="div2Btn" name="divBtn">
-						<label for="div2Btn">2분할</label>
-				</span>
+<!--				<span class="tool-btn">-->
+<!--						<input type="radio" id="div2Btn" name="divBtn">-->
+<!--						<label for="div2Btn">2분할</label>-->
+<!--				</span>-->
 			</div>
 		</div>
 		<!--   ================================ 2D - kakao ================================     -->
@@ -143,7 +143,7 @@
 				<div class="map-menu">
 					<ul class="menu-bar">
 						<li>
-							<button type="button" id="analysis-btn" class="bar-btn" data-tab="barCont01">분석</button>
+							<button type="button" id="analysis-btn" class="bar-btn" data-tab="barCont01">측정</button>
 						</li>
 						<li>
 							<button type="button" id="choose-btn" class="bar-btn" data-tab="barCont02">선택</button>
@@ -151,12 +151,12 @@
 					</ul>
 					<div class="menu-cont">
 						<div class="bar-cont barCont01" id="xd-analysis">
-							<h5 class="xd-feature-title">오브젝트</h5>
+							<h5 class="xd-feature-title">POI</h5>
 							<ul id="xd-object-list">
 							</ul>
 						</div>
 						<div class="bar-cont barCont02" id="xd-choose">
-							<h5 class="xd-feature-title">클릭이벤트</h5>
+							<h5 class="xd-feature-title">EVENT</h5>
 							<div class="obj-input-wrap">
 								<div class="obj-input">
 									<label for="obj-id"> ID</label>
@@ -177,7 +177,7 @@
 					<button type="button" class="menu-cont-btn" title="열기"></button>
 				</div>
 			</div>
-			<div class="map-tool">
+			<div class="map-tool" id="xd-map-tool">
 				<div class="map-tool-group">
 					<button type="button" id="xd-select-btn" class="map-tool-btn select" title="선택"></button>
 					<button type="button" id="xd-clear-btn" class="map-tool-btn initial" title="초기화"></button>
@@ -201,18 +201,6 @@
 						<input type="checkbox" id="xd-switch">
 						<label for="xd-switch"></label>
 				</span>
-<!--				<div class="detail-wrap">-->
-<!--					<div class="detail-top">-->
-<!--						<h5 class="xd-detail-title">상세보기</h5>-->
-<!--						<button class="xd-close-btn">X</button>-->
-<!--					</div>-->
-<!--					<div>-->
-<!--						<span class="text title">KEY </span><span class="text obj-key">AAAA_BBB_CCC_0</span>-->
-<!--					</div>-->
-<!--					<div>-->
-<!--						<span class="text title">TEXT </span><span class="text obj-text">sdasf</span>-->
-<!--					</div>-->
-<!--				</div>-->
 			</div>
 			<div id="xd-map" style="width:100%; height:100%;">
 			</div>

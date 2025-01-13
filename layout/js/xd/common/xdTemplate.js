@@ -1,22 +1,11 @@
-// 고도 측정 결과값을 UI 리스트에 추가
-function addAltiResultToList(e) {
-	const index = objList.children.length + 1;
-
-	let objId = '';
-	objList.insertAdjacentHTML('afterbegin', createAltiResultHTML(e, objId, index));
-}
-
-// 거리/면적/반경 측정에서 오브젝트 key값을 UI 리스트에 추가
-function addObjectKeyToList(_key, _total = null) {
+// 오브젝트 key값을 UI 리스트에 추가
+function addObjectKeyToList(_key) {
 	const objList = document.getElementById('xd-object-list');
 	const obj = document.createElement('li');
 
 	// li 생성
 	obj.id = _key;
 	obj.textContent = `· ${_key}`;
-	if (_total !== null) {
-		obj.textContent += `_${_total}`;
-	}
 	obj.classList.add('xd-object');
 
 	// 삭제 버튼 추가
@@ -39,17 +28,39 @@ function createDeleteButton(_key) {
 	return deleteBtn;
 }
 
-// 고도 측정 결과값 HTML
-function createAltiResultHTML(position, objId, index) {
-	return `
-        <li class="xd-object">
-        	<div class="alti-result">
-				<h5 class="alti-number">${index}.${objId}</h5>
-				<div class="alti-content">
-						${position.dObjectAltitude > 0 ? `<p>지면고도 : ${position.dObjectAltitude.toFixed(1)}m</p>` : ''}
-						<p>해발고도 : ${position.dGroundAltitude.toFixed(1)}m</p>
-				</div>
-            </div>
-        </li>
+function createDetailPopup(_key, _name, _description) {
+	const wrapper = document.getElementById('xd-map-tool');
+
+	// 기존 팝업 제거 (중복 방지)
+	const existingPopup = wrapper.querySelector('.detail-wrap');
+	if (existingPopup) {
+		existingPopup.remove();
+	}
+
+	// 팝업 요소 생성
+	const detailWrap = document.createElement('div');
+	detailWrap.className = 'detail-wrap';
+	detailWrap.innerHTML = `
+        <div class="detail-top">
+            <h5 class="xd-detail-title">상세보기</h5>
+            <button class="xd-close-btn">X</button>
+        </div>
+        <div>
+            <span class="text title">ID </span><span class="obj-key">${_key}</span>
+        </div>
+        <div>
+            <span class="text title">Name </span><span class="detail-obj-name">${_name}</span>
+        </div>
+        <div>
+            <span class="text title">Description </span><span class="detail-obj-description">${_description}</span>
+        </div>
     `;
+
+	// 닫기 버튼 이벤트 추가
+	detailWrap.querySelector('.xd-close-btn').addEventListener('click', () => {
+		detailWrap.remove(); // 팝업 닫기
+	});
+
+	// #xd-map-tool 안에 맨 마지막 요소로 팝업 추가
+	wrapper.appendChild(detailWrap);
 }

@@ -11,8 +11,6 @@ function altitudeHandler(e) {
 	createAltiPOI(new Module.JSVector3D(e.dLon, e.dLat, e.dAlt),
 		'rgba(10, 10, 0, 0.5)', false,
 		e.dGroundAltitude, e.dObjectAltitude);
-
-	addAltiResultToList(e);
 }
 
 // 객체 선택 이벤트 핸들러
@@ -20,37 +18,35 @@ function selectHandler(e) {
 	const idInput = document.getElementById('obj-id');
 	const nameInput = document.getElementById('obj-name');
 	const descriptionInput = document.getElementById('obj-description');
+
 	const layerList = new Module.JSLayerList(true);
 	const targetLayerName = layerList.nameAtLayer(e.layerName);
 	const obj = targetLayerName.keyAtObject(e.objKey);
 
-	// console.log('obj.getId = ', obj.getId());
-	// console.log('obj.getName = ', obj.getName());
-	// console.log('obj.getDescription = ', obj.getDescription());
-	// console.log("e = ", e);
-	// console.log("e.objKey = ", e.objKey);
-	// console.log("obj.getId = ", obj.getId());
-	// console.log("obj.getPosition = ", obj.getPosition());
-	// console.log("obj.getVisible = ", obj.getVisible());
 
-	idInput.value = obj.getId();
-	nameInput.value = obj.getName();
-	descriptionInput.value = obj.getDescription();
+	if(obj !== null) {
+		createDetailPopup(obj.getId(), obj.getName(), obj.getDescription());
+
+		idInput.value = obj.getId();
+		nameInput.value = obj.getName();
+		descriptionInput.value = obj.getDescription();
+	}
 
 	// 저장 버튼
 	saveBtn.onclick = function() {
 
 		if (nameInput.value === '') {
 			alert('오브젝트 이름을 입력해주세요.');
+
+			return;
 		}
 
 		obj.setName(nameInput.value);
 		obj.setDescription(descriptionInput.value);
 
 		alert('저장되었습니다.');
-		// console.log('저장 후 obj.getId = ', obj.getId());
-		// console.log('저장 후 obj.getName = ', obj.getName());
-		// console.log('저장 후 obj.getDescription = ', obj.getDescription());
+
+		createDetailPopup(obj.getId(), obj.getName(), obj.getDescription());
 	};
 }
 
@@ -138,7 +134,7 @@ function drawBalloon(_ctx, _marginBottom, _width, _height, _barWidth, _barHeight
 	_ctx.fill();
 }
 
-// 거리/고도 측정 시 둥근 사각형 이미지 그리기
+// 거리/고도 측정 시 둥근 사각형 배경 그리기
 function drawRoundRect(_ctx, _x, _y, _width, _height, _radius, _color) {
 	if (_width < 2 * _radius) _radius = _width * 0.5;
 	if (_height < 2 * _radius) _radius = _height * 0.5;
@@ -160,12 +156,14 @@ function drawIcon(_canvas, _color, _balloonType, _value, _subValue = null) {
 	const ctx = _canvas.getContext('2d');
 	ctx.clearRect(0, 0, _canvas.width, _canvas.height);
 
+	// 고도 측정 시
 	if (_subValue !== null) {
-		// 고도 측정 시
-		if (_subValue === -1) {
+		if (_subValue < 0.01) {
 			drawRoundRect(ctx, 50, 20, 100, 20, 5, _color); // 객체 높이 값이 유효하지 않을 경우
-		} else {
+		} else if (_subValue > 0) {
+			console.log('현재 _subValue 값:', _subValue);
 			drawRoundRect(ctx, 50, 5, 100, 35, 5, _color);  // 객체 높이 값이 유효할 경우
+
 			setText(ctx, _canvas.width * 0.5, _canvas.height * 0.2,
 				'지면고도 : ' + setKilloUnit(_subValue, 0.001, 0),
 				'rgb(255, 255, 255)', '12px');
@@ -193,6 +191,8 @@ function drawIcon(_canvas, _color, _balloonType, _value, _subValue = null) {
 
 // 전체 측정 초기화
 function clearAnalysis() {
+	document.querySelectorAll('.map-tool-btn.active').forEach(btn => btn.classList.remove('active'));
+
 	// 측정 관련 객체 초기화
 	Module.XDClearDistanceMeasurement();
 	Module.XDClearAreaMeasurement();
@@ -214,31 +214,17 @@ function clearAnalysis() {
 }
 
 
+
 /* ========================= 버튼 이벤트 ============================= */
-// 공통 함수 정의
-function handleMeasurement(button, mouseState, switchCheck) {
-	clearAnalysis();
-	document.querySelectorAll('.map-tool-btn.active').forEach(btn => btn.classList.remove('active'));
-	button.classList.add('active');
+// 측정 버튼 이벤트 등록
+// ==> 버튼, 마우스상태, 건물 레이어 상태, 각도, 제한 각도
+distanceBtn.addEventListener('click', () => handleMeasurement(distanceBtn, 'distance', false, 30, 10));
 
-	// 스위치 버튼 체크 상태에 따라 동작
-	if (switchBtn.checked !== switchCheck) switchBtn.click();
+areaBtn.addEventListener('click', () => handleMeasurement(areaBtn, 'area', false, 30, 10));
 
-	setMouseState(mouseState);
-	console.log(`${mouseState} 측정`);
-}
+altitudeBtn.addEventListener('click', () => handleMeasurement(altitudeBtn, 'altitude', true, 30, 10));
 
-// 거리 측정 버튼
-distanceBtn.addEventListener('click', () => handleMeasurement(distanceBtn, 'distance', false));
-
-// 면적 측정 버튼
-areaBtn.addEventListener('click', () => handleMeasurement(areaBtn, 'area', false));
-
-// 고도 측정 버튼
-altitudeBtn.addEventListener('click', () => handleMeasurement(altitudeBtn, 'altitude', true));
-
-// 반경 측정 버튼
-radiusBtn.addEventListener('click', () => handleMeasurement(radiusBtn, 'radius', false));
+radiusBtn.addEventListener('click', () => handleMeasurement(radiusBtn, 'radius', false, 90, 90));
 
 // 초기화 버튼
 clearBtn.addEventListener('click', () => {

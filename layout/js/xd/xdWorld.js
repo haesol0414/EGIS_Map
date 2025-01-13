@@ -39,14 +39,6 @@ var Module = {
 		XD.Option = Module.getOption();
 		XD.Symbol = Module.getSymbol();
 
-		// 카메라 위치 설정
-		XD.Camera.look(
-			new Module.JSVector3D(126.93831646026437, 37.517164463389214, 629.4693173738196), // 카메라 위치
-			new Module.JSVector3D(126.93866761878483, 37.52295801173619, 10.460245016030967)  // 카메라가 바라보는 위치
-		);
-
-		console.log('dd', XD.Camera.getTilt()); // 89.9
-
 		// 렌더링 옵션 설정
 		XD.Option.SetAreaMeasurePolygonDepthBuffer(false);
 		XD.Option.SetDistanceMeasureLineDepthBuffer(false);
@@ -82,18 +74,25 @@ var Module = {
 			minLevel: 0,
 			maxLevel: 15
 		});
-		buildLayer.setSelectable(false);	// 일단 false
+		buildLayer.setSelectable(false);
 		buildLayer.setVisible(false);
+
+
+		// 카메라 위치 설정
+		XD.Camera.look(
+			new Module.JSVector3D(126.93831646026437, 37.517164463389214, 629.4693173738196),
+			new Module.JSVector3D(126.93866761878483, 37.52295801173619, 10.460245016030967)
+		);
 
 		// 고도 측정시 건물 레이어 on
 		switchBtn.addEventListener('click', function() {
 			let location = XD.Camera.getLocation();
 
 			if (switchBtn.checked) {
+
 				buildLayer.setVisible(true);
 				console.log('building Layer on');
 			} else {
-				XD.Camera.setTilt(90);
 
 				buildLayer.setVisible(false);
 				console.log('building Layer off');
