@@ -30,7 +30,7 @@ function createDiscAndAreaPOI(_position, _color, _balloonType, _result) {
 
 // 고도 측정 POI 생성
 function createAltiPOI(_position, _color, _balloonType, _gAltitude, _oAltitude) {
-	console.log("ㅇㅇ");
+	console.log('ㅇㅇ');
 	const drawCanvas = document.createElement('canvas');
 	drawCanvas.width = 200;
 	drawCanvas.height = 100;
@@ -56,16 +56,18 @@ function createAltiPOI(_position, _color, _balloonType, _gAltitude, _oAltitude) 
 }
 
 // 전역변수에 반경 icon 이름 저장
-let radiusIconNm = "";
+let radiusIconNm = '';
 // 반경 측정 POI 생성
-function createRadiusPOI(_position, _color, _balloonType, _radius) {
+function createRadiusPOI(_position, _color, _balloonType, _totalDistance) {
+	clearRadiusIcon();
+
 	const drawCanvas = document.createElement('canvas');
 	drawCanvas.width = 100;
 	drawCanvas.height = 100;
 
-	const imageData = drawIcon(drawCanvas, _color, _balloonType, _radius);
+	const imageData = drawIcon(drawCanvas, _color, _balloonType, _totalDistance);
 
-	let createIconNm = 'Icon_'+_radius;
+	let createIconNm = 'Icon_' + _totalDistance;
 	if (!XD.Symbol.getIcon(createIconNm)) {
 		// 기존의 Icon은 삭제
 		XD.Symbol.deleteIcon(radiusIconNm);
@@ -77,12 +79,13 @@ function createRadiusPOI(_position, _color, _balloonType, _radius) {
 
 	let icon = XD.Symbol.getIcon(createIconNm);
 	let poi = Module.createPoint('POI');
+	let objId = poi.getId();
+
 	poi.setPosition(_position);     // 위치 설정
 	poi.setIcon(icon);              // 아이콘 설정
-
 	POILayer.addObject(poi, 0);     // 레이어에 오브젝트 추가
 
-	// objList.innerHTML = createRadiusResultHTML(_position, _radius);
+	addObjectKeyToList(objId, _totalDistance.toFixed(1));
 }
 
 // 오브젝트 개별 삭제
@@ -111,6 +114,17 @@ function clearObject(_key) {
 		Module.XDClearDistanceObject(_key); // 거리 객체 삭제
 	} else if (currentState === 'area') {
 		Module.XDClearAreaObject(_key);     // 면적 객체 삭제
+	} else if (currentState === 'radius') {
+		console.log('??');
+		if (POILayer !== null) {
+			console.log('?????');
+
+			POILayer.removeAll();
+		}
+		if (WallLayer !== null) {
+			WallLayer.removeAll();
+		}
+		Module.XDClearCircleMeasurement(); 	// 반경 객체 삭제
 	}
 
 	Module.XDRenderData(); // 화면 다시 렌더링
@@ -120,8 +134,15 @@ function clearObject(_key) {
 function clearRadiusIcon() {
 	if (POILayer !== null) {
 		POILayer.removeAll();
+
 	}
 	if (WallLayer !== null) {
 		WallLayer.removeAll();
+	}
+
+	// li 초기화
+	let objList = document.getElementById('xd-object-list');
+	while (objList.hasChildNodes()) {
+		objList.removeChild(objList.firstChild);
 	}
 }

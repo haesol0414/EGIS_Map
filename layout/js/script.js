@@ -227,4 +227,24 @@ $(document).ready(function() {
 				break;
 		}
 	}
+
+	$('#xd-select-btn').on('click', function() {
+		console.log("클릭")
+		// 1. 모든 활성화된 li, 버튼, bar-cont에서 active 클래스 제거
+		$('li.active, .map-tool-btn.active, .bar-cont.active').removeClass('active');
+
+		// 2. choose-btn의 부모 li와 xd-choose div에 active 클래스 추가
+		$('#choose-btn').parent().addClass('active');
+		$('#xd-choose').addClass('active');
+		$(this).addClass('active');
+	});
+
+	$('#xd-clear-btn').on('click', function() {
+		// 1. 모든 활성화된 map-tool-btn, li, bar-cont에서 active 클래스 제거
+		$('li.active, .bar-cont.active').removeClass('active');
+
+		// 2. analysis-btn의 부모 li와 xd-analysis div에 active 클래스 추가
+		$('#analysis-btn').parent().addClass('active');
+		$('#xd-analysis').addClass('active');
+	});
 });

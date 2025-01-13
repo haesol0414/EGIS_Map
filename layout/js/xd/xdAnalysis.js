@@ -4,6 +4,7 @@ const areaBtn = document.getElementById('area-btn');
 const radiusBtn = document.getElementById('radius-btn');
 const altitudeBtn = document.getElementById('altitude-btn');
 const selectBtn = document.getElementById('xd-select-btn');
+const saveBtn = document.getElementById('save-btn');
 
 // 고도 측정 이벤트 핸들러
 function altitudeHandler(e) {
@@ -12,6 +13,45 @@ function altitudeHandler(e) {
 		e.dGroundAltitude, e.dObjectAltitude);
 
 	addAltiResultToList(e);
+}
+
+// 객체 선택 이벤트 핸들러
+function selectHandler(e) {
+	const idInput = document.getElementById('obj-id');
+	const nameInput = document.getElementById('obj-name');
+	const descriptionInput = document.getElementById('obj-description');
+	const layerList = new Module.JSLayerList(true);
+	const targetLayerName = layerList.nameAtLayer(e.layerName);
+	const obj = targetLayerName.keyAtObject(e.objKey);
+
+	// console.log('obj.getId = ', obj.getId());
+	// console.log('obj.getName = ', obj.getName());
+	// console.log('obj.getDescription = ', obj.getDescription());
+	// console.log("e = ", e);
+	// console.log("e.objKey = ", e.objKey);
+	// console.log("obj.getId = ", obj.getId());
+	// console.log("obj.getPosition = ", obj.getPosition());
+	// console.log("obj.getVisible = ", obj.getVisible());
+
+	idInput.value = obj.getId();
+	nameInput.value = obj.getName();
+	descriptionInput.value = obj.getDescription();
+
+	// 저장 버튼
+	saveBtn.onclick = function() {
+
+		if (nameInput.value === '') {
+			alert('오브젝트 이름을 입력해주세요.');
+		}
+
+		obj.setName(nameInput.value);
+		obj.setDescription(descriptionInput.value);
+
+		alert('저장되었습니다.');
+		// console.log('저장 후 obj.getId = ', obj.getId());
+		// console.log('저장 후 obj.getName = ', obj.getName());
+		// console.log('저장 후 obj.getDescription = ', obj.getDescription());
+	};
 }
 
 // 거리, 면적, 반경 측정에서 callBackAddPoint()의 콜백 함수
@@ -53,13 +93,12 @@ function addPoint(e) {
 		console.log('반경 addPoint: ', e);
 
 		if (e.dTotalDistance > 0) {
-			clearRadiusIcon();
 			createRadiusPOI(new Module.JSVector3D(e.dMidLon, e.dMidLat, e.dMidAlt), 'rgba(255, 204, 198, 0.8)', true, e.dTotalDistance);
 		}
 	}
 }
 
-// 거리, 면적, (반경) 측정에서 callBackAddPoint()의 콜백 함수
+// 거리, 면적 측정에서 callBackAddPoint()의 콜백 함수
 function endPoint(e) {
 	console.log('endPoint: ', e);
 	addObjectKeyToList(e); // UI 목록에 추가
@@ -154,13 +193,10 @@ function drawIcon(_canvas, _color, _balloonType, _value, _subValue = null) {
 
 // 전체 측정 초기화
 function clearAnalysis() {
-	document.querySelectorAll('.map-tool-btn.active').forEach(btn => btn.classList.remove('active'));
-
 	// 측정 관련 객체 초기화
 	Module.XDClearDistanceMeasurement();
 	Module.XDClearAreaMeasurement();
 	Module.XDClearCircleMeasurement();
-
 	clearRadiusIcon();
 
 	// li 초기화
@@ -179,62 +215,42 @@ function clearAnalysis() {
 
 
 /* ========================= 버튼 이벤트 ============================= */
-// 거리 측정 버튼
-distanceBtn.addEventListener('click', () => {
+// 공통 함수 정의
+function handleMeasurement(button, mouseState, switchCheck) {
 	clearAnalysis();
+	document.querySelectorAll('.map-tool-btn.active').forEach(btn => btn.classList.remove('active'));
+	button.classList.add('active');
 
-	distanceBtn.classList.add('active');
-	if (switchBtn.checked) switchBtn.click();
+	// 스위치 버튼 체크 상태에 따라 동작
+	if (switchBtn.checked !== switchCheck) switchBtn.click();
 
-	setMouseState('distance'); // 거리 측정 모드
+	setMouseState(mouseState);
+	console.log(`${mouseState} 측정`);
+}
 
-	console.log('거리 측정');
-});
+// 거리 측정 버튼
+distanceBtn.addEventListener('click', () => handleMeasurement(distanceBtn, 'distance', false));
 
 // 면적 측정 버튼
-areaBtn.addEventListener('click', () => {
-	clearAnalysis();
-	areaBtn.classList.add('active');
-	if (switchBtn.checked) switchBtn.click();
-
-	setMouseState('area'); // 면적 측정 모드
-
-	console.log('면적 측정');
-});
+areaBtn.addEventListener('click', () => handleMeasurement(areaBtn, 'area', false));
 
 // 고도 측정 버튼
-altitudeBtn.addEventListener('click', () => {
-	clearAnalysis();
-	altitudeBtn.classList.add('active');
-	if (!switchBtn.checked) switchBtn.click();
-
-	setMouseState('altitude'); // 고도 측정 모드
-
-	console.log('고도 측정');
-});
+altitudeBtn.addEventListener('click', () => handleMeasurement(altitudeBtn, 'altitude', true));
 
 // 반경 측정 버튼
-radiusBtn.addEventListener('click', () => {
-	clearAnalysis();
-	radiusBtn.classList.add('active');
-	if (switchBtn.checked) switchBtn.click();
-
-	setMouseState('radius'); // 반경 측정 모드
-
-	console.log('반경 측정');
-});
+radiusBtn.addEventListener('click', () => handleMeasurement(radiusBtn, 'radius', false));
 
 // 초기화 버튼
 clearBtn.addEventListener('click', () => {
 	clearAnalysis();
-
 	setMouseState('move');
+
 	console.log('분석 내용 초기화');
 });
 
-// 객체 선택 버튼 ==>  레이어 토글로 표시한 후에 토글 켜진 상태에서 선택하면 사용자가 입력한 값으로 저장
+// 객체 선택 버튼
 selectBtn.addEventListener('click', () => {
-
 	setMouseState('select');
-	console.log('분석 내용 초기화');
+
+	console.log('객체선택 마우스 상태 변경');
 });

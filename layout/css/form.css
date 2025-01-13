@@ -8,6 +8,7 @@
 	padding: 5px;
 	border: 1px solid #ccc;
 	border-radius: 5px;
+	caret-color: auto !important;
 }
 
 .form-control:disabled {background-color: #f6f6f6;}

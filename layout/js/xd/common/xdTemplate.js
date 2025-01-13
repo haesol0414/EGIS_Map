@@ -1,56 +1,22 @@
-// 고도 측정 결과값 리스트 표시
-function createAltiResultHTML(position, index) {
-	return `
-        <li class="alti-wrap">
-            <h5 class="alti-number">${index}.</h5>
-            <div class="alti-content">
-                <div class="alti-position">
-                    ${position.dObjectAltitude > 0 ? `<p>지면고도 : ${position.dObjectAltitude.toFixed(1)}m</p>` : ''}
-                    <p>해발고도 : ${position.dGroundAltitude.toFixed(1)}m</p>
-                </div>
-                <div class="alti-position">
-                    <span>Lon : ${position.dLon.toFixed(6)}</span>
-                    <span>Lat : ${position.dLat.toFixed(6)}</span>
-                    <p>Alt : ${position.dAlt.toFixed(6)}</p>
-                </div>
-            </div>
-        </li>
-    `
-}
-
-// 반경 측정 결과값 표시
-function createRadiusResultHTML(position, totalDistance) {
-	console.log(position, totalDistance);
-
-	return `
-        <li class="alti-wrap">
-            <div class="alti-content">
-                <div class="alti-result">
-                    <span>${totalDistance}</span>
-                </div>
-                <div class="alti-position">
-                    <span>${position}</span>
-                </div>
-            </div>
-        </li>
-    `
-}
-
 // 고도 측정 결과값을 UI 리스트에 추가
 function addAltiResultToList(e) {
 	const index = objList.children.length + 1;
 
-	objList.insertAdjacentHTML('afterbegin', createAltiResultHTML(e, index));
+	let objId = '';
+	objList.insertAdjacentHTML('afterbegin', createAltiResultHTML(e, objId, index));
 }
 
-// 거리/면적 측정에서 오브젝트 key값을 UI 리스트에 추가
-function addObjectKeyToList(_key) {
+// 거리/면적/반경 측정에서 오브젝트 key값을 UI 리스트에 추가
+function addObjectKeyToList(_key, _total = null) {
 	const objList = document.getElementById('xd-object-list');
 	const obj = document.createElement('li');
 
 	// li 생성
 	obj.id = _key;
 	obj.textContent = `· ${_key}`;
+	if (_total !== null) {
+		obj.textContent += `_${_total}`;
+	}
 	obj.classList.add('xd-object');
 
 	// 삭제 버튼 추가
@@ -71,4 +37,19 @@ function createDeleteButton(_key) {
 	});
 
 	return deleteBtn;
+}
+
+// 고도 측정 결과값 HTML
+function createAltiResultHTML(position, objId, index) {
+	return `
+        <li class="xd-object">
+        	<div class="alti-result">
+				<h5 class="alti-number">${index}.${objId}</h5>
+				<div class="alti-content">
+						${position.dObjectAltitude > 0 ? `<p>지면고도 : ${position.dObjectAltitude.toFixed(1)}m</p>` : ''}
+						<p>해발고도 : ${position.dGroundAltitude.toFixed(1)}m</p>
+				</div>
+            </div>
+        </li>
+    `;
 }
