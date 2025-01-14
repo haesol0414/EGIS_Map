@@ -15,6 +15,8 @@ function altitudeHandler(e) {
 
 // 객체 선택 이벤트 핸들러
 function selectHandler(e) {
+	console.log("객체선택");
+
 	const idInput = document.getElementById('obj-id');
 	const nameInput = document.getElementById('obj-name');
 	const descriptionInput = document.getElementById('obj-description');
@@ -22,7 +24,7 @@ function selectHandler(e) {
 	const layerList = new Module.JSLayerList(true);
 	const targetLayerName = layerList.nameAtLayer(e.layerName);
 	const obj = targetLayerName.keyAtObject(e.objKey);
-
+	console.log("targetLayerName = ",targetLayerName);
 
 	if(obj !== null) {
 		createDetailPopup(obj.getId(), obj.getName(), obj.getDescription());
@@ -34,10 +36,8 @@ function selectHandler(e) {
 
 	// 저장 버튼
 	saveBtn.onclick = function() {
-
 		if (nameInput.value === '') {
 			alert('오브젝트 이름을 입력해주세요.');
-
 			return;
 		}
 
@@ -55,7 +55,6 @@ function addPoint(e) {
 	const currentState = getMouseState();
 	// 마우스 상태가 '거리'일 경우
 	if (currentState === 'distance') {
-		console.log('거리 측정');
 		let partDistance = e.dDistance,
 			totalDistance = e.dTotalDistance;
 
@@ -76,8 +75,6 @@ function addPoint(e) {
 
 	// 마우스 상태가 '면적'일 경우
 	if (currentState === 'area') {
-		console.log('면적 측정');
-
 		if (e.dArea > 0) {
 			createDiscAndAreaPOI(new Module.JSVector3D(e.dLon, e.dLat, e.dAlt), 'rgba(255, 204, 198, 0.8)', true, `${e.dArea.toFixed(2)}m²`);
 		}
@@ -86,9 +83,9 @@ function addPoint(e) {
 
 	// 마우스 상태가 '반경'일 경우
 	if (currentState === 'radius') {
-		console.log('반경 addPoint: ', e);
-
 		if (e.dTotalDistance > 0) {
+			clearLayers();
+
 			createRadiusPOI(new Module.JSVector3D(e.dMidLon, e.dMidLat, e.dMidAlt), 'rgba(255, 204, 198, 0.8)', true, e.dTotalDistance);
 		}
 	}
@@ -97,58 +94,9 @@ function addPoint(e) {
 // 거리, 면적 측정에서 callBackAddPoint()의 콜백 함수
 function endPoint(e) {
 	console.log('endPoint: ', e);
-	addObjectKeyToList(e); // UI 목록에 추가
+	addObjectKeyToList(POILayer, e, 'xd-object-list'); // UI 목록에 추가
 
 	GLOBAL.m_mercount++; // 작업 카운트 증가
-}
-
-// 고도 측정 시 점 그리기
-function drawDot(_ctx, _width, _height) {
-	_ctx.beginPath();
-	_ctx.lineWidth = 6;
-	_ctx.arc(_width * 0.5, _height * 0.5, 2, 0, 2 * Math.PI, false);
-	_ctx.closePath();
-
-	_ctx.fillStyle = 'rgba(255, 0, 0, 0.8)';
-	_ctx.fill();
-	_ctx.lineWidth = 8;
-	_ctx.strokeStyle = 'rgba(255, 255, 0, 0.8)';
-	_ctx.stroke();
-}
-
-// 거리/면적/반경 측정 시 누적 거리 표시 말풍선 이미지 그리기
-function drawBalloon(_ctx, _marginBottom, _width, _height, _barWidth, _barHeight, _color) {
-	const wCenter = _width * 0.5;
-
-	_ctx.beginPath();
-	_ctx.moveTo(0, 0);
-	_ctx.lineTo(0, _height - _barHeight - _marginBottom);
-	_ctx.lineTo(wCenter - _barWidth, _height - _barHeight - _marginBottom);
-	_ctx.lineTo(wCenter, _height - _marginBottom);
-	_ctx.lineTo(wCenter + _barWidth, _height - _barHeight - _marginBottom);
-	_ctx.lineTo(_width, _height - _barHeight - _marginBottom);
-	_ctx.lineTo(_width, 0);
-	_ctx.closePath();
-
-	_ctx.fillStyle = _color;
-	_ctx.fill();
-}
-
-// 거리/고도 측정 시 둥근 사각형 배경 그리기
-function drawRoundRect(_ctx, _x, _y, _width, _height, _radius, _color) {
-	if (_width < 2 * _radius) _radius = _width * 0.5;
-	if (_height < 2 * _radius) _radius = _height * 0.5;
-
-	_ctx.beginPath();
-	_ctx.moveTo(_x + _radius, _y);
-	_ctx.arcTo(_x + _width, _y, _x + _width, _y + _height, _radius);
-	_ctx.arcTo(_x + _width, _y + _height, _x, _y + _height, _radius);
-	_ctx.arcTo(_x, _y + _height, _x, _y, _radius);
-	_ctx.arcTo(_x, _y, _x + _width, _y, _radius);
-	_ctx.closePath();
-
-	_ctx.fillStyle = _color;
-	_ctx.fill();
 }
 
 // 아이콘 생성 함수
@@ -197,7 +145,9 @@ function clearAnalysis() {
 	Module.XDClearDistanceMeasurement();
 	Module.XDClearAreaMeasurement();
 	Module.XDClearCircleMeasurement();
-	clearRadiusIcon();
+
+	// 레이어 삭제
+	clearLayers();
 
 	// li 초기화
 	let objList = document.getElementById('xd-object-list');
@@ -209,15 +159,15 @@ function clearAnalysis() {
 	GLOBAL.m_mercount = 0;
 	GLOBAL.m_objcount = 0;
 
+	// 마우스 변경
+	setMouseState("move");
+
 	// 화면 렌더링
 	Module.XDRenderData();
 }
 
-
-
 /* ========================= 버튼 이벤트 ============================= */
-// 측정 버튼 이벤트 등록
-// ==> 버튼, 마우스상태, 건물 레이어 상태, 각도, 제한 각도
+// 측정 버튼 이벤트 등록 ==> 버튼, 마우스상태, 건물 레이어 상태, 각도, 제한 각도
 distanceBtn.addEventListener('click', () => handleMeasurement(distanceBtn, 'distance', false, 30, 10));
 
 areaBtn.addEventListener('click', () => handleMeasurement(areaBtn, 'area', false, 30, 10));
@@ -229,7 +179,6 @@ radiusBtn.addEventListener('click', () => handleMeasurement(radiusBtn, 'radius',
 // 초기화 버튼
 clearBtn.addEventListener('click', () => {
 	clearAnalysis();
-	setMouseState('move');
 
 	console.log('분석 내용 초기화');
 });
@@ -240,3 +189,4 @@ selectBtn.addEventListener('click', () => {
 
 	console.log('객체선택 마우스 상태 변경');
 });
+

@@ -22,8 +22,6 @@ $(document).ready(function() {
 	// 	}
 	// });
 	/* ========== switch button 임시 스크립트 ========== */
-
-
 	/* datepicker */
 	$.datepicker.setDefaults({
 		dateFormat: 'yy년 mm월 dd일',
@@ -119,20 +117,22 @@ $(document).ready(function() {
 			$('.map-menu .menu-cont-btn').addClass('on');
 			$('.kakao-map .category').removeClass('active');
 		} else if ($(this).is('#divXdBtn')) {
+			// XDWorld 리렌더링 처리
+			Module.XDRenderData();
+
 			$('#container').removeAttr('class');
 			$('.map-wrap.xd').show();
 			$('.map-wrap.two, .map-wrap.ol').hide();
 			$('.map-menu .menu-cont').addClass('opened').removeClass('closed');
 			$('.map-menu .menu-cont-btn').addClass('on');
 			$('.kakao-map .category').removeClass('active');
-			Module.getOption().setStereoView(false);
 		}
 
-		if ($(this).is('#div2Btn') || $(this).is('#div4Btn')) {
-			$('.map-menu .menu-cont').addClass('closed').removeClass('opened');
-			$('.map-menu .menu-cont-btn').removeClass('on');
-			Module.getOption().setStereoView(true);
-		}
+		// if ($(this).is('#div2Btn') || $(this).is('#div4Btn')) {
+		// 	$('.map-menu .menu-cont').addClass('closed').removeClass('opened');
+		// 	$('.map-menu .menu-cont-btn').removeClass('on');
+		// 	Module.getOption().setStereoView(true);
+		// }
 	});
 
 	$('.menu-cont-btn').on('click', function() {
@@ -229,7 +229,6 @@ $(document).ready(function() {
 	}
 
 	$('#xd-select-btn').on('click', function() {
-		console.log("클릭")
 		// 1. 모든 활성화된 li, 버튼, bar-cont에서 active 클래스 제거
 		$('li.active, .map-tool-btn.active, .bar-cont.active').removeClass('active');
 
@@ -237,22 +236,37 @@ $(document).ready(function() {
 		$('#choose-btn').parent().addClass('active');
 		$('#xd-choose').addClass('active');
 		$(this).addClass('active');
+
+		const $detailWrap = $('.detail-wrap');
+		if ($detailWrap.length) {
+			$detailWrap.remove(); // 팝업 닫기
+		}
+
+		$('#obj-id').val('');           // ID 입력 필드 초기화
+		$('#obj-name').val('');         // Name 입력 필드 초기화
+		$('#obj-description').val('');  // Description 입력 필드 초기화
 	});
 
 	$('#xd-clear-btn').on('click', function() {
-		// 1. 모든 활성화된 map-tool-btn, li, bar-cont에서 active 클래스 제거
 		$('.map-tool-btn, li.active, .bar-cont.active').removeClass('active');
 
-		// 2. analysis-btn의 부모 li와 xd-analysis div에 active 클래스 추가
 		$('#analysis-btn').parent().addClass('active');
 		$('#xd-analysis').addClass('active');
 	});
 
 	$('#distance-btn, #area-btn, #altitude-btn, #radius-btn').on('click', function() {
-		// 1. 모든 활성화된 map-tool-btn, li, bar-cont에서 active 클래스 제거
 		$('li.active').removeClass('active');
 
 		$('#analysis-btn').parent().addClass('active');
 		$('#xd-analysis').addClass('active');
+	});
+
+
+	$('#obj-add-btn').on('click', function() {
+		// 카메라 각도 조정
+		XD.Camera.setTilt(90);
+		XD.Camera.setLimitTilt(90);
+
+		clearAnalysis();
 	});
 });

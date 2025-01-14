@@ -80,8 +80,7 @@
 	padding: 0 10px;
 }
 
-input[type='checkbox'],
-input[type='radio'] {
+input[type='checkbox'] {
 	position: absolute;
     margin: -1px;
     padding: 0;

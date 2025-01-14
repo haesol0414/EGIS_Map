@@ -1,6 +1,6 @@
 // 오브젝트 key값을 UI 리스트에 추가
-function addObjectKeyToList(_key) {
-	const objList = document.getElementById('xd-object-list');
+function addObjectKeyToList(_layer, _key, elementName) {
+	const objList = document.getElementById(elementName);
 	const obj = document.createElement('li');
 
 	// li 생성
@@ -9,20 +9,20 @@ function addObjectKeyToList(_key) {
 	obj.classList.add('xd-object');
 
 	// 삭제 버튼 추가
-	const deleteBtn = createDeleteButton(_key);
+	const deleteBtn = createDeleteButton(_layer, _key);
 	obj.appendChild(deleteBtn); // 리스트 항목에 삭제 버튼 추가
 
 	objList.appendChild(obj);   // 리스트에 항목 추가
 }
 
 // 삭제 버튼 생성 및 이벤트 처리 함수
-function createDeleteButton(_key) {
+function createDeleteButton(_layer, _key) {
 	const deleteBtn = document.createElement('button');
 	deleteBtn.textContent = '삭제';
 	deleteBtn.classList.add('xd-del-btn');
 
 	deleteBtn.addEventListener('click', () => {
-		clearObject(_key);
+		clearObjectByKey(_layer, _key);
 	});
 
 	return deleteBtn;
@@ -63,4 +63,12 @@ function createDetailPopup(_key, _name, _description) {
 
 	// #xd-map-tool 안에 맨 마지막 요소로 팝업 추가
 	wrapper.appendChild(detailWrap);
+}
+
+// li 초기화
+function clearHtmlObjectList(elementName) {
+	let objList = document.getElementById(elementName);
+	while (objList.hasChildNodes()) {
+		objList.removeChild(objList.firstChild);
+	}
 }

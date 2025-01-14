@@ -94,9 +94,13 @@ function setMouseState(state) {
 
 // 측정 버튼 공통 함수 정의
 function handleMeasurement(button, mouseState, switchCheck, tilt, limitTilt) {
-	clearAnalysis();
 	document.querySelectorAll('.map-tool-btn.active').forEach(btn => btn.classList.remove('active'));
 	button.classList.add('active');
+	clearAnalysis();
+
+	if (drawLineMod) {
+		drawLineMod = false;
+	}
 
 	// 스위치 버튼 체크 상태에 따라 동작
 	if (switchBtn.checked !== switchCheck) switchBtn.click();

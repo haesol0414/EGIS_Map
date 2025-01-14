@@ -1,3 +1,7 @@
+const mapDiv = document.getElementById('xd-map');
+const drawLineBtn = document.getElementById('draw-line-btn');
+const clearLineBtn = document.getElementById('clear-line-btn');
+
 const GLOBAL = {
 	m_objcount: 0,  // 측정 오브젝트(POI)의 개수
 	m_mercount: 0,  // 측정 작업의 총 개수
@@ -10,7 +14,8 @@ const XD = {
 };
 let POILayer = null;  // POI 저장 레이어
 let WallLayer = null;  // 반경 벽 저장 레이어
-const switchBtn = document.getElementById('xd-switch');
+let LineLayer = null;  // 라인 저장 레이어
+let BuildLayer = null;	// 건물 레이어
 
 var Module = {
 	locateFile: function(s) {
@@ -18,7 +23,7 @@ var Module = {
 	},
 	postRun: function() {
 		Module.initialize({
-			container: document.getElementById('xd-map'),
+			container: mapDiv,
 			terrain: {
 				dem: {
 					url: 'https://xdworld.vworld.kr',
@@ -39,6 +44,12 @@ var Module = {
 		XD.Option = Module.getOption();
 		XD.Symbol = Module.getSymbol();
 
+		// 카메라 위치 설정
+		XD.Camera.look(
+			new Module.JSVector3D(126.93831646026437, 37.517164463389214, 629.4693173738196),
+			new Module.JSVector3D(126.93866761878483, 37.52295801173619, 10.460245016030967)
+		);
+
 		// 렌더링 옵션 설정
 		XD.Option.SetAreaMeasurePolygonDepthBuffer(false);
 		XD.Option.SetDistanceMeasureLineDepthBuffer(false);
@@ -55,49 +66,25 @@ var Module = {
 
 		// POI 레이어 생성
 		let layerList = new Module.JSLayerList(true);
-		POILayer = layerList.createLayer('MEASURE_POI', Module.ELT_3DPOINT);
-		POILayer.setMaxDistance(20000.0);
-		POILayer.setSelectable(true);					// 클릭 이벤트 허용
-
-		// 반경 벽 레이어
-		WallLayer = layerList.createLayer('MEASURE_WALL', Module.ELT_POLYHEDRON);
-		WallLayer.setMaxDistance(20000.0);
-		WallLayer.setSelectable(true);
-		WallLayer.setEditable(true);
-
-		// 건물 레이어
-		const buildLayer = Module.getTileLayerList().createXDServerLayer({
-			url: 'https://xdworld.vworld.kr',
-			servername: 'XDServer3d',
-			name: 'facility_build',
-			type: 9,
-			minLevel: 0,
-			maxLevel: 15
+		POILayer = createLayer(layerList, 'MEASURE_POI', Module.ELT_3DPOINT, {
+			maxDistance: 20000.0,
+			selectable: true
 		});
-		buildLayer.setSelectable(false);
-		buildLayer.setVisible(false);
 
-
-		// 카메라 위치 설정
-		XD.Camera.look(
-			new Module.JSVector3D(126.93831646026437, 37.517164463389214, 629.4693173738196),
-			new Module.JSVector3D(126.93866761878483, 37.52295801173619, 10.460245016030967)
-		);
-
-		// 고도 측정시 건물 레이어 on
-		switchBtn.addEventListener('click', function() {
-			let location = XD.Camera.getLocation();
-
-			if (switchBtn.checked) {
-
-				buildLayer.setVisible(true);
-				console.log('building Layer on');
-			} else {
-
-				buildLayer.setVisible(false);
-				console.log('building Layer off');
-			}
+		// 반경 벽 레이어 생성
+		WallLayer = createLayer(layerList, 'MEASURE_WALL', Module.ELT_POLYHEDRON, {
+			maxDistance: 20000.0,
+			selectable: true,
+			editable: true
 		});
+
+		// 라인 레이어 생성
+		LineLayer = createLayer(layerList, 'LINE_LAYER', Module.ELT_3DLINE,  options = {
+			selectable: true,
+		});
+
+		// 건물 레이어 생성
+		BuildLayer = createBuildingLayer();
 
 		console.log('XDWorld 엔진 로딩 완료');
 	}
