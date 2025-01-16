@@ -53,7 +53,7 @@ function createAltiPOI(_position, _color, _balloonType, _gAltitude, _oAltitude) 
 		POILayer.addObject(poi, 0);    // 레이어에 객체 추가
 
 		GLOBAL.n_index++;               // 인덱스 증가
-		addObjectKeyToList(POILayer, bjId, 'xd-object-list');
+		addObjectKeyToList(POILayer, objId, 'xd-object-list');
 	}
 }
 
@@ -222,7 +222,7 @@ mapDiv.addEventListener('click', function() {
 
 	if (!startPoint) {
 		startPoint = [longitude, latitude, altitude];
-		// console.log('시작점이 설정되었습니다. = ', startPoint);
+		console.log('시작점이 설정되었습니다. = ', startPoint);
 	} else {
 		let endPoint = [longitude, latitude, altitude];
 		// console.log('종료지점이 설정되었습니다. = ', endPoint);

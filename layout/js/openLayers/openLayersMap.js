@@ -11,11 +11,13 @@ const polygonToggleBtn = document.querySelector('.ol-polygon-btn');
 const initializeMap = async () => {
 	map = new ol.Map({
 		target: 'ol-map',
+		pixelRatio: 1,
 		layers: [
 			new ol.layer.Tile({
 				source: new ol.source.XYZ({
 					url: `https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={z}`,
 					attributions: 'Map data © Google'
+
 				})
 			})
 		],

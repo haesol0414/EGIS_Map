@@ -62,7 +62,7 @@ function createBuildingLayer() {
 }
 
 // 고도 측정 시 건물 레이어 on/off
-switchBtn.addEventListener('click', function () {
+switchBtn.addEventListener('click', function() {
 	if (switchBtn.checked) {
 		BuildLayer.setVisible(true);
 		console.log('building Layer on');
@@ -71,3 +71,72 @@ switchBtn.addEventListener('click', function () {
 		console.log('building Layer off');
 	}
 });
+
+
+// WMS 레이어 ================================== *
+const wmsOnBtn = document.getElementById('create-wms-btn');
+wmsOnBtn.addEventListener('click', createWmsLayer);
+
+function createWmsLayer() {
+	const layerList = new Module.JSLayerList(false);
+	let wmsLayer = layerList.nameAtLayer('wmslayer');
+
+	if (wmsLayer != null) {
+		wmsLayer.clearWMSCache();
+		layerList.delLayerAtName('wmslayer');
+	}
+
+	// url 필드 값 가져오기
+	const urlInput = document.getElementById('url-input').value;
+
+	// 체크된 레이어 값 가져오기
+	const checkedLayers = Array.from(document.querySelectorAll('.layer-wrap input[type="radio"]:checked'))
+		.map(checkbox => checkbox.value)
+		.join(',');
+
+	if (!checkedLayers) {
+		alert('레이어를 선택해주세요');
+		return;
+	}
+
+	// 속성 필터링
+	const cqlFilter = encodeURIComponent('alias LIKE \'%상당구\'');
+
+	// wms 레이어 생성
+	wmsLayer = layerList.createWMSLayer('wmslayer');
+
+	// 옵션 설정
+	const slopeOption = {
+		url: urlInput,
+		layer: checkedLayers,
+		minimumlevel: 10,
+		maximumlevel: 20,
+		tilesize: 256,
+		crs: 'EPSG:4326',
+		parameters: {
+			version: '1.1.0',
+			cql_filter: cqlFilter
+		}
+	};
+
+	wmsLayer.setWMSProvider(slopeOption);
+	wmsLayer.setBBoxOrder(true); 				// BBox 좌표 순서 기본값 설정
+	wmsLayer.setProxyRequest(false); 			// Proxy 사용 안 함
+
+	console.log('WMS Layer 생성 : ', wmsLayer);
+}
+
+
+// 샌드박스
+// url: 'https://2dmap.egiscloud.com/geoserver/wms?',
+// layer: 'w_admin:user_shp_admin_1706495499027',
+
+// 선택된 레이어 체크박스의 값을 배열로 수집
+// const selectedLayers = [];
+// const layerCheckboxes = document.querySelectorAll('input[name="layer"]:checked');
+// layerCheckboxes.forEach((checkbox) => {
+// 	selectedLayers.push(checkbox.value);
+// });
+//
+// // 레이어 값들을 쉼표로 구분된 문자열로 결합
+// const targetLayer = selectedLayers.join(',');

@@ -269,4 +269,5 @@ $(document).ready(function() {
 
 		clearAnalysis();
 	});
+
 });

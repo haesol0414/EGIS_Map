@@ -134,7 +134,7 @@
 					<button type="button" id="main-location" class="main-location"></button>
 				</div>
 			</div>
-			<div id="ol-map" style="width:100%; height:100%; background-color:black;">
+			<div id="ol-map" style="width:100%; height:100%;">
 			</div>
 		</div>
 		<!--   ================================ 3D - XDworld ================================     -->
@@ -150,6 +150,9 @@
 						</li>
 						<li>
 							<button type="button" id="obj-add-btn" class="bar-btn" data-tab="barCont03">라인</button>
+						</li>
+						<li>
+							<button type="button" id="wms-btn" class="bar-btn" data-tab="barCont04">WMS</button>
 						</li>
 					</ul>
 					<div class="menu-cont">
@@ -191,8 +194,10 @@
 								<div class="line-item">
 									<label>
 										<input type="radio" name="lineType" value="1">
-										<div class="line-preview" style="height: 4px; width: 100px; border-top: 2px solid red; position: relative;">
-											<div style="position: absolute; right: -2px; top: -5px; width: 0; height: 0; border-left: 10px solid red; border-top: 4px solid transparent; border-bottom: 4px solid transparent;"></div>
+										<div class="line-preview"
+											 style="height: 4px; width: 100px; border-top: 2px solid red; position: relative;">
+											<div
+												style="position: absolute; right: -2px; top: -5px; width: 0; height: 0; border-left: 10px solid red; border-top: 4px solid transparent; border-bottom: 4px solid transparent;"></div>
 										</div>
 									</label>
 								</div>
@@ -206,10 +211,53 @@
 								</div>
 								<div class="line-btn-wrap">
 									<button id="clear-line-btn" class="btn line-btn">초기화</button>
-									<button id="draw-line-btn" class="btn line-btn">생성</button>
+									<button id="draw-line-btn" class="btn line-btn">완료</button>
 								</div>
 								<ul id="line-obj-list">
 								</ul>
+							</div>
+						</div>
+						<div class="bar-cont barCont04" id="xd-wms">
+							<h5 class="xd-feature-title">WMS</h5>
+							<div class="wms-input-wrap">
+								<div class="obj-input">
+									<label for="url-input"> Url</label>
+									<input type="text" id="url-input" class="form-control auto"
+										   value="http://localhost:8088/geoserver/ows?">
+								</div>
+								<div class="layer-wrap">
+									<label>Layer</label>
+									<div>
+										<input type="radio" id="layer1" name="layer" value="haesol:mltm_lsmd_cont_uq101"
+											   checked />
+										<label for="layer1">mltm_lsmd_cont_uq101</label>
+									</div>
+								</div>
+								<div>
+									<input type="checkbox" id="cql-check" class="cql-check" />
+									<label for="cql-check">cql 필터 사용</label>
+								</div>
+								<button type="button" id="create-wms-btn" class="btn">WMS 레이어 생성</button>
+								<!--								<div class="obj-input">-->
+								<!--									<label for="min-input"> Minimum Level</label>-->
+								<!--									<input type="text" id="min-input" class="form-control auto">-->
+								<!--								</div>-->
+								<!--								<div class="obj-input">-->
+								<!--									<label for="max-input"> Maximum Level</label>-->
+								<!--									<input type="text" id="max-input" class="form-control auto">-->
+								<!--								</div>-->
+								<!--								<div class="obj-input">-->
+								<!--									<label for="size-input"> Tile Size</label>-->
+								<!--									<input type="text" id="size-input" class="form-control auto">-->
+								<!--								</div>-->
+								<!--								<div class="obj-input">-->
+								<!--									<label for="csr-input"> Csr(srs)</label>-->
+								<!--									<input type="text" id="csr-input" class="form-control auto">-->
+								<!--								</div>-->
+								<!--								<div class="obj-input">-->
+								<!--									<label for="ver-input"> Version</label>-->
+								<!--									<input type="text" id="ver-input" class="form-control auto">-->
+								<!--								</div>-->
 							</div>
 						</div>
 					</div>
