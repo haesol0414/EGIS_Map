@@ -169,3 +169,74 @@ export const createPolygonLayer = () => {
 
 	return polygonLayer;
 };
+
+// WMS 레이어 생성
+export const createWmsLayerWithOl = (map) => {
+	removeWmsLayers(map);
+
+	// URL 가져오기
+	const urlInput = document.getElementById('ol-url-input').value;
+
+	// 체크된 레이어 값 가져오기
+	const checkedLayer = $('.ol-layer-wrap input[type="radio"]:checked')
+		.map(function () {
+			return $(this).val();
+		})
+		.get()
+		.join(',');
+
+	// 라디오 버튼의 id 확인
+	const selectedRadio = document.querySelector('.ol-layer-wrap input[type="radio"]:checked');
+	const cqlCheck = document.getElementById('ol-cql-check');
+
+	if (selectedRadio.id !== 'ol-layer1') {
+		// 체크박스를 비활성화 및 체크 해제
+		cqlCheck.checked = false;
+		cqlCheck.disabled = true;
+	} else {
+		// 체크박스를 활성화
+		cqlCheck.disabled = false;
+	}
+
+	if (!checkedLayer) {
+		alert('레이어를 선택해주세요');
+		return;
+	}
+
+	// CQL 필터 (필터를 사용할 때만 추가)
+	const isCqlChecked = cqlCheck.checked;
+	const cqlFilter = isCqlChecked ? 'alias LIKE \'%상당구%\'' : null;
+
+	// WMS 레이어 생성 및 추가
+	const wms = new ol.layer.Tile({
+		source: new ol.source.TileWMS({
+			url: urlInput,
+			params: {
+				VERSION: '1.1.0', // WMS 버전
+				LAYERS: checkedLayer, // 작업공간:레이어 명
+				BBOX: [127.2971420288086, 36.44920349121094, 127.67582702636719, 36.7557487487793],
+				SRS: 'EPSG:4326', // 좌표계
+				tiled: true,
+				...(cqlFilter && { CQL_FILTER: cqlFilter }) // CQL 필터 추가 (선택적)
+			},
+			serverType: 'geoserver'
+		})
+	});
+
+	map.addLayer(wms); // 맵 객체에 레이어 추가
+};
+
+// WMS 레이어 제거
+export const removeWmsLayers = (map) => {
+	// 맵의 모든 레이어 가져오기
+	const layers = map.getLayers();
+	console.log("layers = ", layers);
+
+	// 제거할 WMS 레이어 필터링 및 제거
+	layers.forEach((layer) => {
+		// WMS 레이어인지 확인 (TileWMS인지 검사)
+		if (layer.getSource() instanceof ol.source.TileWMS) {
+			map.removeLayer(layer); // WMS 레이어 제거
+		}
+	});
+};

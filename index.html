@@ -97,6 +97,9 @@
 						<li>
 							<button type="button" class="bar-btn" data-tab="barCont01">정보</button>
 						</li>
+						<li>
+							<button type="button" class="bar-btn" data-tab="barCont04">WMS</button>
+						</li>
 					</ul>
 					<div class="menu-cont">
 						<div class="bar-cont barCont01">
@@ -123,6 +126,40 @@
 							<p class="position">[ x : <span id="position-x">0.000000</span> / y : <span id="position-y">0.000000</span>
 								]</p>
 							<div id="ol-info-container"></div>
+						</div>
+						<div class="bar-cont barCont04" id="ol-wms">
+							<h5 class="xd-feature-title">WMS</h5>
+							<div class="wms-input-wrap">
+								<div class="obj-input">
+									<label for="ol-url-input"> Url</label>
+									<input type="text" id="ol-url-input" class="form-control auto"
+										   value="http://localhost:8088/geoserver/ows?">
+								</div>
+								<div class="ol-layer-wrap">
+									<label>Layer</label>
+									<div>
+										<input type="radio" id="ol-layer1" name="layer"
+											   value="haesol:mltm_lsmd_cont_uq101"
+											   checked>
+										<label for="ol-layer1">mltm_lsmd_cont_uq101</label>
+									</div>
+									<div class="xd-check-wrap">
+										<input type="checkbox" id="ol-cql-check" class="cql-check" />
+										<label for="ol-cql-check">cql 필터 사용</label>
+									</div>
+									<div>
+										<input type="radio" id="ol-layer2" name="layer" value="haesol:c6_postpoint"
+										/>
+										<label for="ol-layer2">c6_postpoint</label>
+									</div>
+									<div>
+										<input type="radio" id="ol-layer3" name="layer" value="haesol:a2_link" />
+										<label for="ol-layer3">a2_link</label>
+									</div>
+								</div>
+								<button type="button" id="ol-create-wms" class="btn create-wms">WMS 레이어 생성</button>
+								<button type="button" id="ol-clear-wms" class="btn clear-wms">초기화</button>
+							</div>
 						</div>
 					</div>
 					<button type="button" class="menu-cont-btn" title="열기"></button>
@@ -228,36 +265,24 @@
 								<div class="layer-wrap">
 									<label>Layer</label>
 									<div>
-										<input type="radio" id="layer1" name="layer" value="haesol:mltm_lsmd_cont_uq101"
-											   checked />
+										<input type="radio" id="layer1" name="layer" value="haesol:mltm_lsmd_cont_uq101" checked>
 										<label for="layer1">mltm_lsmd_cont_uq101</label>
 									</div>
+									<div class="xd-check-wrap">
+										<input type="checkbox" id="cql-check" class="cql-check" />
+										<label for="cql-check">cql 필터 사용</label>
+									</div>
+									<div>
+										<input type="radio" id="layer2" name="layer" value="haesol:c6_postpoint" />
+										<label for="layer2">c6_postpoint</label>
+									</div>
+									<div>
+										<input type="radio" id="layer3" name="layer" value="haesol:a2_link" />
+										<label for="layer3">a2_link</label>
+									</div>
 								</div>
-								<div>
-									<input type="checkbox" id="cql-check" class="cql-check" />
-									<label for="cql-check">cql 필터 사용</label>
-								</div>
-								<button type="button" id="create-wms-btn" class="btn">WMS 레이어 생성</button>
-								<!--								<div class="obj-input">-->
-								<!--									<label for="min-input"> Minimum Level</label>-->
-								<!--									<input type="text" id="min-input" class="form-control auto">-->
-								<!--								</div>-->
-								<!--								<div class="obj-input">-->
-								<!--									<label for="max-input"> Maximum Level</label>-->
-								<!--									<input type="text" id="max-input" class="form-control auto">-->
-								<!--								</div>-->
-								<!--								<div class="obj-input">-->
-								<!--									<label for="size-input"> Tile Size</label>-->
-								<!--									<input type="text" id="size-input" class="form-control auto">-->
-								<!--								</div>-->
-								<!--								<div class="obj-input">-->
-								<!--									<label for="csr-input"> Csr(srs)</label>-->
-								<!--									<input type="text" id="csr-input" class="form-control auto">-->
-								<!--								</div>-->
-								<!--								<div class="obj-input">-->
-								<!--									<label for="ver-input"> Version</label>-->
-								<!--									<input type="text" id="ver-input" class="form-control auto">-->
-								<!--								</div>-->
+								<button type="button" id="create-wms-btn" class="btn create-wms">WMS 레이어 생성</button>
+								<button type="button" id="clear-wms-btn" class="btn clear-wms">초기화</button>
 							</div>
 						</div>
 					</div>

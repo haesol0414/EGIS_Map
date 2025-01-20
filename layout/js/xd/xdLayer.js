@@ -73,49 +73,58 @@ switchBtn.addEventListener('click', function() {
 });
 
 
-// WMS 레이어 ================================== *
-const wmsOnBtn = document.getElementById('create-wms-btn');
-wmsOnBtn.addEventListener('click', createWmsLayer);
-
-function createWmsLayer() {
+// wms 레이어 생성
+function createWmsLayerWithXd() {
 	const layerList = new Module.JSLayerList(false);
 	let wmsLayer = layerList.nameAtLayer('wmslayer');
 
 	if (wmsLayer != null) {
-		wmsLayer.clearWMSCache();
-		layerList.delLayerAtName('wmslayer');
+		clearWmsLayerWithXd();
 	}
 
 	// url 필드 값 가져오기
 	const urlInput = document.getElementById('url-input').value;
 
 	// 체크된 레이어 값 가져오기
-	const checkedLayers = Array.from(document.querySelectorAll('.layer-wrap input[type="radio"]:checked'))
+	const checkedLayer = Array.from(document.querySelectorAll('.layer-wrap input[type="radio"]:checked'))
 		.map(checkbox => checkbox.value)
 		.join(',');
 
-	if (!checkedLayers) {
+	// 라디오 버튼 상태 확인
+	const selectedRadio = document.querySelector('.layer-wrap input[type="radio"]:checked');
+	const cqlCheck = document.getElementById('cql-check');
+
+	if (selectedRadio.id !== 'layer1') {
+		// 체크박스를 비활성화 및 체크 해제
+		cqlCheck.checked = false;
+		cqlCheck.disabled = true;
+	} else {
+		// 체크박스를 활성화
+		cqlCheck.disabled = false;
+	}
+
+	if (!checkedLayer) {
 		alert('레이어를 선택해주세요');
 		return;
 	}
 
-	// 속성 필터링
-	const cqlFilter = encodeURIComponent('alias LIKE \'%상당구\'');
-
 	// wms 레이어 생성
 	wmsLayer = layerList.createWMSLayer('wmslayer');
+
+	// 속성 필터링 설정
+	const cqlFilter = encodeURIComponent('alias LIKE \'%상당구\'');
 
 	// 옵션 설정
 	const slopeOption = {
 		url: urlInput,
-		layer: checkedLayers,
+		layer: checkedLayer,
 		minimumlevel: 10,
 		maximumlevel: 20,
 		tilesize: 256,
 		crs: 'EPSG:4326',
 		parameters: {
 			version: '1.1.0',
-			cql_filter: cqlFilter
+			...(cqlCheck.checked && { cql_filter: cqlFilter }) // 체크박스 상태에 따라 cql_filter 추가
 		}
 	};
 
@@ -126,17 +135,18 @@ function createWmsLayer() {
 	console.log('WMS Layer 생성 : ', wmsLayer);
 }
 
+// wms 레이어 초기화
+const clearWmsBtn = document.getElementById('clear-wms-btn');
+clearWmsBtn.addEventListener('click', clearWmsLayerWithXd);
 
-// 샌드박스
-// url: 'https://2dmap.egiscloud.com/geoserver/wms?',
-// layer: 'w_admin:user_shp_admin_1706495499027',
+function clearWmsLayerWithXd() {
+	const layerList = new Module.JSLayerList(false);
+	let wmsLayer = layerList.nameAtLayer('wmslayer');
 
-// 선택된 레이어 체크박스의 값을 배열로 수집
-// const selectedLayers = [];
-// const layerCheckboxes = document.querySelectorAll('input[name="layer"]:checked');
-// layerCheckboxes.forEach((checkbox) => {
-// 	selectedLayers.push(checkbox.value);
-// });
-//
-// // 레이어 값들을 쉼표로 구분된 문자열로 결합
-// const targetLayer = selectedLayers.join(',');
+	wmsLayer.clearWMSCache();
+	layerList.delLayerAtName('wmslayer');
+}
+
+// WMS 레이어 생성 버튼 이벤트
+const wmsOnBtn = document.getElementById('create-wms-btn');
+wmsOnBtn.addEventListener('click', createWmsLayerWithXd);

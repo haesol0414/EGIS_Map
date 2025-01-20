@@ -123,9 +123,13 @@
     padding: 10px;
 }
 
-.obj-input label, .layer-wrap label {
+.obj-input label, .layer-wrap label, .ol-layer-wrap label {
     font-weight: 500;
     color: #003472;
+}
+
+.ol-layer-wrap label {
+    margin-top: 10px;
 }
 
 #obj-id {
@@ -218,7 +222,7 @@ label input[type="radio"] {
     flex-wrap: wrap;
 }
 
-#create-wms-btn {
+.create-wms {
     text-align: center;
     margin-top: 12px;
     border: 1px solid #003472;
@@ -230,13 +234,63 @@ label input[type="radio"] {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-#create-wms-btn:hover {
+.create-wms:hover {
     background-color: #ffffff;
     color: #003472;
     border-color: #003472;
 }
 
-.layer-wrap input[type="radio"] {
+.layer-wrap input[type="radio"], .ol-layer-wrap input[type="radio"] {
     opacity: 0;
     position: absolute;
+}
+
+.xd-check-wrap {
+    display: flex;
+    align-items: center;
+    padding: 2px 0;
+}
+
+.xd-check-wrap input[type='checkbox'] {
+    display: none; /* 기본 체크박스 숨김 */
+}
+
+.xd-check-wrap input[type='checkbox'] + label:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+    margin-top: -2px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.xd-check-wrap input[type='checkbox']:checked + label:before {
+    content: "✔";
+    color: #333;
+    text-align: center;
+    line-height: 16px;
+    background-color: #ffffff;
+    border: 1px solid #333;
+}
+
+.clear-wms {
+    text-align: center;
+    border: 1px solid #cd0000;
+    background-color: #ffffff;
+    color: #cd0000;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.clear-wms:hover {
+    background-color: #cd0000;
+    color: #ffffff;
+    border-color: #cd0000;
 }

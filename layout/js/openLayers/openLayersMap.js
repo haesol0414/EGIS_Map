@@ -1,9 +1,16 @@
-import { createCategoryLayer, updateCategoryLayers, createSubwayLineLayer, createPolygonLayer } from './layers.js';
+import {
+	createCategoryLayer,
+	updateCategoryLayers,
+	createSubwayLineLayer,
+	createPolygonLayer,
+	createWmsLayerWithOl, removeWmsLayers
+} from './layers.js';
 import { getUserPosition } from '../utils/utils.js';
 import { createOlInfoHTML } from '../utils/htmlTemplates.js';
 
 let map, hover = null;
-const initialCenter = [128.6, 35.87];
+const initialCenter = [127.473064, 36.637952];
+// const initialCenter = [128.6, 35.87];
 const mainLocation = document.getElementById('main-location');
 const polygonToggleBtn = document.querySelector('.ol-polygon-btn');
 
@@ -23,7 +30,7 @@ const initializeMap = async () => {
 		],
 		view: new ol.View({
 			center: ol.proj.fromLonLat(initialCenter),
-			zoom: 17
+			zoom: 12
 		})
 	});
 
@@ -35,6 +42,9 @@ const initializeMap = async () => {
 	handleSubwayLineToggle();
 	// 폴리곤 토글
 	handlePolygonToggle();
+	// wms 레이어
+	handleWmsCreateBtn(map);
+	handleWmsClearBtn(map);
 
 	// 마커 이벤트
 	map.on('singleclick', handleMarkerClick);
@@ -238,6 +248,24 @@ const updatePositionOnMapClick = (map, evt) => {
 	document.getElementById('position-x').textContent = formattedLon;
 	document.getElementById('position-y').textContent = formattedLat;
 };
+
+// wms 레이어 생성 버튼
+const handleWmsCreateBtn = (map) => {
+	const wmsOnBtn = document.getElementById('ol-create-wms');
+
+	wmsOnBtn.addEventListener('click', () => {
+		createWmsLayerWithOl(map);
+	});
+}
+
+// wms 레이어 초기화 버튼
+const handleWmsClearBtn = (map) => {
+	const wmsClearBtn = document.getElementById('ol-clear-wms');
+
+	wmsClearBtn.addEventListener('click', () => {
+		removeWmsLayers(map);
+	});
+}
 
 // 지도 초기화
 initializeMap().catch((error) => {

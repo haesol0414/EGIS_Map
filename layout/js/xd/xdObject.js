@@ -187,10 +187,6 @@ drawLineBtn.addEventListener('click', function() {
 		alert('라인 타입을 선택하세요.');
 		return;
 	}
-	// console.log(`라인 타입: ${selectedLineType} 생성 완료`);
-	// console.log('LineLayer = ', LineLayer);
-	// let lineObjKeyList = LineLayer.getObjectKeyList();
-	// console.log('lineObjKeyList = ', lineObjList);
 
 	drawLineBtn.disabled = true; // 버튼 비활성화
 	drawLineMod = false; 		 // 라인 그리기 모드 종료
@@ -222,7 +218,7 @@ mapDiv.addEventListener('click', function() {
 
 	if (!startPoint) {
 		startPoint = [longitude, latitude, altitude];
-		console.log('시작점이 설정되었습니다. = ', startPoint);
+		// console.log('시작점이 설정되었습니다. = ', startPoint);
 	} else {
 		let endPoint = [longitude, latitude, altitude];
 		// console.log('종료지점이 설정되었습니다. = ', endPoint);

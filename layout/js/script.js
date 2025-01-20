@@ -1,19 +1,18 @@
 $(document).ready(function() {
 	/* ========== 로그인 임시 스크립트 ========== */
-	$('.login').addClass('active');
-
-	$('.login .submit-btn').on('click', function() {
-		$(this).closest('.popup-panel').hide();
-		$('.login').removeClass('active');
-		$('.logout').addClass('active');
-	});
-
-	$('.logout-btn').on('click', function() {
-		$(this).closest('.logout').removeClass('active');
-		$('.login').addClass('active');
-	});
+	// $('.login').addClass('active');
+	//
+	// $('.login .submit-btn').on('click', function() {
+	// 	$(this).closest('.popup-panel').hide();
+	// 	$('.login').removeClass('active');
+	// 	$('.logout').addClass('active');
+	// });
+	//
+	// $('.logout-btn').on('click', function() {
+	// 	$(this).closest('.logout').removeClass('active');
+	// 	$('.login').addClass('active');
+	// });
 	/* ========== 로그인 임시 스크립트 ========== */
-	``;
 
 	/* ========== switch button 임시 스크립트 ========== */
 	// $('.switch-btn input[type=\'checkbox\']').on('click', function() {
@@ -270,4 +269,74 @@ $(document).ready(function() {
 		clearAnalysis();
 	});
 
+	// 라디오 버튼 변경 이벤트
+	$('.layer-wrap input[type="radio"]').on('change', function() {
+		const selectedRadio = $('.layer-wrap input[type="radio"]:checked');
+		const cqlCheck = $('#cql-check');
+
+		if (selectedRadio.attr('id') !== 'layer1') {
+			// 체크박스를 비활성화 및 체크 해제
+			cqlCheck.prop('checked', false).prop('disabled', true);
+		} else {
+			// 체크박스를 활성화
+			cqlCheck.prop('disabled', false);
+		}
+	});
+
+	// 초기 상태 설정
+	const selectedRadio = $('.layer-wrap input[type="radio"]:checked');
+	const cqlCheck = $('#cql-check');
+	if (selectedRadio.attr('id') !== 'layer1') {
+		cqlCheck.prop('checked', false).prop('disabled', true);
+	}
+
+	const handleRadioBtn = () => {
+		// 라디오 버튼 상태 변경 이벤트
+		$('.ol-layer-wrap input[type="radio"]').on('change', function() {
+			const selectedRadio = $('.ol-layer-wrap input[type="radio"]:checked');
+			const cqlCheck = $('#ol-cql-check');
+
+			// 선택된 라디오 버튼 확인 후 체크박스 상태 변경
+			if (selectedRadio.length && selectedRadio.attr('id') !== 'ol-layer1') {
+				cqlCheck.prop('checked', false).prop('disabled', true);
+			} else if (selectedRadio.length) {
+				cqlCheck.prop('disabled', false);
+			}
+		});
+
+		// 초기 상태 설정
+		const selectedRadio = $('.ol-layer-wrap input[type="radio"]:checked');
+		const cqlCheck = $('#ol-cql-check');
+
+		// 선택된 라디오 버튼 확인
+		if (selectedRadio.length && selectedRadio.attr('id') !== 'ol-layer1') {
+			cqlCheck.prop('checked', false).prop('disabled', true);
+		} else if (selectedRadio.length) {
+			cqlCheck.prop('disabled', false);
+		}
+	};
+
+	// 라디오 버튼 상태 변경 이벤트
+	$('.ol-layer-wrap input[type="radio"]').on('change', function() {
+		const $selectedRadio = $('.ol-layer-wrap input[type="radio"]:checked');
+		const $cqlCheck = $('#ol-cql-check');
+
+		// 선택된 라디오 버튼 확인 후 체크박스 상태 변경
+		if ($selectedRadio.length && $selectedRadio.attr('id') !== 'ol-layer1') {
+			$cqlCheck.prop('checked', false).prop('disabled', true);
+		} else if ($selectedRadio.length) {
+			$cqlCheck.prop('disabled', false);
+		}
+	});
+
+	// 초기 상태 설정
+	const $selectedRadio = $('.ol-layer-wrap input[type="radio"]:checked');
+	const $cqlCheck = $('#ol-cql-check');
+
+	// 선택된 라디오 버튼 확인
+	if ($selectedRadio.length && $selectedRadio.attr('id') !== 'ol-layer1') {
+		$cqlCheck.prop('checked', false).prop('disabled', true);
+	} else if ($selectedRadio.length) {
+		$cqlCheck.prop('disabled', false);
+	}
 });
