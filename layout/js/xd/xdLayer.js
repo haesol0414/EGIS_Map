@@ -1,4 +1,5 @@
 const switchBtn = document.getElementById('xd-switch');
+const wmsOnBtn = document.getElementById('create-wms-btn');
 
 // 레이어 생성
 function createLayer(layerList, layerName, layerType, options = {}) {
@@ -45,7 +46,7 @@ function clearLineLayer() {
 // 건물 레이어 생성 및 on/off
 function createBuildingLayer() {
 	// 건물 레이어 생성
-	const BuildLayerOptions = {
+	const options = {
 		url: 'https://xdworld.vworld.kr',
 		servername: 'XDServer3d',
 		name: 'facility_build',
@@ -54,23 +55,32 @@ function createBuildingLayer() {
 		maxLevel: 15
 	};
 
-	const buildlayer = Module.getTileLayerList().createXDServerLayer(BuildLayerOptions);
+	const buildlayer = Module.getTileLayerList().createXDServerLayer(options);
 	buildlayer.setSelectable(false);
 	buildlayer.setVisible(false);
 
 	return buildlayer;
 }
 
-// 고도 측정 시 건물 레이어 on/off
-switchBtn.addEventListener('click', function() {
-	if (switchBtn.checked) {
-		BuildLayer.setVisible(true);
-		console.log('building Layer on');
-	} else {
-		BuildLayer.setVisible(false);
-		console.log('building Layer off');
-	}
-});
+// 청주 건물 레이어 생성
+function createCjBuildingLayer() {
+	// 건물 레이어 생성
+	const options = {
+		url : "http://203.228.54.49:8077",
+		servername : "XDServer",
+		name : "bldg_cj_lod3_5186",
+		type : 9,
+		minLevel : 0,
+		maxLevel : 15
+	};
+
+	const cjLayer = Module.getTileLayerList().createXDServerLayer(options);
+	cjLayer.setVisible(true);
+	cjLayer.setSelectable(false);
+
+	return cjLayer;
+}
+
 
 
 // wms 레이어 생성
@@ -148,5 +158,16 @@ function clearWmsLayerWithXd() {
 }
 
 // WMS 레이어 생성 버튼 이벤트
-const wmsOnBtn = document.getElementById('create-wms-btn');
 wmsOnBtn.addEventListener('click', createWmsLayerWithXd);
+
+// 고도 측정 시 건물 레이어 on/off
+switchBtn.addEventListener('click', function() {
+	if (switchBtn.checked) {
+		BuildLayer.setVisible(true);
+		console.log('building Layer on');
+	} else {
+		BuildLayer.setVisible(false);
+		console.log('building Layer off');
+	}
+});
+

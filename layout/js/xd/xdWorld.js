@@ -16,6 +16,7 @@ let POILayer = null;  // POI 저장 레이어
 let WallLayer = null;  // 반경 벽 저장 레이어
 let LineLayer = null;  // 라인 저장 레이어
 let BuildLayer = null;	// 건물 레이어
+let cjLayer = null;	// 청주 건물 레이어
 
 var Module = {
 	locateFile: function(s) {
@@ -26,15 +27,14 @@ var Module = {
 			container: mapDiv,
 			terrain: {
 				dem: {
-					url: 'https://xdworld.vworld.kr',
-					name: 'dem',
-					servername: 'XDServer3d',
-					encoding: true
+					url: 'http://203.228.54.49:8077', //
+					name: 'dem_cj_1m_5186', // dem_cj_1m_5186
+					servername: 'XDServer',
 				},
 				image: {
-					url: 'https://xdworld.vworld.kr',
-					name: 'tile',
-					servername: 'XDServer3d'
+					url: 'http://203.228.54.49:8077',
+					name: 'tile_cj_12cm_5186',
+					servername: 'XDServer'
 				}
 			},
 			defaultKey: 'DFG~EpIREQDmdJe1E9QpdBca#FBSDJFmdzHoe(fB4!e1E(JS1I=='
@@ -46,8 +46,8 @@ var Module = {
 
 		// 카메라 위치 설정
 		XD.Camera.look(
-			new Module.JSVector3D(127.473064, 36.637952, 33200.4693173738196),
-			new Module.JSVector3D(127.473064, 36.637952, 10.460245016030967)
+			new Module.JSVector3D(127.50369, 36.58501, 1050.4693173738196),
+			new Module.JSVector3D(127.50369, 36.58501, 10.460245016030967)
 		);
 
 		// 렌더링 옵션 설정
@@ -85,6 +85,9 @@ var Module = {
 
 		// 건물 레이어 생성
 		BuildLayer = createBuildingLayer();
+
+		// 청주 건물 레이어 생성
+		cjLayer= createCjBuildingLayer();
 
 		console.log('XDWorld 엔진 로딩 완료');
 	}
